@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2017",
+    "outDir": "electron-dist",
+    "esModuleInterop": true
+  },
+  "include": ["main/**/*.ts"]
+}

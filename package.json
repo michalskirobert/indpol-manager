@@ -1,0 +1,87 @@
+{
+  "name": "Indpol Manager",
+  "version": "0.0.1",
+  "private": true,
+  "main": "electron-dist/main.js",
+  "description": "Indpol Manager application created by NurByte Software Lab",
+  "author": "Robert Michalski",
+  "scripts": {
+    "dev": "concurrently \"yarn dev:next\" \"yarn dev:electron\"",
+    "dev:next": "next dev",
+    "dev:electron": "wait-on http://localhost:3000 && ELECTRON_START_URL=http://localhost:3000 electron electron-dist/main.js",
+    "build:main": "tsc -p tsconfig.electron.json",
+    "build": "next build && yarn build:main",
+    "start": "concurrently \"next start\" \"electron .\"",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.robert.financialapp",
+    "productName": "Financial Manager 1.0.0",
+    "files": [
+      "electron-dist/**/*",
+      ".next/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "mac": {
+      "icon": "assets/icon.icns",
+      "identity": null
+    },
+    "win": {
+      "icon": "assets/icon.ico"
+    }
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.10.1",
+    "@types/next-auth": "^3.15.0",
+    "apexcharts": "^4.5.0",
+    "bcryptjs": "^3.0.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "concurrently": "^9.2.1",
+    "dayjs": "^1.11.13",
+    "draft-js": "^0.11.7",
+    "electron": "^38.0.0",
+    "electron-log": "^5.4.3",
+    "electron-updater": "6.6.2",
+    "flatpickr": "^4.6.13",
+    "jsonwebtoken": "^9.0.2",
+    "jsvectormap": "^1.6.0",
+    "lucide-react": "^0.543.0",
+    "mongoose": "^8.18.1",
+    "next": "15.1.6",
+    "next-auth": "^4.24.11",
+    "next-themes": "^0.4.4",
+    "nextjs-toploader": "^3.7.15",
+    "qs": "^6.14.0",
+    "react": "19.0.0",
+    "react-apexcharts": "^1.7.0",
+    "react-dom": "19.0.0",
+    "react-redux": "^9.2.0",
+    "react-toastify": "^11.0.5",
+    "tailwind-merge": "^2.6.0",
+    "wait-on": "^8.0.4"
+  },
+  "devDependencies": {
+    "@types/electron": "^1.6.12",
+    "@types/jsonwebtoken": "^9",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^22",
+    "@types/qs": "^6",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
+    "autoprefixer": "^10.4.20",
+    "electron-builder": "26.0.12",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.6",
+    "postcss": "^8",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "tailwindcss": "^3.4.16",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5"
+  }
+}
