@@ -28,8 +28,6 @@ export function MenuItem(
     isActive: boolean;
   } & ({ as?: "button"; onClick: () => void } | { as: "link"; href: string }),
 ) {
-  const { isSidebarOpen } = useAppSelector(({ layout }) => layout);
-
   const isMobile = useIsMobile();
 
   const dispatch = useAppDispatch();
