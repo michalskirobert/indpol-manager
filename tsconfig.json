@@ -21,14 +21,14 @@
     "paths": {
       "@/*": ["./src/*"],
       "@app/*": ["./src/app/*"],
-      "@api/*": ["./src/app/api/*"],
+      "@api/*": ["src/app/(protected)/api/*"],
       "@typings/*": ["./src/types/*"],
       "@public/*": ["./public/*"],
       "@reducers/*": ["./src/store/reducers/*"],
       "@store/*": ["./src/store/*"],
       "@components/*": ["./src/components/*"],
       "@lib/*": ["./src/lib/*"],
-      "@models/*": ["./src/app/api/models/*"],
+      "@models/*": ["src/app/(protected)/api/models/*"],
       "@shared/*": ["./src/components/shared/*"]
     },
     "target": "ES2017"

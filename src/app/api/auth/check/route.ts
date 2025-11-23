@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@lib/auth";
-import { connectDB } from "@lib/mongodb";
-import User from "@models/User.model";
-import { UserProps } from "@/types/user";
+import { connectDB } from "@/types/mongodb";
+import User from "@/app/(protected)/api/models/User.model";
+import { DatabaseUser } from "@/types/user";
 
 export const POST = async () => {
   try {
@@ -16,7 +16,9 @@ export const POST = async () => {
       );
     }
 
-    const foundUser = await User.findOne<UserProps>({ _id: session.user._id });
+    const foundUser = await User.findOne<DatabaseUser>({
+      _id: session.user._id,
+    });
 
     if (!foundUser) {
       const response = NextResponse.json(

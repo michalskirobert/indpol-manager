@@ -4,7 +4,7 @@ import React from "react";
 import { AlertErrorIcon, AlertSuccessIcon, AlertWarningIcon } from "./icons";
 
 const alertVariants = cva(
-  "flex gap-5 w-full rounded-[10px] border-l-6 px-7 py-8 dark:bg-opacity-30 md:p-9",
+  "flex gap-5 w-full rounded-[10px] border-l-6 p-4 dark:bg-opacity-30 md:p-6",
   {
     variants: {
       variant: {

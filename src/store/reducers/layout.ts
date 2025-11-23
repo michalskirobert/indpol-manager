@@ -7,7 +7,7 @@ interface Reducer {
 }
 
 const initialState: Reducer = {
-  isSidebarOpen: false,
+  isSidebarOpen: true,
 };
 
 export const layoutSlice = createSlice({

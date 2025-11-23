@@ -11,18 +11,14 @@ import { UserInfo } from "./user-info";
 
 import appData from "./../../../../package.json";
 import { APP_NAME } from "@/utils";
-import { useSession } from "next-auth/react";
-import { useAppDispatch, useAppSelector } from "@/store";
+import { useAppDispatch } from "@/store";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toggleSidebar } from "@/store/reducers/layout";
 
 export function Header() {
   const dispatch = useAppDispatch();
-  const session = useSession();
 
   const isMobile = useIsMobile();
-
-  if (session.status !== "authenticated") return null;
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between border-b border-stroke bg-white px-4 py-5 shadow-1 dark:border-stroke-dark dark:bg-gray-dark md:px-5 2xl:px-10">

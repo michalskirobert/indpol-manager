@@ -1,8 +1,10 @@
 export const INSTANCES_URLS = {
-  signIn: "/api/sign-in",
-  signOut: "/api/sign-out",
-  register: "/api/register",
-  products: "/api/products",
-  orders: "/api/orders",
-  dictionaries: "/api/dictionaries",
+  signIn: "sign-in",
+  signOut: "sign-out",
+  register: "register",
+  products: "products",
+  orders: "orders",
+  dictionaries: "dictionaries",
+  users: "auth/users",
+  upload: "upload",
 } as const;

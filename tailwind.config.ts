@@ -1,8 +1,14 @@
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
 
-const config: Config = {
-  content: ["./src/**/*.{js,jsx,tsx}"],
+import withMT from "@material-tailwind/react/utils/withMT";
+
+const config = withMT({
+  content: [
+    "./src/**/*.{js,jsx,tsx}",
+    "./node_modules/@material-tailwind/react/components/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@material-tailwind/react/theme/components/**/*.{js,ts,jsx,tsx}",
+  ],
   darkMode: ["class"],
   theme: {
     extend: {
@@ -378,5 +384,5 @@ const config: Config = {
     },
   },
   plugins: [],
-};
+});
 export default config;

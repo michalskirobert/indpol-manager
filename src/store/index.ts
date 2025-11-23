@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { apiSlice } from "./services";
+import { apiSlice } from "./api";
 
 import authSlice from "./reducers/auth";
 import layoutSlice from "./reducers/layout";

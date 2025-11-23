@@ -10,10 +10,10 @@ import { NAV_DATA } from "./data";
 import { ArrowLeft, ChevronUp } from "lucide-react";
 
 import { MenuItem } from "./menu-item";
-import { useSession } from "next-auth/react";
-import { useAppDispatch, useAppSelector } from "../../../../store";
+
 import { useIsMobile } from "@/hooks/use-mobile";
 import { setSidebarOpen, toggleSidebar } from "@/store/reducers/layout";
+import { useAppDispatch, useAppSelector } from "@/store";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -25,8 +25,6 @@ export function Sidebar() {
     dispatch(toggleSidebar());
   };
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
-
-  const session = useSession();
 
   const toggleExpanded = (title: string) => {
     setExpandedItems((prev) => (prev.includes(title) ? [] : [title]));
@@ -48,8 +46,6 @@ export function Sidebar() {
     });
   }, [pathname, expandedItems]);
 
-  if (session.status !== "authenticated") return null;
-
   return (
     <>
       {isMobile && isSidebarOpen && (
@@ -68,7 +64,6 @@ export function Sidebar() {
         )}
         aria-label="Main navigation"
         aria-hidden={!isSidebarOpen}
-        inert={!isSidebarOpen}
       >
         <div className="flex h-full flex-col py-10 pl-[25px] pr-[7px]">
           <div className="relative pr-4.5">

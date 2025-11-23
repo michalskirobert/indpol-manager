@@ -1,9 +1,12 @@
-import { connectDB } from "./mongodb";
-import User from "@/app/api/models/User.model";
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { UserProps } from "@/types/user";
+import { connectDB } from "../types/mongodb";
+import type { Document } from "mongoose";
+import User from "@/app/api/models/User.model";
+
+type MongooseUser = Document & UserProps;
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -12,7 +15,7 @@ const authOptions: NextAuthOptions = {
       id: "credentials",
       type: "credentials",
       credentials: {
-        email: { label: "Email", type: "text", placeholder: "jsmith" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -30,6 +33,9 @@ const authOptions: NextAuthOptions = {
         );
 
         if (!passwordMatch) throw new Error("Invalid Password");
+
+        await User.updateOne({ _id: userFound._id }, { lastLogin: new Date() });
+
         return userFound;
       },
     }),
@@ -39,30 +45,46 @@ const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
+    maxAge: 60 * 60 * 24,
+  },
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24,
+      },
+    },
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {
-        const u = user;
-        token.id = u._id;
-        token.name = u.name;
-        token.email = u.email;
+        const u = user as MongooseUser;
+        const obj = u.toObject();
+        const { password, _id, ...rest } = obj;
+        token.id = _id.toString();
+
+        Object.entries(rest).forEach(([key, value]) => {
+          token[key] = value;
+        });
       }
 
-      if (trigger === "update") {
-        if (session?.name) token.name = session.name;
-        if (session?.email) token.email = session.email;
-        if (session?.address) token.address = session.address;
-        if (session?.phone) token.phone = session.phone;
+      if (trigger === "update" && session) {
+        Object.entries(session).forEach(([key, value]) => {
+          if (value !== undefined) {
+            token[key] = value;
+          }
+        });
       }
 
       return token;
     },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user = token.user as UserProps;
-      }
 
+    async session({ session, token }) {
+      session.user = { ...token } as UserProps;
       return session;
     },
   },

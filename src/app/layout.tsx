@@ -1,14 +1,12 @@
-import { Sidebar } from "@/components/layout/sidebar";
-
-import { Header } from "@/components/layout/header";
 import type { Metadata } from "next";
-import NextTopLoader from "nextjs-toploader";
 import type { PropsWithChildren } from "react";
 import { Providers } from "./providers";
-import { getServerSession, Session } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "@lib/auth";
+import { ToastContainer } from "react-toastify";
 
 import "./global.css";
+import { ThemeProvider } from "next-themes";
 
 export const metadata: Metadata = {
   title: {
@@ -20,22 +18,16 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-  const session: Session | null = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
   return (
     <Providers session={session}>
       <html lang="en" suppressHydrationWarning>
         <body>
-          <NextTopLoader color="#5750F1" showSpinner={false} />
-          <div className="flex min-h-screen">
-            <Sidebar />
-            <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
-              <Header />
-              <main className="isolate mx-auto w-full max-w-screen-2xl overflow-hidden p-4 md:p-6 2xl:p-10">
-                {children}
-              </main>
-            </div>
-          </div>
+          <ThemeProvider defaultTheme="light" attribute="class">
+            {children}
+            <ToastContainer theme="colored" autoClose={3000} draggable />
+          </ThemeProvider>
         </body>
       </html>
     </Providers>

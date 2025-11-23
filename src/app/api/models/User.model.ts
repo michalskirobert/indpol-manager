@@ -1,34 +1,7 @@
+import { DatabaseUser } from "@/types/user";
 import { Schema, model, models } from "mongoose";
 
-const AddressSchema = new Schema<any>(
-  {
-    street: {
-      type: String,
-      required: [true, "street is required"],
-    },
-    buildingNo: {
-      type: String,
-      required: [true, "buildingNo is required"],
-    },
-    flatNo: {
-      type: String,
-      required: [true, "flatNo is required"],
-    },
-    city: {
-      type: String,
-      default: "",
-    },
-    postalCode: {
-      type: String,
-      required: [true, "postalCode is required"],
-    },
-  },
-  {
-    timestamps: true,
-  },
-);
-
-const UserSchema = new Schema<any>(
+const UserSchema = new Schema<DatabaseUser>(
   {
     email: {
       type: String,
@@ -43,23 +16,38 @@ const UserSchema = new Schema<any>(
       type: String,
       required: [true, "Password is required"],
     },
-    name: {
-      type: String,
-      required: [true, "Fullname is required"],
-      minLength: [3, "fullname must be at least 3 characters"],
-      maxLength: [25, "fullname must be at most 25 characters"],
-    },
-    phone: {
+    profileImgSrc: {
       type: String,
       default: "",
     },
-    address: { type: AddressSchema, required: true },
+    bgImgSrc: {
+      type: String,
+      default: "",
+    },
+    permissions: {
+      modules: {
+        type: [String],
+        default: [],
+      },
+      actions: {
+        type: [String],
+        default: [],
+      },
+    },
+    desc: {
+      type: String,
+      default: "",
+    },
+    fullname: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
   },
 );
 
-const User = models.User || model<any>("User", UserSchema);
+const User = models.User || model<DatabaseUser>("User", UserSchema);
 
 export default User;

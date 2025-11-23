@@ -11,15 +11,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { LogOutIcon, SettingsIcon, UserIcon } from "./icons";
+import { signOut, useSession } from "next-auth/react";
 
 export function UserInfo() {
+  const { data } = useSession();
+
   const [isOpen, setIsOpen] = useState(false);
 
-  const USER = {
-    name: "John Smith",
-    email: "johnson@nextadmin.com",
-    img: "/images/user/user-03.png",
-  };
+  if (!data?.user) return null;
 
   return (
     <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -28,15 +27,18 @@ export function UserInfo() {
 
         <figure className="flex items-center gap-3">
           <Image
-            src={USER.img}
-            className="size-12"
-            alt={`Avatar of ${USER.name}`}
+            src={
+              data.user.profileImgSrc ||
+              `/images/user/empty_img_${data.user.gender}.jpg`
+            }
+            className="h-12 w-12 rounded-full object-cover"
+            alt={data.user.fullname}
             role="presentation"
             width={200}
             height={200}
           />
-          <figcaption className="flex items-center gap-1 font-medium text-dark dark:text-dark-6 max-[1024px]:sr-only">
-            <span>{USER.name}</span>
+          <figcaption className="max-[1024px]:sr-only flex items-center gap-1 font-medium text-dark dark:text-dark-6">
+            <span>{data.user.fullname}</span>
 
             <ChevronUpIcon
               aria-hidden
@@ -51,27 +53,20 @@ export function UserInfo() {
       </DropdownTrigger>
 
       <DropdownContent
-        className="border border-stroke bg-white shadow-md dark:border-dark-3 dark:bg-gray-dark min-[230px]:min-w-[17.5rem]"
+        className="border border-stroke bg-white shadow-md dark:border-dark-3 dark:bg-gray-dark"
         align="end"
       >
         <h2 className="sr-only">User information</h2>
 
         <figure className="flex items-center gap-2.5 px-5 py-3.5">
-          <Image
-            src={USER.img}
-            className="size-12"
-            alt={`Avatar for ${USER.name}`}
-            role="presentation"
-            width={200}
-            height={200}
-          />
-
           <figcaption className="space-y-1 text-base font-medium">
             <div className="mb-2 leading-none text-dark dark:text-white">
-              {USER.name}
+              {data.user.email}
             </div>
 
-            <div className="leading-none text-gray-6">{USER.email}</div>
+            <div className="text-center leading-none text-gray-6">
+              {data.user.role === "admin" ? "Administrator" : "User"}
+            </div>
           </figcaption>
         </figure>
 
@@ -79,7 +74,7 @@ export function UserInfo() {
 
         <div className="p-2 text-base text-[#4B5563] dark:text-dark-6 [&>*]:cursor-pointer">
           <Link
-            href={"/profile"}
+            href={`/users/${data.user.id}`}
             onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
           >
@@ -106,10 +101,12 @@ export function UserInfo() {
         <div className="p-2 text-base text-[#4B5563] dark:text-dark-6">
           <button
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
-            onClick={() => setIsOpen(false)}
+            onClick={async () => {
+              await signOut();
+              setIsOpen(false);
+            }}
           >
             <LogOutIcon />
-
             <span className="text-base font-medium">Log out</span>
           </button>
         </div>

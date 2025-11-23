@@ -1,9 +1,9 @@
-import { connectDB } from "@lib/mongodb";
+import { connectDB } from "@/types/mongodb";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
-import User from "@/app/api/models/User.model";
+import User from "@/app/(protected)/api/models/User.model";
 
 export async function POST(request: Request) {
   try {
