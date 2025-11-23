@@ -2,11 +2,11 @@ import { Controller, FieldValues, useController } from "react-hook-form";
 import { SignleCheckboxProps } from "../types";
 import { Checkbox } from "@material-tailwind/react";
 
-export function SingleCheckbox<T extends FieldValues>({
+export function SingleCheckbox({
   name,
   control,
   ...restProps
-}: SignleCheckboxProps<T>) {
+}: SignleCheckboxProps) {
   const { field } = useController({ control, name });
 
   return (

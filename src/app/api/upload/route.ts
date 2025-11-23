@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import type { UploadApiResponse } from "cloudinary";
 
 cloudinary.config({
@@ -44,3 +44,24 @@ export async function POST(req: Request) {
     );
   }
 }
+
+export const DELETE = async (req: Request) => {
+  try {
+    const { public_id } = await req.json();
+
+    if (!public_id) {
+      return new Response(JSON.stringify({ error: "Missing public_id" }), {
+        status: 400,
+      });
+    }
+
+    const result = await cloudinary.uploader.destroy(public_id);
+
+    return new Response(JSON.stringify({ result }), { status: 200 });
+  } catch (error) {
+    console.error("Cloudinary delete error:", error);
+    return new Response(JSON.stringify({ error: (error as Error).message }), {
+      status: 500,
+    });
+  }
+};

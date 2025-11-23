@@ -7,20 +7,15 @@ import { MultipleCheckbox } from "./fields/MultipleCheckbox";
 import InputSelect from "./fields/InputSelect";
 import { SingleCheckbox } from "./fields/SingleCheckbox";
 import { InputTextarea } from "./fields/Textarea";
-import { ReactNode } from "react";
 import CustomInput from "./fields/CustomInput";
 
 interface Props<T extends FieldValues> {
   fields: FieldProps<T>[][];
-  children: ReactNode;
 }
 
-export const CustomForm = <T extends FieldValues>({
-  fields,
-  children,
-}: Props<T>) => {
+export const CustomForm = <T extends FieldValues>({ fields }: Props<T>) => {
   return (
-    <form className="flex w-full flex-col">
+    <div className="flex w-full flex-col">
       {fields.map((fieldGroup, i) => {
         return (
           <div key={`field-group-${i}`} className={"row flex"}>
@@ -72,7 +67,6 @@ export const CustomForm = <T extends FieldValues>({
           </div>
         );
       })}
-      {children}
-    </form>
+    </div>
   );
 };

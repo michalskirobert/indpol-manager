@@ -10,7 +10,14 @@ export const uploadApi = apiSlice.injectEndpoints({
         data: body,
       }),
     }),
+    deleteImage: build.mutation<void, { public_id: string }>({
+      query: (body) => ({
+        url: INSTANCES_URLS.upload,
+        data: body,
+        method: "delete",
+      }),
+    }),
   }),
 });
 
-export const { useUploadImageMutation } = uploadApi;
+export const { useUploadImageMutation, useDeleteImageMutation } = uploadApi;

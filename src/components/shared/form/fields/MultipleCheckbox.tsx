@@ -2,14 +2,14 @@ import { FieldValues, useController } from "react-hook-form";
 import { MultipleCheckboxProps } from "../types";
 import { Checkbox } from "@material-tailwind/react";
 
-export function MultipleCheckbox<T extends FieldValues>({
+export function MultipleCheckbox({
   name,
   control,
   label,
   options,
   axis,
   ...restProps
-}: MultipleCheckboxProps<T>) {
+}: MultipleCheckboxProps) {
   const { field } = useController({ control, name });
 
   const parseChckedValue = (option: string): string => {

@@ -12,10 +12,12 @@ export interface CustomButtonProps
     | "title"
     | "type"
     | "disabled"
+    | "style"
   > {
   isLoading?: boolean;
   icon?: ReactNode;
   content?: string;
+  tooltip?: string;
 }
 
 interface Props {

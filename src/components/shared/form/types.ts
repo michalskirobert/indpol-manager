@@ -33,72 +33,69 @@ export type Item = {
   value: string;
 };
 
-export interface DatePickerProps<T extends FieldValues>
+export interface DatePickerProps
   extends React.TextareaHTMLAttributes<HTMLInputElement> {
   dateConfig?: Partial<BaseOptions>;
-  name: Path<T>;
-  control: Control<T>;
+  name: string;
+  control: Control<any>;
   placeholder?: string;
   label: string;
 }
 
-export interface MultipleCheckboxProps<T extends FieldValues>
-  extends CheckboxProps {
-  name: Path<T>;
-  control: Control<T>;
+export interface MultipleCheckboxProps extends CheckboxProps {
+  name: string;
+  control: Control<any>;
   options: Item[];
   axis?: "horizontal" | "vertical";
 }
 
-export interface SignleCheckboxProps<T extends FieldValues>
-  extends CheckboxProps {
-  name: Path<T>;
-  control: Control<T>;
+export interface SignleCheckboxProps extends CheckboxProps {
+  name: string;
+  control: Control<any>;
 }
 
-export interface InputTextareaProps<T extends FieldValues>
-  extends TextareaProps {
-  name: Path<T>;
-  control: Control<T>;
+export interface InputTextareaProps extends TextareaProps {
+  name: string;
+  control: Control<any>;
 }
 
-export interface CustomInputProps<T extends FieldValues> extends InputProps {
-  name: Path<T>;
-  control: Control<T>;
+export interface CustomInputProps extends InputProps {
+  name: string;
+  control: Control<any>;
 }
 
-export interface InputSelectProps<T extends FieldValues>
+export interface InputSelectProps
   extends Omit<SelectProps, "children" | "crossOrigin"> {
-  control: Control<T>;
-  name: Path<T>;
+  control: Control<any>;
+  name: string;
   options: Item[];
   multi?: boolean;
 }
 
-export interface InputRadioProps<T extends FieldValues>
+export interface InputRadioProps
   extends Omit<RadioProps, "children" | "crossOrigin"> {
   options: Item[];
-  control: Control<T>;
-  name: Path<T>;
+  control: Control<any>;
+  name: string;
   axis?: "horizontal" | "vertical";
 }
 
-export interface InputSwitchProps<T extends FieldValues>
+export interface InputSwitchProps
   extends Omit<SwitchProps, "children" | "crossOrigin"> {
-  control: Control<T>;
-  name: Path<T>;
+  control: Control<any>;
+  name: string;
 }
 
 export type FieldProps<T extends FieldValues> = {
   size?: TColSizes;
-  inputProps?: CustomInputProps<T>;
-  dateProps?: DatePickerProps<T>;
-  textareaProps?: InputTextareaProps<T>;
-  switchProps?: InputSwitchProps<T>;
-  multipleCheckboxProps?: MultipleCheckboxProps<T>;
-  singleCheckboxProps?: SignleCheckboxProps<T>;
-  inputSelectProps?: InputSelectProps<T>;
-  radioProps?: InputRadioProps<T>;
+  inputProps?: CustomInputProps;
+  dateProps?: DatePickerProps;
+  textareaProps?: InputTextareaProps;
+  switchProps?: InputSwitchProps;
+  multipleCheckboxProps?: MultipleCheckboxProps;
+  singleCheckboxProps?: SignleCheckboxProps;
+  inputSelectProps?: InputSelectProps;
+  radioProps?: InputRadioProps;
   classnames?: {
     colClassName?: string;
   };

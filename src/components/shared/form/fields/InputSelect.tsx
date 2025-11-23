@@ -4,13 +4,13 @@ import { Controller, FieldValues } from "react-hook-form";
 import { Option, Select } from "@material-tailwind/react";
 import { InputSelectProps } from "../types";
 
-export const InputSelect = <T extends FieldValues>({
+export const InputSelect = ({
   control,
   name,
   options,
   multi,
   ...restProps
-}: InputSelectProps<T>) => {
+}: InputSelectProps) => {
   return (
     <Controller
       control={control}

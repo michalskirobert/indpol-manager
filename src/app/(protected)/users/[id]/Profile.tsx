@@ -4,7 +4,7 @@ import { MessageCircle } from "lucide-react";
 
 interface Props {
   id: string;
-  data: UserProps;
+  data: UserProps | null;
 }
 
 export const Profile = ({ id, data }: Props) => {
@@ -21,7 +21,7 @@ export const Profile = ({ id, data }: Props) => {
           <p>{data?.desc || "No data"}</p>
         </div>
       </div>
-      {data.id !== id && (
+      {data?.id !== id && (
         <Button className="mt-2 inline-flex items-center gap-2">
           <MessageCircle />
           Send message

@@ -2,13 +2,13 @@ import { InputRadioProps } from "../types";
 import { FieldValues, useController } from "react-hook-form";
 import { Radio } from "@material-tailwind/react";
 
-export function InputRadio<T extends FieldValues>({
+export function InputRadio({
   control,
   name,
   options,
   label,
   ...restProps
-}: InputRadioProps<T>) {
+}: InputRadioProps) {
   const { field } = useController({ name, control });
 
   return (

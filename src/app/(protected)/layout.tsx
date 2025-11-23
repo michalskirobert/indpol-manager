@@ -9,6 +9,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { useAppDispatch } from "@/store";
 import { setUser } from "@/store/reducers/auth";
+import { Loading } from "./Loading";
 
 export default function ProtectedLayout({ children }: PropsWithChildren) {
   const { data: session, status } = useSession();
@@ -19,7 +20,6 @@ export default function ProtectedLayout({ children }: PropsWithChildren) {
     dispatch(setUser(session?.user || null));
   }, [session?.user]);
 
-  if (status === "loading") return <div>Wczytywanie...</div>;
   if (!session?.user) redirect("/sign-in");
 
   return (

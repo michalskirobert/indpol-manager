@@ -1,12 +1,12 @@
-import { FieldValues, useController } from "react-hook-form";
+import { useController } from "react-hook-form";
 import { InputTextareaProps } from "../types";
 import { Textarea } from "@material-tailwind/react";
 
-export function InputTextarea<T extends FieldValues>({
+export function InputTextarea({
   name,
   control,
   ...restProps
-}: InputTextareaProps<T>) {
+}: InputTextareaProps) {
   const { field } = useController({ control, name });
   return <Textarea {...restProps} {...field} />;
 }

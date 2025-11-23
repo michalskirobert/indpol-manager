@@ -5,14 +5,15 @@ import { Calendar } from "lucide-react";
 import { useEffect } from "react";
 import { DatePickerProps } from "../types";
 import { Controller, FieldValues } from "react-hook-form";
+import { Feedback } from "../Feedback";
 
-export const DatePicker = <T extends FieldValues>({
+export const DatePicker = ({
   control,
   name,
   label,
   dateConfig,
   ...fieldProps
-}: DatePickerProps<T>) => {
+}: DatePickerProps) => {
   useEffect(() => {
     flatpickr(".form-datepicker", {
       mode: "single",
@@ -29,14 +30,14 @@ export const DatePicker = <T extends FieldValues>({
     <Controller
       control={control}
       name={name}
-      render={({ field }) => (
-        <div>
+      render={({ field, fieldState }) => (
+        <div className="mb-2 flex w-full flex-col">
           <label className="mb-3 block text-body-sm font-medium text-dark dark:text-white">
             {label}
           </label>
           <div className="relative">
             <input
-              className="form-datepicker z-99999 w-full rounded-[7px] border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:bg-dark-2 dark:focus:border-primary"
+              className={`form-datepicker z-99999 w-full rounded-[7px] border-[1.5px] ${fieldState.invalid ? "border-red-400" : "border-stroke"} bg-transparent px-5 py-3 font-normal outline-none transition focus:border-primary active:border-primary dark:border-dark-3 dark:bg-dark-2 dark:focus:border-primary`}
               placeholder="mm/dd/yyyy"
               data-class="flatpickr-right"
               {...fieldProps}
@@ -47,6 +48,7 @@ export const DatePicker = <T extends FieldValues>({
               <Calendar className="size-5 text-[#9CA3AF]" />
             </div>
           </div>
+          <Feedback msg={fieldState.error?.message} />
         </div>
       )}
     />
