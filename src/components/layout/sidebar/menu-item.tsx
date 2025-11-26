@@ -1,7 +1,7 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { toggleSidebar } from "@/store/reducers/layout";
+import { toggleSidebar } from "@/store/slices/layout";
 import { cva } from "class-variance-authority";
 import Link from "next/link";
 

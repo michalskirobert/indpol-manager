@@ -1,5 +1,4 @@
 import { PaymentsOverview } from "@/components/shared/charts/payments-overview";
-import { UsedDevices } from "@/components/shared/charts/used-devices";
 import { WeeksProfit } from "@/components/shared/charts/weeks-profit";
 import { TopChannels } from "@/components/tables/top-channels";
 import { TopChannelsSkeleton } from "@/components/tables/top-channels/Skeleton";
@@ -8,7 +7,6 @@ import { Suspense } from "react";
 
 import OverViewCardsSkeleton from "@components/dashboard/overview-cards/Skeleton";
 import dynamic from "next/dynamic";
-import { RegionLabels } from "@/components/dashboard/region-labels";
 import { ChatsCard } from "@/components/dashboard/ChatsCard";
 
 const OverViewCard = dynamic(
@@ -42,14 +40,6 @@ export default async function Home({ searchParams }: PropsType) {
           timeFrame={extractTimeFrame("weeks_profit")?.split(":")[1]}
           className="col-span-12 xl:col-span-5"
         />
-
-        <UsedDevices
-          className="col-span-12 xl:col-span-5"
-          key={extractTimeFrame("used_devices")}
-          timeFrame={extractTimeFrame("used_devices")?.split(":")[1]}
-        />
-
-        <RegionLabels />
 
         <div className="col-span-12 grid xl:col-span-8">
           <Suspense fallback={<TopChannelsSkeleton />}>

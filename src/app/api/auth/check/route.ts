@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@lib/auth";
 import { connectDB } from "@/types/mongodb";
-import User from "@/app/(protected)/api/models/User.model";
+
 import { DatabaseUser } from "@/types/user";
+import User from "../../models/User";
 
 export const POST = async () => {
   try {

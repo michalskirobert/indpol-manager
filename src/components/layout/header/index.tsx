@@ -11,11 +11,19 @@ import { UserInfo } from "./user-info";
 
 import appData from "./../../../../package.json";
 import { APP_NAME } from "@/utils";
-import { useAppDispatch } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { toggleSidebar } from "@/store/reducers/layout";
+import {
+  setIsNotificationModalOpen,
+  toggleSidebar,
+} from "@/store/slices/layout";
+import { Modal } from "./notification-modal";
 
 export function Header() {
+  const isNotificationOpen = useAppSelector(
+    (state) => state.layout.isNotificationModalOpen,
+  );
+
   const dispatch = useAppDispatch();
 
   const isMobile = useIsMobile();
@@ -30,7 +38,7 @@ export function Header() {
       </button>
 
       {isMobile && (
-        <Link href={"/"} className="ml-2 max-[430px]:hidden min-[375px]:ml-4">
+        <Link href={"/"} className="max-[430px]:hidden min-[375px]:ml-4 ml-2">
           <Image
             src={"/images/logo/logo-icon.svg"}
             width={32}
@@ -48,7 +56,7 @@ export function Header() {
         <p className="font-medium">Version: {appData.version}</p>
       </div>
 
-      <div className="flex flex-1 items-center justify-end gap-2 min-[375px]:gap-4">
+      <div className="min-[375px]:gap-4 flex flex-1 items-center justify-end gap-2">
         <div className="relative w-full max-w-[300px]">
           <input
             type="search"
@@ -56,7 +64,7 @@ export function Header() {
             className="flex w-full items-center gap-3.5 rounded-full border bg-gray-2 py-3 pl-[53px] pr-5 outline-none transition-colors focus-visible:border-primary dark:border-dark-3 dark:bg-dark-2 dark:hover:border-dark-4 dark:hover:bg-dark-3 dark:hover:text-dark-6 dark:focus-visible:border-primary"
           />
 
-          <SearchIcon className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 max-[1015px]:size-5" />
+          <SearchIcon className="max-[1015px]:size-5 pointer-events-none absolute left-5 top-1/2 -translate-y-1/2" />
         </div>
 
         <ThemeToggleSwitch />
@@ -67,6 +75,13 @@ export function Header() {
           <UserInfo />
         </div>
       </div>
+      <Modal
+        {...{
+          open: isNotificationOpen,
+          toggle: () =>
+            dispatch(setIsNotificationModalOpen(!isNotificationOpen)),
+        }}
+      />
     </header>
   );
 }

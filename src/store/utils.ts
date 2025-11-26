@@ -7,4 +7,5 @@ export const INSTANCES_URLS = {
   dictionaries: "dictionaries",
   users: "auth/users",
   upload: "upload",
+  notifications: "notifications",
 } as const;

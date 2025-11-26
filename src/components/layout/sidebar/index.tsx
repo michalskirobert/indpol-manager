@@ -12,7 +12,7 @@ import { ArrowLeft, ChevronUp } from "lucide-react";
 import { MenuItem } from "./menu-item";
 
 import { useIsMobile } from "@/hooks/use-mobile";
-import { setSidebarOpen, toggleSidebar } from "@/store/reducers/layout";
+import { setSidebarOpen, toggleSidebar } from "@/store/slices/layout";
 import { useAppDispatch, useAppSelector } from "@/store";
 
 export function Sidebar() {
@@ -70,7 +70,7 @@ export function Sidebar() {
             <Link
               href={"/"}
               onClick={() => isMobile && toggle()}
-              className="px-0 py-2.5 min-[850px]:py-0"
+              className="min-[850px]:py-0 px-0 py-2.5"
             >
               <Logo />
             </Link>
@@ -87,7 +87,7 @@ export function Sidebar() {
             )}
           </div>
 
-          <div className="custom-scrollbar mt-6 flex-1 overflow-y-auto pr-3 min-[850px]:mt-10">
+          <div className="custom-scrollbar min-[850px]:mt-10 mt-6 flex-1 overflow-y-auto pr-3">
             {NAV_DATA.map((section) => (
               <div key={section.label} className="mb-6">
                 <h2 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">

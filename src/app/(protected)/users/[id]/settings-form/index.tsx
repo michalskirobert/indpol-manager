@@ -10,6 +10,7 @@ import { buildFields } from "./helpers";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schema } from "./schema";
 import { useEffect } from "react";
+import { defaultValues } from "./utils";
 
 export const SettingsForm = ({
   id,
@@ -23,6 +24,7 @@ export const SettingsForm = ({
     reset,
     handleSubmit,
   } = useForm<SettingsProfileFormArgs>({
+    defaultValues,
     resolver: yupResolver(schema),
   });
 

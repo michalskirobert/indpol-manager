@@ -12,6 +12,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { LogOutIcon, SettingsIcon, UserIcon } from "./icons";
 import { signOut, useSession } from "next-auth/react";
+import { getRole } from "@/utils/process-user-data";
+import { MessagesSquare } from "lucide-react";
 
 export function UserInfo() {
   const { data } = useSession();
@@ -65,7 +67,7 @@ export function UserInfo() {
             </div>
 
             <div className="text-center leading-none text-gray-6">
-              {data.user.role === "admin" ? "Administrator" : "User"}
+              {getRole(data.user.role)}
             </div>
           </figcaption>
         </figure>
@@ -84,15 +86,13 @@ export function UserInfo() {
           </Link>
 
           <Link
-            href={"/pages/settings"}
+            href={"/messages"}
             onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
           >
-            <SettingsIcon />
+            <MessagesSquare />
 
-            <span className="mr-auto text-base font-medium">
-              Account Settings
-            </span>
+            <span className="mr-auto text-base font-medium">Messages</span>
           </Link>
         </div>
 

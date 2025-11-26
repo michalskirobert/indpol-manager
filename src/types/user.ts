@@ -1,6 +1,19 @@
 import { ObjectId } from "mongoose";
 import { User } from "next-auth";
 
+export type PermissionItem = {
+  preview: boolean;
+  create?: boolean;
+  edit?: boolean;
+  remove?: boolean;
+  changeStatus?: boolean;
+  duplicate?: boolean;
+};
+
+export type Permissions = {
+  [x: string]: PermissionItem;
+};
+
 export type UserProps = {
   _id: ObjectId | string;
   id: string;
@@ -9,7 +22,7 @@ export type UserProps = {
   profileImgSrc: string;
   bgImgSrc: string;
   desc: string;
-  permissions: { modules: string[]; actions: string[] };
+  permissions: Permissions;
   gender: "male" | "female";
   role: "admin" | "user";
   jobPosition:

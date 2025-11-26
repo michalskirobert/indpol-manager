@@ -1,5 +1,5 @@
 import { useAppDispatch } from "@/store";
-import { setUser } from "@/store/reducers/auth";
+import { setUser } from "@/store/slices/auth";
 import { signOut } from "next-auth/react";
 import { toast } from "react-toastify";
 

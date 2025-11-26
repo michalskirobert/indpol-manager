@@ -24,7 +24,7 @@
       "@api/*": ["src/app/(protected)/api/*"],
       "@typings/*": ["./src/types/*"],
       "@public/*": ["./public/*"],
-      "@reducers/*": ["./src/store/reducers/*"],
+      "@reducers/*": ["src/store/slices/*"],
       "@store/*": ["./src/store/*"],
       "@components/*": ["./src/components/*"],
       "@lib/*": ["./src/lib/*"],

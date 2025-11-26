@@ -2,8 +2,7 @@ import { connectDB } from "@/types/mongodb";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-
-import User from "@/app/(protected)/api/models/User.model";
+import User from "../../models/User";
 
 export async function POST(request: Request) {
   try {

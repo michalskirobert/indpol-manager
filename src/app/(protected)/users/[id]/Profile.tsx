@@ -1,6 +1,8 @@
 import { UserProps } from "@/types/user";
+import { getJobPosition } from "@/utils/process-user-data";
 import { Button } from "@material-tailwind/react";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, ShieldUser, User } from "lucide-react";
+import Link from "next/link";
 
 interface Props {
   id: string;
@@ -14,8 +16,16 @@ export const Profile = ({ id, data }: Props) => {
         <h3 className="mb-1 text-heading-6 font-bold text-dark dark:text-white">
           {data?.fullname}
         </h3>
-        <p className="font-medium">{data?.jobPosition}</p>
-        <p className="font-medium">{data?.email}</p>
+        <div className="my-2 flex justify-center gap-1">
+          {data?.role === "admin" ? <ShieldUser /> : <User />}
+          <p className="font-bold">{getJobPosition(data?.jobPosition)}</p>
+        </div>
+        <Link
+          className="font-medium text-blue-400 underline"
+          href={`mailto:${data?.email}`}
+        >
+          {data?.email}
+        </Link>
         <div className="mx-auto mt-4 max-w-[720px]">
           <h4 className="font-medium text-dark dark:text-white">About Me</h4>
           <p>{data?.desc || "No data"}</p>

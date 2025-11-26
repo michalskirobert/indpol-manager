@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { UserProps } from "@/types/user";
 import { connectDB } from "../types/mongodb";
 import type { Document } from "mongoose";
-import User from "@/app/api/models/User.model";
+import User from "@/app/api/models/User";
 
 type MongooseUser = Document & UserProps;
 

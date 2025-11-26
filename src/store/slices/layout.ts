@@ -4,10 +4,12 @@ export type SidebarState = "expanded" | "collapsed";
 
 interface Reducer {
   isSidebarOpen: boolean;
+  isNotificationModalOpen: boolean;
 }
 
 const initialState: Reducer = {
   isSidebarOpen: true,
+  isNotificationModalOpen: false,
 };
 
 export const layoutSlice = createSlice({
@@ -20,8 +22,12 @@ export const layoutSlice = createSlice({
     setSidebarOpen: (state, action: PayloadAction<boolean>) => {
       state.isSidebarOpen = action.payload;
     },
+    setIsNotificationModalOpen: (state, action: PayloadAction<boolean>) => {
+      state.isNotificationModalOpen = action.payload;
+    },
   },
 });
 
-export const { toggleSidebar, setSidebarOpen } = layoutSlice.actions;
+export const { toggleSidebar, setSidebarOpen, setIsNotificationModalOpen } =
+  layoutSlice.actions;
 export default layoutSlice.reducer;

@@ -50,7 +50,7 @@ export const BgImageSection = ({
       </div>
     )}
     {bgImgSrc && (
-      <div className="absolute bottom-4 right-4 z-50">
+      <div className="absolute bottom-4 left-3 z-50">
         <CustomButton
           icon={<Trash />}
           variant="filled"
