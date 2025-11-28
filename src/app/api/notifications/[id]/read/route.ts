@@ -1,4 +1,4 @@
-import Notification from "@/app/api/models/Notification";
+import Notification from "@/models/Notification";
 import { getSession } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
@@ -18,11 +18,11 @@ export const PATCH = async (
     );
   }
 
-  const res = await Notification.findByIdAndUpdate(
+  await Notification.findByIdAndUpdate(
     id,
     { $addToSet: { readBy: userId } },
     { new: true },
   ).lean();
-  console.log(res);
+
   return NextResponse.json({ success: true });
 };

@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
-import Notification from "../../models/Notification";
+import Notification from "../../../../models/Notification";
 import { getSession } from "@/lib/auth";
 
 export const GET = async () => {
-  const session = await getSession();
+  try {
+    const session = await getSession();
 
-  const userId = session?.user.id;
+    const userId = session?.user.id;
 
-  const count = await Notification.countDocuments({
-    userId,
-    readBy: { $ne: userId },
-  });
+    const count = await Notification.countDocuments({
+      readBy: { $ne: userId },
+    });
 
-  return NextResponse.json({ count });
+    return NextResponse.json({ count }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ count: 0 }, { status: 200 });
+  }
 };

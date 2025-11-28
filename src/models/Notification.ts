@@ -7,7 +7,9 @@ const NotificationSchema = new Schema<NotificationParams>(
     type: { type: String, required: true },
     content: { type: String, required: true },
     author: { type: Schema.Types.Mixed, required: true },
+    updateDetails: { type: Schema.Types.Mixed, required: false },
     createdAt: { type: Date, required: false },
+    updatedAt: { type: Date, required: false },
   },
   {
     timestamps: true,

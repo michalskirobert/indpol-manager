@@ -1,4 +1,4 @@
-import Message from "@/app/api/models/Message";
+import Message from "@/models/Message";
 import { NextResponse } from "next/server";
 
 export const POST = async (req: Request) => {

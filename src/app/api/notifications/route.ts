@@ -1,15 +1,9 @@
-import Notification from "@/app/api/models/Notification";
-import { getSession } from "@/lib/auth";
+import Notification from "@/models/Notification";
+
 import { NextResponse } from "next/server";
 
-export const GET = async (req: Request) => {
-  const session = await getSession();
+export const GET = async () => {
+  const items = await Notification.find().sort({ createdAt: -1 }).limit(10);
 
-  const userId = session?.user.id;
-
-  const items = await Notification.find({ userId })
-    .sort({ createdAt: -1 })
-    .limit(10);
-
-  return NextResponse.json(items);
+  return NextResponse.json(items, { status: 200 });
 };

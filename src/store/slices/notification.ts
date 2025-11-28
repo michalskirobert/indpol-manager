@@ -1,27 +1,36 @@
 import { NotificationParams } from "@/types/notifications";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: NotificationParams = {
-  _id: "",
-  author: { fullname: "", id: "", jobPosition: "support" },
-  content: "",
-  createdAt: new Date(),
-  icon: "",
-  readBy: [],
-  type: "info",
+interface InitialState {
+  notification: NotificationParams | null;
+  count: number;
+}
+
+const initialState: InitialState = {
+  notification: null,
+  count: 0,
 };
 
 export const notificationSlice = createSlice({
   name: "notification",
   initialState,
   reducers: {
-    setNotification: (_, action: PayloadAction<NotificationParams | null>) => {
-      if (!action.payload) return initialState;
+    setNotification: (
+      state,
+      action: PayloadAction<NotificationParams | null>,
+    ) => {
+      state.notification = action.payload;
 
-      return action.payload;
+      if (state.count > 0) {
+        state.count -= 1;
+      }
+    },
+    setNotificationsCount: (state, action: PayloadAction<number>) => {
+      state.count = action.payload;
     },
   },
 });
 
-export const { setNotification } = notificationSlice.actions;
+export const { setNotification, setNotificationsCount } =
+  notificationSlice.actions;
 export default notificationSlice.reducer;

@@ -13,8 +13,6 @@ export async function POST(req: Request) {
   const file = formData.get("file");
   const path = formData.get("path") as string;
 
-  console.log({ file, path });
-
   if (!file || typeof (file as File).arrayBuffer !== "function") {
     return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
   }

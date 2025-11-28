@@ -1,4 +1,4 @@
-import User from "@/app/api/models/User";
+import User from "@/models/User";
 import { connectDB } from "@/types/mongodb";
 import bcrypt from "bcryptjs";
 
@@ -36,7 +36,6 @@ export const PATCH = async (req: NextRequest, context: RouteParams) => {
     const body = await req.json();
 
     const user = await User.findById(id);
-    console.log(user);
 
     if (!user) {
       return NextResponse.json({ message: "User not found!" }, { status: 404 });

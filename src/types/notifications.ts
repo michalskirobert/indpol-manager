@@ -8,7 +8,12 @@ export type NotificationParams = {
   type: NotificationType;
   content: string;
   createdAt: Date | null;
+  updatedAt?: Date | null;
   icon: string;
+  updateDetails?: {
+    url: string;
+    version: string;
+  };
   author: {
     fullname: string;
     id: string;

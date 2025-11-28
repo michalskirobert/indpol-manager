@@ -52,7 +52,6 @@ const axiosBaseQuery =
     { status: string | number; data?: any }
   > =>
   async ({ url, method = "GET", data, params, headers, responseType }) => {
-    console.log({ url: `${baseUrl}/${url}` });
     try {
       const result = await axios({
         url: `${baseUrl}/${url}`,

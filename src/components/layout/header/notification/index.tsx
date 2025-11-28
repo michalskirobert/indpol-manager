@@ -12,32 +12,35 @@ import { useEffect, useState } from "react";
 import { useLazyGetNotificationsCountQuery } from "@/store/services/notifications";
 import { Bell } from "lucide-react";
 import { Notifications } from "./Notifications";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { setNotificationsCount } from "@/store/slices/notification";
 
 export function Notification() {
+  const count = useAppSelector(({ notification }) => notification.count);
+
   const [isOpen, setIsOpen] = useState(false);
-  const [count, setCount] = useState(0);
+
   const isMobile = useIsMobile();
 
-  const [fetchCount, { data: notificationsCount }] =
-    useLazyGetNotificationsCountQuery();
+  const dispatch = useAppDispatch();
+
+  const [fetchCount] = useLazyGetNotificationsCountQuery();
+
+  const checkCount = async () => {
+    const res = await fetchCount().unwrap();
+
+    dispatch(setNotificationsCount(res.count));
+  };
 
   useEffect(() => {
-    const fetch = async () => {
-      const data = await fetchCount().unwrap();
-
-      setCount(data.count);
-    };
-
-    fetch();
-
-    return () => setCount(0);
-  }, []);
+    checkCount();
+  }, [dispatch]);
 
   useEffect(() => {
     if (isOpen) return;
 
     const interval = setInterval(() => {
-      fetchCount().unwrap();
+      checkCount();
     }, 15000);
 
     return () => clearInterval(interval);
