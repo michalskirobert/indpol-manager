@@ -34,7 +34,10 @@ const authOptions: NextAuthOptions = {
 
         if (!passwordMatch) throw new Error("Invalid Password");
 
-        await User.updateOne({ _id: userFound._id }, { lastLogin: new Date() });
+        await User.updateOne(
+          { _id: userFound._id },
+          { lastSeenAt: new Date() },
+        );
 
         return userFound;
       },

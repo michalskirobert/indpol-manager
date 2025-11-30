@@ -1,13 +1,9 @@
 import {
-  Avatar,
   CardBody,
-  Chip,
   Dialog,
   DialogBody,
   DialogFooter,
   DialogHeader,
-  IconButton,
-  Tooltip,
   Typography,
 } from "@material-tailwind/react";
 import { CustomButton } from "../../shared/button/CustomButton";
@@ -15,7 +11,7 @@ import { ChevronsUpDownIcon, Send } from "lucide-react";
 import { useGetUsersQuery } from "@/store/services/users/users";
 import { MasterDetails } from "./MasterDetails";
 
-const columns = ["Fullname", "Position", "Action"];
+const columns = ["Fullname", "Position", "Status", "Action"];
 
 interface Props {
   open: boolean;
@@ -23,7 +19,9 @@ interface Props {
 }
 
 export const UsersModal = ({ open, toggle }: Props) => {
-  const { data, isFetching } = useGetUsersQuery();
+  const { data, isLoading } = useGetUsersQuery(undefined, {
+    pollingInterval: 30_000,
+  });
 
   return (
     <Dialog open={open} handler={toggle}>
@@ -55,7 +53,7 @@ export const UsersModal = ({ open, toggle }: Props) => {
                 ))}
               </tr>
             </thead>
-            <MasterDetails {...{ data, isFetching, toggle }} />
+            <MasterDetails {...{ data, isFetching: isLoading, toggle }} />
           </table>
         </CardBody>
       </DialogBody>

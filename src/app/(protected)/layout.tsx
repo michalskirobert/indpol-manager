@@ -7,11 +7,22 @@ import { PropsWithChildren, useEffect } from "react";
 import NextTopLoader from "nextjs-toploader";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
+import { useUpdateLastSeenMutation } from "@/store/services/users/users";
 
 export default function ProtectedLayout({ children }: PropsWithChildren) {
   const { data: session } = useSession();
 
+  const [updateLastSeen] = useUpdateLastSeenMutation();
+
   if (!session?.user) redirect("/sign-in");
+
+  useEffect(() => {
+    const updatingUserLastSeen = setInterval(() => {
+      updateLastSeen().unwrap();
+    }, 30_000);
+
+    return () => clearInterval(updatingUserLastSeen);
+  }, []);
 
   return (
     <ThemeProvider>

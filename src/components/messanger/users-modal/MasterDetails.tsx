@@ -4,7 +4,11 @@ import { useCreateChatroomMutation } from "@/store/services/messages";
 import { setSelectedUser } from "@/store/slices/messages";
 import { TableData } from "@/types/table";
 import { UserProps } from "@/types/user";
-import { Avatar, Typography } from "@material-tailwind/react";
+import { DATE_FORMATS } from "@/utils";
+import { checkIsUserOnline } from "@/utils/check-is-user-online";
+import { getJobPosition } from "@/utils/process-user-data";
+import { Avatar, Chip, Typography } from "@material-tailwind/react";
+import { format } from "date-fns";
 import { Send } from "lucide-react";
 
 interface Props {
@@ -36,8 +40,15 @@ export const MasterDetails = ({ data, isFetching, toggle }: Props) => {
         </Typography>
       ) : (
         data?.items.map((user, index) => {
-          const { _id, fullname, profileImgSrc, email, jobPosition, gender } =
-            user;
+          const {
+            _id,
+            fullname,
+            profileImgSrc,
+            email,
+            jobPosition,
+            gender,
+            lastSeenAt,
+          } = user;
 
           const isLast = index === data?.items.length - 1;
           const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
@@ -78,29 +89,31 @@ export const MasterDetails = ({ data, isFetching, toggle }: Props) => {
                     color="blue-gray"
                     className="font-normal"
                   >
-                    {jobPosition}
+                    {getJobPosition(jobPosition)}
                   </Typography>
                 </div>
               </td>
+              <td className={classes}>
+                <div className="w-max">
+                  <Chip
+                    variant="ghost"
+                    size="sm"
+                    value={checkIsUserOnline(lastSeenAt) ? "online" : "offline"}
+                    color={
+                      checkIsUserOnline(lastSeenAt) ? "green" : "blue-gray"
+                    }
+                  />
+                </div>
+              </td>
               {/* <td className={classes}>
-                        <div className="w-max">
-                          <Chip
-                            variant="ghost"
-                            size="sm"
-                            value={online ? "online" : "offline"}
-                            color={online ? "green" : "blue-gray"}
-                          />
-                        </div>
-                      </td>
-                      <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {date}
-                        </Typography>
-                      </td> */}
+                <Typography
+                  variant="small"
+                  color="blue-gray"
+                  className="font-normal"
+                >
+                  {format(lastSeenAt, DATE_FORMATS.dateTime)}
+                </Typography>
+              </td> */}
               <td className={classes}>
                 <CustomButton
                   icon={<Send className="h-5 w-5" />}

@@ -44,7 +44,7 @@ export default function Page({ params }: { params: Usable<{ id: string }> }) {
     data: user,
     isFetching,
     isError,
-  } = useGetUserQuery(id, { skip: !id || session?.user?.id !== id });
+  } = useGetUserQuery(id, { skip: !id || session?.user?.id === id });
 
   const setLoading = (fieldId: ProfileArgs, state: boolean) =>
     setIsLoading((prev) => ({ ...prev, [fieldId]: state }));

@@ -1,6 +1,6 @@
 "use client";
 
-import { Typography, Avatar, Textarea } from "@material-tailwind/react";
+import { Typography, Avatar, Textarea, Chip } from "@material-tailwind/react";
 import { useAppSelector } from "@/store";
 import {
   useGetChatMessagesQuery,
@@ -13,20 +13,23 @@ import { Send } from "lucide-react";
 import { SendMessageArgs } from "@/store/services/messages/types";
 import { MessageParams } from "@/types/message";
 import { format } from "date-fns";
+import { checkIsUserOnline } from "@/utils/check-is-user-online";
+import { useSession } from "next-auth/react";
 
 export default function ChatWindow() {
   const { selectedUser } = useAppSelector(({ messages }) => messages);
+  const session = useSession();
+
+  const sessionUserId = session.data?.user.id;
 
   const {
     data: messages,
-    isFetching,
+    isLoading: isLoadingMessages,
     isSuccess,
   } = useGetChatMessagesQuery(selectedUser?.id!, {
     skip: !selectedUser?.id,
+    pollingInterval: 5000,
   });
-
-  console.log(selectedUser?.id);
-  console.log(messages);
 
   const [send, { isLoading }] = useSendMessageMutation();
 
@@ -35,7 +38,15 @@ export default function ChatWindow() {
     messages || [],
   );
 
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
+    }
+  };
 
   const sendMessage = async () => {
     if (newMessage.trim() === "") return;
@@ -48,24 +59,23 @@ export default function ChatWindow() {
     };
 
     const res = await send(body).unwrap();
-    console.log(res);
+
     setNewMessage("");
-
     setChatMessages(res);
-  };
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    scrollToBottom();
   };
 
   useEffect(() => {
     if (!isSuccess) return;
 
-    scrollToBottom();
     setChatMessages(messages);
   }, [messages, isSuccess]);
 
-  if (isFetching) return <MessagesSkeleton />;
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessages]);
+
+  if (isLoadingMessages) return <MessagesSkeleton />;
 
   return (
     <div className="flex h-full max-h-full flex-col overflow-hidden rounded-lg bg-white shadow-md">
@@ -85,23 +95,45 @@ export default function ChatWindow() {
             <Typography variant="h6" className="font-semibold text-gray-800">
               {selectedUser.fullname}
             </Typography>
+            <Chip
+              variant="ghost"
+              size="sm"
+              className="ml-2"
+              value={
+                checkIsUserOnline(selectedUser.lastSeenAt)
+                  ? "online"
+                  : "offline"
+              }
+              color={
+                checkIsUserOnline(selectedUser.lastSeenAt)
+                  ? "green"
+                  : "blue-gray"
+              }
+            />
           </header>
-          <main className="flex-grow space-y-4 overflow-y-auto bg-gray-50 px-6 py-4">
+          <main
+            ref={messagesContainerRef}
+            className="flex-grow space-y-4 overflow-y-auto bg-gray-50 px-6 py-4"
+          >
             {chatMessages?.length ? (
               chatMessages.map((msg) => {
-                const isFromSelectedUser =
-                  msg.senderId.toString() === selectedUser.id.toString();
+                const isFromMe =
+                  msg.senderId.toString() === sessionUserId?.toString();
                 return (
-                  <div>
+                  <div
+                    key={msg._id.toString()}
+                    className={`flex max-w-[75%] flex-col ${
+                      isFromMe ? "ml-auto self-end" : "mr-auto self-start"
+                    }`}
+                  >
                     <Typography variant="small" color="gray">
                       {format(msg.createdAt, "dd.MM.yyyy, HH:mm")}
                     </Typography>
                     <div
-                      key={msg._id.toString()}
-                      className={`max-w-[75%] whitespace-pre-wrap break-words rounded-lg px-4 py-2 shadow-sm ${
-                        isFromSelectedUser
-                          ? "self-start rounded-bl-none bg-gray-200 text-gray-900"
-                          : "self-end rounded-br-none bg-blue-600 text-white"
+                      className={`whitespace-pre-wrap break-words rounded-lg px-4 py-2 shadow-sm ${
+                        isFromMe
+                          ? "rounded-br-none bg-blue-600 text-white"
+                          : "rounded-bl-none bg-gray-200 text-gray-900"
                       }`}
                     >
                       <Typography
@@ -111,9 +143,11 @@ export default function ChatWindow() {
                         {msg.content}
                       </Typography>
                     </div>
-                    <Typography variant="small">
-                      {msg.read ? "Read" : "Unseen"}
-                    </Typography>
+                    {isFromMe && (
+                      <Typography variant="small">
+                        {msg.read ? "Read" : "Unseen"}
+                      </Typography>
+                    )}
                   </div>
                 );
               })

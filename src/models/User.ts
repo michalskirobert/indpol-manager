@@ -42,6 +42,9 @@ const UserSchema = new Schema<DatabaseUser>(
       type: String,
       default: "",
     },
+    lastSeenAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

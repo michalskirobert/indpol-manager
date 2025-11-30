@@ -24,7 +24,7 @@ export const notificationsApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useLazyGetNotificationsCountQuery,
+  useGetNotificationsCountQuery,
   useGetNotificationsQuery,
   useMarkNotificationsAsReadMutation,
 } = notificationsApi;

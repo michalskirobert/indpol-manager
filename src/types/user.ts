@@ -34,8 +34,7 @@ export type UserProps = {
     | "owner";
   createdAt: Date;
   updatedAt: Date;
-  lastLoggedAt: Date;
-  isActive: boolean;
+  lastSeenAt: Date;
 };
 
 export interface DatabaseUser extends User {

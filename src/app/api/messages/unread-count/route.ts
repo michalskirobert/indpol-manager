@@ -15,7 +15,7 @@ export const GET = async (req: Request) => {
   }
 
   const count = await Message.countDocuments({
-    recipientId: session.user._id,
+    recipientId: session.user.id,
     read: false,
   });
 

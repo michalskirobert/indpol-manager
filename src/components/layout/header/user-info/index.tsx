@@ -10,13 +10,17 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { LogOutIcon, SettingsIcon, UserIcon } from "./icons";
+import { LogOutIcon, UserIcon } from "./icons";
 import { signOut, useSession } from "next-auth/react";
 import { getRole } from "@/utils/process-user-data";
 import { MessagesSquare } from "lucide-react";
+import { Badge } from "@material-tailwind/react";
+import { useAppSelector } from "@/store";
 
 export function UserInfo() {
   const { data } = useSession();
+
+  const { count } = useAppSelector(({ messages }) => messages);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -28,17 +32,19 @@ export function UserInfo() {
         <span className="sr-only">My Account</span>
 
         <figure className="flex items-center gap-3">
-          <Image
-            src={
-              data.user.profileImgSrc ||
-              `/images/user/empty_img_${data.user.gender}.jpg`
-            }
-            className="h-12 w-12 rounded-full object-cover"
-            alt={data.user.fullname}
-            role="presentation"
-            width={200}
-            height={200}
-          />
+          <Badge className={`${!count ? "hidden" : ""}`}>
+            <Image
+              src={
+                data.user.profileImgSrc ||
+                `/images/user/empty_img_${data.user.gender}.jpg`
+              }
+              className="h-12 w-12 rounded-full object-cover"
+              alt={data.user.fullname}
+              role="presentation"
+              width={200}
+              height={200}
+            />
+          </Badge>
           <figcaption className="max-[1024px]:sr-only flex items-center gap-1 font-medium text-dark dark:text-dark-6">
             <span>{data.user.fullname}</span>
 
@@ -90,8 +96,13 @@ export function UserInfo() {
             onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
           >
-            <MessagesSquare />
-
+            {count ? (
+              <Badge content={count}>
+                <MessagesSquare />
+              </Badge>
+            ) : (
+              <MessagesSquare />
+            )}
             <span className="mr-auto text-base font-medium">Messages</span>
           </Link>
         </div>

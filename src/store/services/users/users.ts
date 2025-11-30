@@ -23,6 +23,12 @@ export const usersApi = apiSlice.injectEndpoints({
         method: "PATCH",
       }),
     }),
+    updateLastSeen: build.mutation<UserProps, void>({
+      query: () => ({
+        url: `${INSTANCES_URLS.users}/lastSeen`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
@@ -31,4 +37,5 @@ export const {
   useLazyGetUserQuery,
   useChangeUserDataMutation,
   useGetUsersQuery,
+  useUpdateLastSeenMutation,
 } = usersApi;

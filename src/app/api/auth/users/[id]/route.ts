@@ -10,6 +10,7 @@ interface RouteParams {
 
 export const GET = async (_req: NextRequest, context: RouteParams) => {
   await connectDB("BackOffice");
+
   const { id } = context.params;
 
   try {

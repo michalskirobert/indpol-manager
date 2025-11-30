@@ -1,6 +1,21 @@
 import { getSession } from "@/lib/auth";
 import Chatroom from "@/models/Chatroom";
 import { connectDB } from "@/types/mongodb";
+import { NextResponse } from "next/server";
+import { getChatrooms } from "./get-chatrooms";
+
+export const GET = async () => {
+  await connectDB("BackOffice");
+
+  const session = await getSession();
+
+  if (!session?.user.id)
+    return NextResponse.json({ message: "Not authorized" }, { status: 401 });
+
+  const processedChatrooms = await getChatrooms(session);
+
+  return NextResponse.json(processedChatrooms, { status: 200 });
+};
 
 export const POST = async (req: Request) => {
   await connectDB("BackOffice");

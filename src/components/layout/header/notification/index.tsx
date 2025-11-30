@@ -9,11 +9,13 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
 import { useEffect, useState } from "react";
-import { useLazyGetNotificationsCountQuery } from "@/store/services/notifications";
+import { useGetNotificationsCountQuery } from "@/store/services/notifications";
 import { Bell } from "lucide-react";
 import { Notifications } from "./Notifications";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setNotificationsCount } from "@/store/slices/notifications";
+import { useGetMessagesCountQuery } from "@/store/services/messages";
+import { setMessagesCount } from "@/store/slices/messages";
 
 export function Notification() {
   const count = useAppSelector(({ notifications }) => notifications.count);
@@ -24,27 +26,20 @@ export function Notification() {
 
   const dispatch = useAppDispatch();
 
-  const [fetchCount] = useLazyGetNotificationsCountQuery();
-
-  const checkCount = async () => {
-    const res = await fetchCount().unwrap();
-
-    dispatch(setNotificationsCount(res.count));
-  };
-
-  useEffect(() => {
-    checkCount();
-  }, [dispatch]);
+  const { data: notificationsCount } = useGetNotificationsCountQuery(
+    undefined,
+    { pollingInterval: 15_000 },
+  );
+  const { data: messagesCount } = useGetMessagesCountQuery(undefined, {
+    pollingInterval: 15_000,
+  });
 
   useEffect(() => {
-    if (isOpen) return;
+    if (notificationsCount)
+      dispatch(setNotificationsCount(notificationsCount.count));
 
-    const interval = setInterval(() => {
-      checkCount();
-    }, 15000);
-
-    return () => clearInterval(interval);
-  }, []);
+    if (messagesCount) dispatch(setMessagesCount(messagesCount.count));
+  }, [notificationsCount?.count, messagesCount?.count]);
 
   return (
     <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -72,9 +67,10 @@ export function Notification() {
         className="min-[380px]:min-w-[20rem] border border-stroke bg-white px-3.5 py-3 shadow-md dark:border-dark-3 dark:bg-gray-dark"
       >
         <div className="mb-1 flex items-center justify-between gap-2 px-2 py-1.5">
-          <span className="text-lg font-medium text-dark dark:text-white">
+          <span className="w-full text-lg font-medium text-dark dark:text-white">
             Notifications
           </span>
+
           <span className="rounded-md bg-primary px-[9px] py-0.5 text-xs font-medium text-white">
             {count}
           </span>

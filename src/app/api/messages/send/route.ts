@@ -4,6 +4,7 @@ import Chatroom from "@/models/Chatroom";
 import { MessageParams } from "@/types/message";
 import { connectDB } from "@/types/mongodb";
 import { NextResponse } from "next/server";
+import { updateLastSeen } from "../../auth/users/lastSeen/helpers";
 
 export const POST = async (req: Request) => {
   try {
@@ -21,7 +22,10 @@ export const POST = async (req: Request) => {
 
     const { content, recipientId } = data;
 
+    const roomId = [session?.user.id.toString(), recipientId].sort().join("_");
+
     const msg = await Message.create<MessageParams>({
+      roomId,
       content,
       read: false,
       recipientId,
@@ -34,8 +38,6 @@ export const POST = async (req: Request) => {
         { status: 408 },
       );
     }
-
-    const roomId = [session?.user.id.toString(), recipientId].sort().join("_");
 
     await Chatroom.findOneAndUpdate(
       { roomId },
@@ -56,6 +58,8 @@ export const POST = async (req: Request) => {
         { senderId: recipientId, recipientId: session?.user.id },
       ],
     }).sort({ createdAt: 1 });
+
+    await updateLastSeen(session);
 
     return NextResponse.json(conversation, { status: 200 });
   } catch (error) {
