@@ -20,7 +20,7 @@ interface Props {
 
 export const UsersModal = ({ open, toggle }: Props) => {
   const { data, isLoading } = useGetUsersQuery(undefined, {
-    pollingInterval: 30_000,
+    pollingInterval: 3000,
   });
 
   return (

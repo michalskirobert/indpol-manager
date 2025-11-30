@@ -29,7 +29,8 @@ export default function MessagesList({ chatrooms }: MessagesListProps) {
   const { selectedUser, count } = useAppSelector(({ messages }) => messages);
 
   const { data, isSuccess } = useGetChatroomsQuery(undefined, {
-    pollingInterval: 5000,
+    refetchOnMountOrArgChange: true,
+    pollingInterval: 3000,
   });
 
   const router = useRouter();
