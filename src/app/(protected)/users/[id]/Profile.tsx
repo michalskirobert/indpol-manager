@@ -1,8 +1,13 @@
+import { CustomButton } from "@/components/shared/button/CustomButton";
+import { useAppDispatch } from "@/store";
+import { useCreateChatroomMutation } from "@/store/services/messages";
+import { setSelectedUser } from "@/store/slices/messages";
 import { UserProps } from "@/types/user";
 import { getJobPosition } from "@/utils/process-user-data";
-import { Button } from "@material-tailwind/react";
+
 import { MessageCircle, ShieldUser, User } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Props {
   id: string;
@@ -10,6 +15,21 @@ interface Props {
 }
 
 export const Profile = ({ id, data }: Props) => {
+  const [create] = useCreateChatroomMutation();
+
+  const router = useRouter();
+
+  const dispatch = useAppDispatch();
+
+  const createChatroom = async () => {
+    if (!data) return;
+
+    await create({ recipientId: data._id.toString() }).unwrap();
+
+    dispatch(setSelectedUser(data));
+    router.push("/messages");
+  };
+
   return (
     <div className="px-4 pb-6 text-center lg:pb-8 xl:pb-11.5">
       <div className="mt-4">
@@ -32,10 +52,11 @@ export const Profile = ({ id, data }: Props) => {
         </div>
       </div>
       {data?.id !== id && (
-        <Button className="mt-2 inline-flex items-center gap-2">
-          <MessageCircle />
-          Send message
-        </Button>
+        <CustomButton
+          icon={<MessageCircle />}
+          onClick={createChatroom}
+          content="Send message"
+        />
       )}
     </div>
   );
