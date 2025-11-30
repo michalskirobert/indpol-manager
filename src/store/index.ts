@@ -2,14 +2,14 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { apiSlice } from "./api";
 
-import authSlice from "./slices/auth";
 import layoutSlice from "./slices/layout";
-import notificationSlice from "./slices/notification";
+import notificationsSlice from "./slices/notifications";
+import messagesSlice from "./slices/messages";
 
 const rootReducer = combineReducers({
-  auth: authSlice,
   layout: layoutSlice,
-  notification: notificationSlice,
+  notifications: notificationsSlice,
+  messages: messagesSlice,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });
 

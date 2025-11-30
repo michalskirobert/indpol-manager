@@ -1,16 +1,19 @@
-export type MessageMeta = {
-  attachmentUrl?: string;
-  attachmentType?: string;
-  [key: string]: any;
-};
+import { ObjectId } from "mongoose";
 
 export type MessageParams = {
-  _id: string;
+  _id: ObjectId;
   senderId: string;
   recipientId: string;
   content: string;
   read: boolean;
   createdAt: Date;
   updatedAt: Date;
-  meta?: MessageMeta;
+};
+
+export type ChatroomParams = {
+  roomId: string;
+  participants: [string, string];
+  createdAt: Date;
+  updatedAt: Date;
+  lastMessage?: MessageParams;
 };

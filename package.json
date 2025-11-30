@@ -1,6 +1,6 @@
 {
   "name": "indpol-manager",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "main": "electron-dist/main.js",
   "description": "Indpol Manager application created by NurByte Software Lab",

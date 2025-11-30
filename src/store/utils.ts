@@ -8,4 +8,6 @@ export const INSTANCES_URLS = {
   users: "auth/users",
   upload: "upload",
   notifications: "notifications",
+  messages: "messages",
+  chatroom: "chat",
 } as const;

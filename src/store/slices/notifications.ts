@@ -12,7 +12,7 @@ const initialState: InitialState = {
 };
 
 export const notificationSlice = createSlice({
-  name: "notification",
+  name: "notifications",
   initialState,
   reducers: {
     setNotification: (

@@ -7,7 +7,6 @@ const MessageSchema = new Schema<MessageParams>(
     recipientId: { type: String, required: true },
     content: { type: String, required: true },
     read: { type: Boolean, default: false },
-    meta: { type: Schema.Types.Mixed, default: {} },
   },
   {
     timestamps: true,

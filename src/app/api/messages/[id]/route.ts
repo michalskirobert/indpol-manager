@@ -1,19 +1,31 @@
 import { NextResponse } from "next/server";
 import Message from "../../../../models/Message";
+import { getSession } from "@/lib/auth";
 
 export const GET = async (
-  req: Request,
-  { params }: { params: { userId: string } },
+  _: Request,
+  { params }: { params: { id: string } },
 ) => {
-  const me = req.headers.get("x-user-id");
-  const other = params.userId;
+  const session = await getSession();
+
+  if (!session?.user.id)
+    return NextResponse.json({ message: "Not authorized" }, { status: 401 });
 
   const messages = await Message.find({
     $or: [
-      { senderId: me, recipientId: other },
-      { senderId: other, recipientId: me },
+      { senderId: params.id, recipientId: session.user.id },
+      { senderId: session.user.id, recipientId: params.id },
     ],
   }).sort({ createdAt: 1 });
+
+  await Message.updateMany(
+    {
+      senderId: params.id,
+      recipientId: session.user.id,
+      read: { $ne: true },
+    },
+    { $set: { read: true } },
+  );
 
   return NextResponse.json(messages);
 };

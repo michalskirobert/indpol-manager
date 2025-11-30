@@ -15,7 +15,7 @@ export type Permissions = {
 };
 
 export type UserProps = {
-  _id: ObjectId | string;
+  _id: ObjectId;
   id: string;
   email: string;
   fullname: string;
@@ -34,7 +34,8 @@ export type UserProps = {
     | "owner";
   createdAt: Date;
   updatedAt: Date;
-  lastLogin: Date;
+  lastLoggedAt: Date;
+  isActive: boolean;
 };
 
 export interface DatabaseUser extends User {

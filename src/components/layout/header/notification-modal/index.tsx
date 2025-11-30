@@ -13,13 +13,17 @@ import { useAppSelector } from "@/store";
 import { getNotificationType } from "./utils";
 import { toast } from "react-toastify";
 
+import packageJSON from "../../../../../package.json";
+
 interface Props {
   open: boolean;
   toggle: () => void;
 }
 
 export function Modal({ open, toggle }: Props) {
-  const { notification } = useAppSelector(({ notification }) => notification);
+  const { notification } = useAppSelector(({ notifications }) => notifications);
+
+  const updatingVersion = notification?.updateDetails?.version;
 
   const downloadUpdate = () => {
     if (window === undefined || !notification?.updateDetails?.url) {
@@ -33,9 +37,17 @@ export function Modal({ open, toggle }: Props) {
   return (
     <Dialog open={open} handler={toggle}>
       <DialogHeader>{getNotificationType(notification?.type)}</DialogHeader>
-      <DialogBody>{notification && <Details {...notification} />}</DialogBody>
+      <DialogBody>
+        {updatingVersion && (
+          <div className="mb-2 flex gap-2">
+            <b className="font-extrabold">Version:</b>
+            <b>{updatingVersion}</b>
+          </div>
+        )}
+        {notification && <Details {...notification} />}
+      </DialogBody>
       <DialogFooter>
-        {notification?.updateDetails?.url ? (
+        {updatingVersion ? (
           <div className="flex gap-2">
             <CustomButton
               color="black"
@@ -50,6 +62,12 @@ export function Modal({ open, toggle }: Props) {
               content="Download"
               type="button"
               onClick={downloadUpdate}
+              tooltip={
+                updatingVersion >= packageJSON.version
+                  ? "You are up to date"
+                  : ""
+              }
+              disabled={packageJSON.version >= updatingVersion}
             />
           </div>
         ) : (

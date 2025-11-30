@@ -7,17 +7,9 @@ import { PropsWithChildren, useEffect } from "react";
 import NextTopLoader from "nextjs-toploader";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
-import { useAppDispatch } from "@/store";
-import { setUser } from "@/store/slices/auth";
 
 export default function ProtectedLayout({ children }: PropsWithChildren) {
   const { data: session } = useSession();
-
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(setUser(session?.user || null));
-  }, [session?.user]);
 
   if (!session?.user) redirect("/sign-in");
 

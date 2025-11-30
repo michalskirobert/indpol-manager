@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Loading } from "./Loading";
 import { useSession } from "next-auth/react";
 import { useAppDispatch } from "@/store";
-import { setNotification } from "@/store/slices/notification";
+import { setNotification } from "@/store/slices/notifications";
 import { NotificationParams } from "@/types/notifications";
 import { setIsNotificationModalOpen } from "@/store/slices/layout";
 import { Button, Spinner } from "@material-tailwind/react";

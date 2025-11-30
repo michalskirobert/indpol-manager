@@ -13,10 +13,10 @@ import { useLazyGetNotificationsCountQuery } from "@/store/services/notification
 import { Bell } from "lucide-react";
 import { Notifications } from "./Notifications";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { setNotificationsCount } from "@/store/slices/notification";
+import { setNotificationsCount } from "@/store/slices/notifications";
 
 export function Notification() {
-  const count = useAppSelector(({ notification }) => notification.count);
+  const count = useAppSelector(({ notifications }) => notifications.count);
 
   const [isOpen, setIsOpen] = useState(false);
 
