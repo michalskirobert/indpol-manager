@@ -16,16 +16,16 @@ export default async function MessagesPage() {
     return NextResponse.redirect("/not-authorized");
   }
 
-  const processedChatrooms = await getChatrooms(session);
+  const chatrooms = await getChatrooms(session);
+
+  const filteredChatrooms = JSON.stringify(
+    chatrooms.filter(({ senderProfile }) => senderProfile?._id),
+  );
 
   return (
     <div className="flex h-[82vh] flex-col gap-4 bg-gray-50 p-4 dark:bg-gray-900 md:flex-row">
       <div className="max-h-[82vh] w-full overflow-y-auto rounded-lg bg-white shadow-md dark:bg-gray-800 md:w-1/3">
-        <Chatrooms
-          chatrooms={processedChatrooms.filter(
-            ({ senderProfile }) => senderProfile?._id,
-          )}
-        />
+        <Chatrooms chatrooms={filteredChatrooms} />
       </div>
       <div className="flex max-h-[82vh] w-full flex-col rounded-lg bg-white shadow-md dark:bg-gray-800 md:w-2/3">
         <ChatWindow />

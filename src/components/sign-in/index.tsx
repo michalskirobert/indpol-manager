@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import CustomInput from "@shared/form/fields/CustomInput";
 import { CustomButton } from "../shared/button/CustomButton";
 import { LogIn } from "lucide-react";
+import { LoadingBlocker } from "../shared/LoadingBlocker";
 
 export default function SigninWithPassword() {
   const [isLoading, startTransition] = useTransition();
@@ -46,36 +47,37 @@ export default function SigninWithPassword() {
   );
 
   return (
-    <form onSubmit={handleSubmit(onSave)}>
-      {errorMessage && (
-        <div className="mb-3">
-          <Alert description={errorMessage} title="Error" variant="error" />
-        </div>
-      )}
-      <div className="mb-2 flex flex-col gap-2">
-        <CustomInput
-          type="email"
-          label="Email"
-          className="mb-4 [&_input]:py-[15px]"
-          placeholder="Enter your email"
-          name="email"
-          control={control}
-          icon={<EmailIcon />}
-          size="lg"
-        />
+    <LoadingBlocker isLoading={isLoading}>
+      <form onSubmit={handleSubmit(onSave)}>
+        {errorMessage && (
+          <div className="mb-3">
+            <Alert description={errorMessage} title="Error" variant="error" />
+          </div>
+        )}
+        <div className="mb-2 flex flex-col gap-2">
+          <CustomInput
+            type="email"
+            label="Email"
+            className="mb-4 [&_input]:py-[15px]"
+            placeholder="Enter your email"
+            name="email"
+            control={control}
+            icon={<EmailIcon />}
+            size="lg"
+          />
 
-        <CustomInput
-          type="password"
-          label="Password"
-          className="mb-5 [&_input]:py-[15px]"
-          placeholder="Enter your password"
-          name="password"
-          control={control}
-          icon={<PasswordIcon />}
-          size="lg"
-        />
-      </div>
-      {/* <div className="mb-6 flex items-center justify-between gap-2 py-2 font-medium">
+          <CustomInput
+            type="password"
+            label="Password"
+            className="mb-5 [&_input]:py-[15px]"
+            placeholder="Enter your password"
+            name="password"
+            control={control}
+            icon={<PasswordIcon />}
+            size="lg"
+          />
+        </div>
+        {/* <div className="mb-6 flex items-center justify-between gap-2 py-2 font-medium">
         <Checkbox
           label="Remember me"
           name="remember"
@@ -98,17 +100,18 @@ export default function SigninWithPassword() {
         </Link>
       </div> */}
 
-      <div className="mb-4.5">
-        <CustomButton
-          {...{
-            color: "blue",
-            content: "Sign in",
-            icon: <LogIn />,
-            isLoading,
-            type: "submit",
-          }}
-        />
-      </div>
-    </form>
+        <div className="mb-4.5">
+          <CustomButton
+            {...{
+              color: "blue",
+              content: "Sign in",
+              icon: <LogIn />,
+              isLoading,
+              type: "submit",
+            }}
+          />
+        </div>
+      </form>
+    </LoadingBlocker>
   );
 }

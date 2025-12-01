@@ -20,7 +20,7 @@ import { useGetChatroomsQuery } from "@/store/services/messages";
 import { ProcessedChatroomParams } from "@/types/message";
 
 interface MessagesListProps {
-  chatrooms: ProcessedChatroomParams[];
+  chatrooms: string;
 }
 
 export default function MessagesList({ chatrooms }: MessagesListProps) {
@@ -37,9 +37,9 @@ export default function MessagesList({ chatrooms }: MessagesListProps) {
 
   const dispatch = useAppDispatch();
 
-  const chatroomsList = useMemo(() => {
+  const chatroomsList = useMemo((): ProcessedChatroomParams[] => {
     if (isSuccess) return data;
-    return chatrooms;
+    return JSON.parse(chatrooms);
   }, [chatrooms, data, isSuccess]);
 
   return (
@@ -75,7 +75,7 @@ export default function MessagesList({ chatrooms }: MessagesListProps) {
             </ListItem>
           ) : (
             chatroomsList?.map((room) => (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2" key={room.roomId}>
                 <ListItem
                   key={room.roomId}
                   className={`cursor-pointer px-4 py-3 transition-colors duration-200 hover:bg-blue-50 ${
