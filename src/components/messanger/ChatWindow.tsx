@@ -6,11 +6,14 @@ import {
   useGetChatMessagesQuery,
   useSendMessageMutation,
 } from "@/store/services/messages";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { MessagesSkeleton } from "./MessagesSkeleton";
 import { CustomButton } from "../shared/button/CustomButton";
-import { Send } from "lucide-react";
-import { SendMessageArgs } from "@/store/services/messages/types";
+import { MoreHorizontalIcon, Send } from "lucide-react";
+import {
+  ChatMessagesArgs,
+  SendMessageArgs,
+} from "@/store/services/messages/types";
 import { MessageParams } from "@/types/message";
 import { format } from "date-fns";
 import { checkIsUserOnline } from "@/utils/check-is-user-online";
@@ -18,6 +21,12 @@ import { useSession } from "next-auth/react";
 
 export default function ChatWindow() {
   const { selectedUser } = useAppSelector(({ messages }) => messages);
+
+  const [pagination, setPagination] = useState<ChatMessagesArgs["params"]>({
+    take: 20,
+    skip: 0,
+  });
+
   const session = useSession();
 
   const sessionUserId = session.data?.user.id;
@@ -26,20 +35,36 @@ export default function ChatWindow() {
     data: messages,
     isLoading: isLoadingMessages,
     isSuccess,
-  } = useGetChatMessagesQuery(selectedUser?.id!, {
-    skip: !selectedUser?.id,
-    pollingInterval: 5000,
-  });
+  } = useGetChatMessagesQuery(
+    { id: selectedUser?.id!, params: pagination },
+    {
+      skip: !selectedUser?.id,
+      pollingInterval: 5000,
+    },
+  );
 
   const [send, { isLoading }] = useSendMessageMutation();
 
   const [newMessage, setNewMessage] = useState("");
-  const [chatMessages, setChatMessages] = useState<MessageParams[]>(
-    messages || [],
-  );
+  const [chatMessages, setChatMessages] = useState<MessageParams[]>([]);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isScrolledDownRef = useRef(false);
+
+  useEffect(() => {
+    const el = messagesContainerRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      const isAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
+      isScrolledDownRef.current = isAtBottom;
+    };
+
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
@@ -49,31 +74,62 @@ export default function ChatWindow() {
   };
 
   const sendMessage = async () => {
-    if (newMessage.trim() === "") return;
+    if (newMessage.trim() === "" || !selectedUser?.id) return;
 
-    if (!selectedUser?.id) return;
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
 
     const body: SendMessageArgs = {
       content: newMessage,
       recipientId: selectedUser.id,
     };
 
-    const res = await send(body).unwrap();
+    const sentMessage = await send(body).unwrap();
 
     setNewMessage("");
-    setChatMessages(res);
-    scrollToBottom();
+
+    setChatMessages((prev) => {
+      const merged = [...prev, sentMessage];
+      return merged.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      );
+    });
+
+    if (isScrolledDownRef.current) {
+      timeoutRef.current = setTimeout(() => {
+        scrollToBottom();
+      }, 100);
+    }
   };
 
   useEffect(() => {
-    if (!isSuccess) return;
+    if (!isSuccess || !messages) return;
 
-    setChatMessages(messages);
+    setChatMessages((prev) => {
+      const newItems = messages.filter(
+        (msg) => !prev?.find((m) => m._id === msg._id),
+      );
+
+      const merged = [...newItems, ...prev];
+      if (isScrolledDownRef.current) {
+        setTimeout(() => scrollToBottom(), 0);
+      }
+      return merged.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      );
+    });
   }, [messages, isSuccess]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [chatMessages]);
+  useLayoutEffect(() => {
+    if (isScrolledDownRef.current || !isSuccess) return;
+
+    const timeout = setTimeout(() => scrollToBottom(), 0);
+    isScrolledDownRef.current = true;
+    return () => clearTimeout(timeout);
+  }, [messages, isSuccess]);
 
   if (isLoadingMessages) return <MessagesSkeleton />;
 
@@ -115,8 +171,28 @@ export default function ChatWindow() {
             ref={messagesContainerRef}
             className="flex-grow space-y-4 overflow-y-auto bg-gray-50 px-6 py-4"
           >
+            {chatMessages.length > 0 &&
+              chatMessages.length % pagination.take === 0 && (
+                <div className="flex items-center justify-center">
+                  <CustomButton
+                    icon={<MoreHorizontalIcon />}
+                    content="See more messages"
+                    variant="text"
+                    onClick={() => {
+                      const oldestMessage = chatMessages[0];
+
+                      if (!oldestMessage) return;
+
+                      setPagination({
+                        ...pagination,
+                        skip: pagination.skip + pagination.take,
+                      });
+                    }}
+                  />
+                </div>
+              )}
             {chatMessages?.length ? (
-              chatMessages.map((msg) => {
+              chatMessages?.map((msg) => {
                 const isFromMe =
                   msg.senderId.toString() === sessionUserId?.toString();
                 return (

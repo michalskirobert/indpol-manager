@@ -5,6 +5,7 @@ import { MessageParams } from "@/types/message";
 import { connectDB } from "@/types/mongodb";
 import { NextResponse } from "next/server";
 import { updateLastSeen } from "../../auth/users/lastSeen/helpers";
+import { getRoomId } from "../utils";
 
 export const POST = async (req: Request) => {
   try {
@@ -22,7 +23,7 @@ export const POST = async (req: Request) => {
 
     const { content, recipientId } = data;
 
-    const roomId = [session?.user.id.toString(), recipientId].sort().join("_");
+    const roomId = getRoomId(recipientId, session.user.id);
 
     const msg = await Message.create<MessageParams>({
       roomId,
@@ -52,16 +53,9 @@ export const POST = async (req: Request) => {
       { new: true },
     );
 
-    const conversation = await Message.find({
-      $or: [
-        { senderId: session.user.id, recipientId },
-        { senderId: recipientId, recipientId: session?.user.id },
-      ],
-    }).sort({ createdAt: 1 });
-
     await updateLastSeen(session);
 
-    return NextResponse.json(conversation, { status: 200 });
+    return NextResponse.json(msg, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: "" }, { status: 500 });
   }

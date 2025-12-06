@@ -8,6 +8,7 @@ const MessageSchema = new Schema<MessageParams>(
     recipientId: { type: String, required: true },
     content: { type: String, required: true },
     read: { type: Boolean, default: false },
+    createdAt: { type: Date, required: false },
   },
   {
     timestamps: true,

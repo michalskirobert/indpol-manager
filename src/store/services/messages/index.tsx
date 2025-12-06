@@ -5,7 +5,15 @@ import {
 } from "@typings/message";
 import { apiSlice } from "../../api";
 import { INSTANCES_URLS } from "../../utils";
-import { CreateChatroomArgs, SendMessageArgs } from "./types";
+import {
+  ChatMessagesArgs,
+  ChatMessagesResponse,
+  CreateChatroomArgs,
+  SendMessageArgs,
+} from "./types";
+import { TableData } from "@/types/table";
+
+import qs from "qs";
 
 export const messagesApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
@@ -14,12 +22,12 @@ export const messagesApi = apiSlice.injectEndpoints({
         url: `${INSTANCES_URLS.messages}/unread-count`,
       }),
     }),
-    getChatMessages: build.query<MessageParams[], string>({
-      query: (id) => ({
-        url: `${INSTANCES_URLS.messages}/${id}`,
+    getChatMessages: build.query<ChatMessagesResponse, ChatMessagesArgs>({
+      query: ({ id, params: { skip, take } }) => ({
+        url: `${INSTANCES_URLS.messages}/${id}?${qs.stringify({ skip, take })}`,
       }),
     }),
-    sendMessage: build.mutation<MessageParams[], SendMessageArgs>({
+    sendMessage: build.mutation<MessageParams, SendMessageArgs>({
       query: (body) => ({
         url: `${INSTANCES_URLS.messages}/send`,
         data: body,
@@ -53,4 +61,5 @@ export const {
   useCreateChatroomMutation,
   useGetChatroomsQuery,
   useGetChatroomsCountQuery,
+  useLazyGetChatMessagesQuery,
 } = messagesApi;

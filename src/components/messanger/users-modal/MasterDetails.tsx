@@ -4,11 +4,9 @@ import { useCreateChatroomMutation } from "@/store/services/messages";
 import { setSelectedUser } from "@/store/slices/messages";
 import { TableData } from "@/types/table";
 import { UserProps } from "@/types/user";
-import { DATE_FORMATS } from "@/utils";
 import { checkIsUserOnline } from "@/utils/check-is-user-online";
 import { getJobPosition } from "@/utils/process-user-data";
 import { Avatar, Chip, Typography } from "@material-tailwind/react";
-import { format } from "date-fns";
 import { Send } from "lucide-react";
 
 interface Props {
