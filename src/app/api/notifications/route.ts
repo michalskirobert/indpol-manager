@@ -1,4 +1,4 @@
-import Notification from "@/models/Notification";
+import Notification from "@/models/back-office/Notification";
 
 import { NextResponse } from "next/server";
 

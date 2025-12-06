@@ -1,4 +1,4 @@
-import User from "@/models/User";
+import User from "@/models/back-office/User";
 import { connectDB } from "@/types/mongodb";
 import bcrypt from "bcryptjs";
 

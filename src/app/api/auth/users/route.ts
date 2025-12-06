@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth";
-import User from "@/models/User";
+import User from "@/models/back-office/User";
 import { connectDB } from "@/types/mongodb";
 import { NextResponse } from "next/server";
 

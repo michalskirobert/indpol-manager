@@ -1,27 +1,28 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { canAccessRoute } from "@/lib/check-permissions";
+import { UserProps } from "./types/user";
 
 export async function middleware(req: NextRequest) {
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  const isAuth = !!token;
+  const token = await getToken({ req });
+  const pathname = req.nextUrl.pathname;
 
-  const publicPaths = ["/api/auth"];
-
-  const isPublicPath = publicPaths.some((path) =>
-    req.nextUrl.pathname.startsWith(path),
-  );
-
-  if (isPublicPath) {
-    return NextResponse.next();
+  if (!token) {
+    return NextResponse.redirect(new URL("/sign-in", req.url));
   }
 
-  if (!isAuth) {
-    return new NextResponse("Unauthorized", { status: 401 });
+  if (pathname.startsWith("/not-authorized")) return NextResponse.next();
+
+  const allowed = canAccessRoute(token as UserProps, pathname);
+
+  if (!allowed) {
+    return NextResponse.redirect(new URL("/not-authorized", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/api/:path*", "/(protected)/:path*"],
+  matcher: ["/((?!api|_next|static|.*\\..*).*)"],
 };

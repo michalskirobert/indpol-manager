@@ -1,49 +1,65 @@
+"use client";
+
 import { compactFormat } from "@/lib/format-number";
 
 import { OverviewCard } from "./Card";
-import * as icons from "./Icons";
-import { getOverviewData } from "@/components/dashboard/fetch";
+import { useGetStatsQuery } from "@/store/services/stats";
+import OverviewCardsSkeleton from "./Skeleton";
+import { Error } from "./Error";
 
-export default async function OverviewCardsGroup() {
-  const { views, profit, products, users } = await getOverviewData();
+import * as icons from "./Icons";
+
+export default function OverviewCardsGroup() {
+  const { data, isFetching, isError } = useGetStatsQuery();
+
+  const { totalProducts, totalProfit, totalSales, totalUsers } = data || {};
+
+  if (isError) return <Error />;
+
+  if (isFetching) return <OverviewCardsSkeleton />;
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-      <OverviewCard
-        label="Total Views"
-        data={{
-          ...views,
-          value: compactFormat(views.value),
-        }}
-        Icon={icons.Views}
-      />
-
-      <OverviewCard
-        label="Total Profit"
-        data={{
-          ...profit,
-          value: "$" + compactFormat(profit.value),
-        }}
-        Icon={icons.Profit}
-      />
-
-      <OverviewCard
-        label="Total Products"
-        data={{
-          ...products,
-          value: compactFormat(products.value),
-        }}
-        Icon={icons.Product}
-      />
-
-      <OverviewCard
-        label="Total Users"
-        data={{
-          ...users,
-          value: compactFormat(users.value),
-        }}
-        Icon={icons.Users}
-      />
+      {totalSales && (
+        <OverviewCard
+          label="Total sales"
+          data={{
+            ...totalSales,
+            value: compactFormat(totalSales.value),
+          }}
+          Icon={icons.Views}
+        />
+      )}
+      {totalProfit && (
+        <OverviewCard
+          label="Total Profit"
+          data={{
+            ...totalProfit,
+            value: "$" + compactFormat(totalProfit.value),
+          }}
+          Icon={icons.Profit}
+        />
+      )}
+      {totalProducts && (
+        <OverviewCard
+          label="Total Products"
+          data={{
+            ...totalProducts,
+            value: compactFormat(totalProducts.value),
+          }}
+          Icon={icons.Product}
+        />
+      )}
+      {totalUsers && (
+        <OverviewCard
+          label="Total Users"
+          data={{
+            ...totalUsers,
+            value: compactFormat(totalUsers.value),
+          }}
+          Icon={icons.Users}
+        />
+      )}
     </div>
   );
 }

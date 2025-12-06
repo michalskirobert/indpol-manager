@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import Message from "../../../../models/Message";
+import Message from "../../../../models/back-office/Message";
 import { getSession } from "@/lib/auth";
 
 export const GET = async (

@@ -2,7 +2,7 @@ import { connectDB } from "@/types/mongodb";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import User from "../../../../models/User";
+import User from "../../../../models/back-office/User";
 
 export async function POST(request: Request) {
   try {

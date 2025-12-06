@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth";
-import Chatroom from "@/models/Chatroom";
+import Chatroom from "@/models/back-office/Chatroom";
 import { connectDB } from "@/types/mongodb";
 import { NextResponse } from "next/server";
 import { getChatrooms } from "./get-chatrooms";

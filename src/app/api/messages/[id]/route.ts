@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import Message from "@/models/Message";
+import Message from "@/models/back-office/Message";
 import { getSession } from "@/lib/auth";
-import Chatroom from "@/models/Chatroom";
+import Chatroom from "@/models/back-office/Chatroom";
 
 const getRoomId = (a: string, b: string) => [a, b].sort().join("_");
 

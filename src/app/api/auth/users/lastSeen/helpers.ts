@@ -1,4 +1,4 @@
-import User from "@/models/User";
+import User from "@/models/back-office/User";
 import { Session } from "next-auth";
 
 export const updateLastSeen = async (session: Session) => {

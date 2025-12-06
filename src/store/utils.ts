@@ -10,4 +10,5 @@ export const INSTANCES_URLS = {
   notifications: "notifications",
   messages: "messages",
   chatroom: "chat",
+  stats: "stats",
 } as const;

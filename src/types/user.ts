@@ -51,3 +51,23 @@ export interface SignInArgs {
   password: string;
   rememberMe?: boolean;
 }
+
+export interface StoreUserAddressParams {
+  country?: string;
+  city: string;
+  postalCode: string;
+  street: string;
+  buildingNo: string;
+  flatNo?: string;
+}
+
+export interface StoreUser {
+  _id?: string;
+  email: string;
+  password: string;
+  name: string;
+  phone: string;
+  address: StoreUserAddressParams;
+  createdAt: Date;
+  updatedAt: Date;
+}

@@ -1,5 +1,5 @@
-import Chatroom from "@/models/Chatroom";
-import User from "@/models/User";
+import Chatroom from "@/models/back-office/Chatroom";
+import User from "@/models/back-office/User";
 import { ChatroomParams, ProcessedChatroomParams } from "@/types/message";
 import { UserProps } from "@/types/user";
 import { Session } from "next-auth";
