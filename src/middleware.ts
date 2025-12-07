@@ -4,7 +4,17 @@ import { getToken } from "next-auth/jwt";
 import { canAccessRoute } from "@/lib/check-permissions";
 
 export async function middleware(req: NextRequest) {
-  const token = await getToken({ req });
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  const publicPaths = ["/api/auth", "/sign-in", "/not-authorized"];
+
+  const isPublicPath = publicPaths.some((path) =>
+    req.nextUrl.pathname.startsWith(path),
+  );
+
+  if (isPublicPath) {
+    return NextResponse.next();
+  }
 
   if (!token) {
     return NextResponse.redirect(new URL("/sign-in", req.url));

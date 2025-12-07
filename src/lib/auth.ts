@@ -4,8 +4,6 @@ import bcrypt from "bcryptjs";
 import { UserProps } from "@/types/user";
 import type { Document } from "mongoose";
 import { getBOModels } from "@/models/dbModels";
-import { connectDB } from "./mongodb";
-import User from "@/models/back-office/User";
 
 type MongooseUser = Document & UserProps;
 
@@ -20,7 +18,7 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        await connectDB("BackOffice");
+        const { User } = await getBOModels();
 
         const userFound = await User.findOne({
           email: credentials?.email,
