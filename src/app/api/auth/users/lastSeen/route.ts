@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth";
-import { connectDB } from "@/types/mongodb";
+import { connectDB } from "@/lib/mongodb";
 import { updateLastSeen } from "./helpers";
 import { NextResponse } from "next/server";
 

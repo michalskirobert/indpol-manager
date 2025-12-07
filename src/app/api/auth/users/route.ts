@@ -1,6 +1,6 @@
 import { getSession } from "@/lib/auth";
 import User from "@/models/back-office/User";
-import { connectDB } from "@/types/mongodb";
+import { connectDB } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {

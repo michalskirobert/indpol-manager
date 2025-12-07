@@ -9,11 +9,10 @@ import {
 } from "@/components/shared/CustomTable";
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
-import { getInvoiceTableData } from "./fetch";
 import { DownloadIcon, PreviewIcon } from "./Icons";
 
 export async function InvoiceTable() {
-  const data = await getInvoiceTableData();
+  const data: any[] = [];
 
   return (
     <div className="rounded-[10px] border border-stroke bg-white p-4 shadow-1 dark:border-dark-3 dark:bg-gray-dark dark:shadow-card sm:p-7.5">

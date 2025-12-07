@@ -1,4 +1,3 @@
-import { User } from "@/models/store";
 import { DataBaseValue } from "@/types/database";
 import mongoose from "mongoose";
 

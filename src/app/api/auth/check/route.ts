@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@lib/auth";
-import { connectDB } from "@/types/mongodb";
+import { connectDB } from "@/lib/mongodb";
 
 import { DatabaseUser } from "@/types/user";
 import User from "../../../../models/back-office/User";

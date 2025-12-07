@@ -8,29 +8,26 @@ import {
   TableRow,
 } from "@/components/shared/CustomTable";
 
-export function TopSellingsSkeleton() {
+export function TopSalesSkeleton() {
   return (
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
       <h2 className="mb-5.5 text-body-2xlg font-bold text-dark dark:text-white">
-        Top Sellings
+        Top Sales
       </h2>
 
       <Table>
         <TableHeader>
           <TableRow className="border-none uppercase [&>th]:text-center">
             <TableHead className="min-w-[120px] !text-left">Product</TableHead>
-            <TableHead>Visitors</TableHead>
             <TableHead>Sold</TableHead>
             <TableHead className="!text-right">Revenues</TableHead>
-            <TableHead className="!text-right">Sales</TableHead>
             <TableHead className="!text-right">AOV</TableHead>
-            <TableHead>Conversion</TableHead>
             <TableHead>Growth</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {Array.from({ length: 8 }).map((_, i) => (
+          {Array.from({ length: 5 }).map((_, i) => (
             <TableRow key={i}>
               <TableCell colSpan={100}>
                 <Skeleton className="h-8" />

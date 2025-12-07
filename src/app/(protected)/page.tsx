@@ -1,7 +1,7 @@
 import { PaymentsOverview } from "@/components/shared/charts/payments-overview";
 import { WeeksProfit } from "@/components/shared/charts/weeks-profit";
-import { TopSellings } from "@/components/dashboard/tables/top-channels";
-import { TopSellingsSkeleton } from "@/components/dashboard/tables/top-channels/Skeleton";
+import { TopSales } from "@/components/dashboard/tables/top-sales";
+import { TopSalesSkeleton } from "@/components/dashboard/tables/top-sales/Skeleton";
 import { createTimeFrameExtractor } from "@/utils/timeframe-extractor";
 import { Suspense } from "react";
 
@@ -41,9 +41,9 @@ export default async function Home({ searchParams }: PropsType) {
         />
 
         <div className="col-span-12 grid xl:col-span-8">
-          {/* <Suspense fallback={<TopSellingsSkeleton />}>
-            <TopSellings />
-          </Suspense> */}
+          <Suspense fallback={<TopSalesSkeleton />}>
+            <TopSales />
+          </Suspense>
         </div>
 
         <Suspense fallback={null}>

@@ -1,5 +1,5 @@
 import User from "@/models/back-office/User";
-import { connectDB } from "@/types/mongodb";
+import { connectDB } from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 
 import { NextRequest, NextResponse } from "next/server";

@@ -7,7 +7,7 @@ import { MessageSchema } from "./back-office/Message";
 import { NotificationSchema } from "./back-office/Notification";
 import { UserSchema } from "./back-office/User";
 
-import { connectDB } from "@/types/mongodb";
+import { connectDB } from "@/lib/mongodb";
 
 export const getStoreModels = async () => {
   const dbStore = await connectDB("store");
