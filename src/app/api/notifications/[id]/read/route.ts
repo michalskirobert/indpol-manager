@@ -1,5 +1,5 @@
-import Notification from "@/models/back-office/Notification";
 import { getSession } from "@/lib/auth";
+import { getBOModels } from "@/models/dbModels";
 import { NextResponse } from "next/server";
 
 export const PATCH = async (
@@ -9,6 +9,9 @@ export const PATCH = async (
   const { id } = params;
 
   const session = await getSession();
+
+  const { Notification } = await getBOModels();
+
   const userId = session?.user.id;
 
   if (!userId) {

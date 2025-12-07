@@ -4,8 +4,6 @@ import { connectDB } from "@/types/mongodb";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
-  await connectDB("BackOffice");
-
   const session = await getSession();
 
   if (!session?.user.id) {

@@ -35,7 +35,7 @@ const DescriptionSchema = new Schema<ProductProps["desc"]>({
   },
 });
 
-const ProductSchema: Schema = new Schema<ProductProps>({
+export const ProductSchema: Schema = new Schema<ProductProps>({
   name: {
     type: String,
     required: true,

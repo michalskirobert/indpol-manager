@@ -5,8 +5,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@lib/auth";
 import { ToastContainer } from "react-toastify";
 
-import "./global.css";
 import { ThemeProvider } from "next-themes";
+
+import "./global.css";
 
 export const metadata: Metadata = {
   title: {

@@ -1,5 +1,4 @@
-import Chatroom from "@/models/back-office/Chatroom";
-import User from "@/models/back-office/User";
+import { getBOModels } from "@/models/dbModels";
 import { ChatroomParams, ProcessedChatroomParams } from "@/types/message";
 import { UserProps } from "@/types/user";
 import { Session } from "next-auth";
@@ -7,6 +6,8 @@ import { Session } from "next-auth";
 export const getChatrooms = async (
   session: Session,
 ): Promise<ProcessedChatroomParams[]> => {
+  const { Chatroom, User } = await getBOModels();
+
   const chatrooms = await Chatroom.find({
     participants: session?.user.id,
   })

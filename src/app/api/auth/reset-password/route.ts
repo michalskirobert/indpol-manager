@@ -6,8 +6,6 @@ import User from "../../../../models/back-office/User";
 
 export async function POST(request: Request) {
   try {
-    await connectDB("BackOffice");
-
     const { email, password, confirmPassword } = await request.json();
 
     if (!email) {

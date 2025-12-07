@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
-import Message from "../../../../models/back-office/Message";
-import { connectDB } from "@/types/mongodb";
 import { getSession } from "@/lib/auth";
+import { getBOModels } from "@/models/dbModels";
 
 export const GET = async (req: Request) => {
-  await connectDB("BackOffice");
-
   const session = await getSession();
+
+  const { Message } = await getBOModels();
 
   if (!session?.user.id) {
     return new Response(JSON.stringify({ message: "Not authorized" }), {

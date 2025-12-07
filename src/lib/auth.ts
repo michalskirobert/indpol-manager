@@ -2,9 +2,8 @@ import { getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { UserProps } from "@/types/user";
-import { connectDB } from "../types/mongodb";
 import type { Document } from "mongoose";
-import User from "@/models/back-office/User";
+import { getBOModels } from "@/models/dbModels";
 
 type MongooseUser = Document & UserProps;
 
@@ -19,7 +18,7 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        await connectDB("BackOffice");
+        const { User } = await getBOModels();
 
         const userFound = await User.findOne({
           email: credentials?.email,

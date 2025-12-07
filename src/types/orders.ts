@@ -80,7 +80,7 @@ export type InpostLockerDataProps = {
 
 export type OrderProps = StoreUser & {
   userId: string | null;
-  createdDate?: Date;
+  createdAt?: Date;
   cancelledDate?: string;
   items?: CartItemProps[];
   deliveryMethod: DeliveryMethods;

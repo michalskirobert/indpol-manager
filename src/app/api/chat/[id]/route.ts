@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
-import Message from "../../../../models/back-office/Message";
 import { getSession } from "@/lib/auth";
+import { getBOModels } from "@/models/dbModels";
 
 export const GET = async (
   _: Request,
   { params }: { params: { id: string } },
 ) => {
+  const { Message } = await getBOModels();
+
   const session = await getSession();
 
   if (!session?.user.id)

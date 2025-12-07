@@ -1,12 +1,9 @@
 import { getSession } from "@/lib/auth";
-import Chatroom from "@/models/back-office/Chatroom";
-import { connectDB } from "@/types/mongodb";
 import { NextResponse } from "next/server";
 import { getChatrooms } from "./get-chatrooms";
+import { getBOModels } from "@/models/dbModels";
 
 export const GET = async () => {
-  await connectDB("BackOffice");
-
   const session = await getSession();
 
   if (!session?.user.id)
@@ -18,7 +15,7 @@ export const GET = async () => {
 };
 
 export const POST = async (req: Request) => {
-  await connectDB("BackOffice");
+  const { Chatroom } = await getBOModels();
 
   const session = await getSession();
 

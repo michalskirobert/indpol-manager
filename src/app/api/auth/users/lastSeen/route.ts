@@ -12,8 +12,6 @@ export const PATCH = async () => {
     });
   }
 
-  await connectDB("BackOffice");
-
   const res = await updateLastSeen(session);
 
   return NextResponse.json(res, { status: 200 });

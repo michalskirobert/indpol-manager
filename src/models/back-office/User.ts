@@ -1,7 +1,7 @@
 import { DatabaseUser } from "@/types/user";
 import { Schema, model, models } from "mongoose";
 
-const UserSchema = new Schema<DatabaseUser>(
+export const UserSchema = new Schema<DatabaseUser>(
   {
     email: {
       type: String,

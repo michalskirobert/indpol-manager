@@ -29,7 +29,7 @@ const AddressSchema = new Schema<StoreUserAddressParams>(
   },
 );
 
-const UserSchema = new Schema<StoreUser>(
+export const StoreUserSchema = new Schema<StoreUser>(
   {
     email: {
       type: String,
@@ -61,4 +61,4 @@ const UserSchema = new Schema<StoreUser>(
   },
 );
 
-export const User = models.User || model<StoreUser>("User", UserSchema);
+export const User = models.User || model<StoreUser>("User", StoreUserSchema);

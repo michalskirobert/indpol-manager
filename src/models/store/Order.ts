@@ -87,7 +87,7 @@ const LockerAddressSchema: Schema = new Schema<InpostLockerDataProps>({
   },
 });
 
-const OrderSchema: Schema = new Schema<OrderProps>({
+export const OrderSchema: Schema = new Schema<OrderProps>({
   userId: {
     type: String,
     required: true,
@@ -108,7 +108,7 @@ const OrderSchema: Schema = new Schema<OrderProps>({
     type: Number,
     required: true,
   },
-  createdDate: {
+  createdAt: {
     type: Date,
     required: true,
   },

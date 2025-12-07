@@ -1,15 +1,13 @@
 import { getSession } from "@/lib/auth";
-import Message from "@/models/back-office/Message";
-import Chatroom from "@/models/back-office/Chatroom";
 import { MessageParams } from "@/types/message";
-import { connectDB } from "@/types/mongodb";
 import { NextResponse } from "next/server";
 import { updateLastSeen } from "../../auth/users/lastSeen/helpers";
 import { getRoomId } from "../utils";
+import { getBOModels } from "@/models/dbModels";
 
 export const POST = async (req: Request) => {
   try {
-    await connectDB("BackOffice");
+    const { Message, Chatroom } = await getBOModels();
 
     const session = await getSession();
 
@@ -25,7 +23,7 @@ export const POST = async (req: Request) => {
 
     const roomId = getRoomId(recipientId, session.user.id);
 
-    const msg = await Message.create<MessageParams>({
+    const msg = await Message.create({
       roomId,
       content,
       read: false,

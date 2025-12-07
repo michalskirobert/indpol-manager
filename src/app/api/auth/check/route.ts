@@ -7,7 +7,6 @@ import User from "../../../../models/back-office/User";
 
 export const POST = async () => {
   try {
-    await connectDB();
     const session = await getSession();
 
     if (!session) {

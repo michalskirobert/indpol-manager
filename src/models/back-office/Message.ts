@@ -1,7 +1,7 @@
 import { MessageParams } from "@/types/message";
 import { Schema, model, models } from "mongoose";
 
-const MessageSchema = new Schema<MessageParams>(
+export const MessageSchema = new Schema<MessageParams>(
   {
     senderId: { type: String, required: true },
     roomId: { type: String, required: true },

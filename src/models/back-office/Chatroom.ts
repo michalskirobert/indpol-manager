@@ -1,7 +1,7 @@
 import { ChatroomParams, MessageParams } from "@/types/message";
 import { Schema, model, models } from "mongoose";
 
-const ChatroomSchema = new Schema<ChatroomParams>(
+export const ChatroomSchema = new Schema<ChatroomParams>(
   {
     roomId: { type: String, required: true, unique: true },
     participants: {

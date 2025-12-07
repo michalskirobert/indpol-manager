@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import Message from "@/models/back-office/Message";
 import { getSession } from "@/lib/auth";
-import Chatroom from "@/models/back-office/Chatroom";
+import { getBOModels } from "@/models/dbModels";
 
 const getRoomId = (a: string, b: string) => [a, b].sort().join("_");
 
@@ -10,6 +9,9 @@ export const GET = async (
   { params }: { params: Promise<{ id: string }> },
 ) => {
   const session = await getSession();
+
+  const { Message, Chatroom } = await getBOModels();
+
   if (!session?.user.id) {
     return NextResponse.json({ message: "Not authorized" }, { status: 401 });
   }

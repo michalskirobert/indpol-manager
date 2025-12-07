@@ -2,14 +2,10 @@ import { getChatrooms } from "@/app/api/chat/get-chatrooms";
 import ChatWindow from "@/components/messanger/chat-window";
 import Chatrooms from "@/components/messanger/Chatrooms";
 
-import { connectDB } from "@/types/mongodb";
-
 import { getSession } from "@lib/auth";
 import { NextResponse } from "next/server";
 
 export default async function MessagesPage() {
-  await connectDB("BackOffice");
-
   const session = await getSession();
 
   if (!session) {
