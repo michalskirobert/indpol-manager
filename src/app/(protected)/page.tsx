@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import OverViewCardsSkeleton from "@components/dashboard/overview-cards/Skeleton";
 import dynamic from "next/dynamic";
 import { ChatsCard } from "@/components/dashboard/chats-card";
+import { Loading } from "@/components/dashboard/chats-card/Loading";
 
 const OverViewCard = dynamic(
   () => import("@components/dashboard/overview-cards"),
@@ -46,7 +47,7 @@ export default async function Home({ searchParams }: PropsType) {
           </Suspense>
         </div>
 
-        <Suspense fallback={null}>
+        <Suspense fallback={<Loading />}>
           <ChatsCard />
         </Suspense>
       </div>

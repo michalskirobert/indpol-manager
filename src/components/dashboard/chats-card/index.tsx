@@ -1,5 +1,4 @@
 import { DotIcon } from "@/assets/icons";
-import { formatMessageTime } from "@/lib/format-message-time";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { getChatrooms } from "@/app/api/chat/get-chatrooms";
@@ -68,7 +67,10 @@ export async function ChatsCard() {
                       className="text-xs"
                       dateTime={chat.lastMessage?.createdAt.toString()}
                     >
-                      {formatMessageTime(chat.lastMessage.createdAt.toString())}
+                      {new Intl.DateTimeFormat("pl", {
+                        timeStyle: "short",
+                        dateStyle: "short",
+                      }).format(chat.lastMessage.createdAt)}
                     </time>
                   )}
                 </div>
