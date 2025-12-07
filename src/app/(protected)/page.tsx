@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 import OverViewCardsSkeleton from "@components/dashboard/overview-cards/Skeleton";
 import dynamic from "next/dynamic";
-import { ChatsCard } from "@/components/dashboard/ChatsCard";
+import { ChatsCard } from "@/components/dashboard/chats-card";
 
 const OverViewCard = dynamic(
   () => import("@components/dashboard/overview-cards"),
