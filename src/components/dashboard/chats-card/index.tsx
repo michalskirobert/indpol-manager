@@ -22,7 +22,7 @@ export async function ChatsCard() {
       <ul>
         {chatrooms.map((chat, key) => (
           <li key={key}>
-            <Link senderProfile={chat.senderProfile}>
+            <Link data={JSON.stringify(chat.senderProfile)}>
               <div className="relative shrink-0">
                 <Image
                   src={

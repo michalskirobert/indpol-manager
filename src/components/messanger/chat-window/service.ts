@@ -80,7 +80,6 @@ export const useChatWindowService = () => {
     };
 
     const sentMessage = await send(body).unwrap();
-
     setNewMessage("");
 
     setChatMessages((prev) => {

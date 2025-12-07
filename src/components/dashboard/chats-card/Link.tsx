@@ -7,10 +7,12 @@ import { useRouter } from "next/navigation";
 import { PropsWithChildren } from "react";
 
 interface Props extends PropsWithChildren {
-  senderProfile: UserProps;
+  data: string;
 }
 
-export const Link = ({ senderProfile, children }: Props) => {
+export const Link = ({ data, children }: Props) => {
+  const senderProfile = JSON.parse(data || "{}") as UserProps;
+
   const dispatch = useAppDispatch();
 
   const router = useRouter();

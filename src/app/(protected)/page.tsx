@@ -7,8 +7,6 @@ import { Suspense } from "react";
 
 import OverViewCardsSkeleton from "@components/dashboard/overview-cards/Skeleton";
 import dynamic from "next/dynamic";
-import { ChatsCard } from "@/components/dashboard/chats-card";
-import { Loading } from "@/components/dashboard/chats-card/Loading";
 
 const OverViewCard = dynamic(
   () => import("@components/dashboard/overview-cards"),
@@ -34,22 +32,18 @@ export default async function Home({ searchParams }: PropsType) {
           key={extractTimeFrame("payments_overview")}
           timeFrame={extractTimeFrame("payments_overview")?.split(":")[1]}
         />
-
-        <WeeksProfit
-          key={extractTimeFrame("weeks_profit")}
-          timeFrame={extractTimeFrame("weeks_profit")?.split(":")[1]}
-          className="col-span-12 xl:col-span-5"
-        />
-
-        <div className="col-span-12 grid xl:col-span-8">
+        <Suspense fallback={null}>
+          <WeeksProfit
+            key={extractTimeFrame("weeks_profit")}
+            timeFrame={extractTimeFrame("weeks_profit")?.split(":")[1]}
+            className="col-span-12 xl:col-span-5"
+          />
+        </Suspense>
+        <div className="col-span-12 grid xl:col-span-12">
           <Suspense fallback={<TopSalesSkeleton />}>
             <TopSales />
           </Suspense>
         </div>
-
-        <Suspense fallback={<Loading />}>
-          <ChatsCard />
-        </Suspense>
       </div>
     </>
   );
