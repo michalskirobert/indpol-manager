@@ -14,7 +14,6 @@ export const GET = async () => {
     const currentSales = await Order.countDocuments({
       paymentStatus: PaymentStatus.Paid,
       status: { $ne: OrderStatus.Cancelled },
-      createdAt: { $gte: startCurrentMonth },
     });
 
     const previousSales = await Order.countDocuments({
@@ -36,7 +35,6 @@ export const GET = async () => {
         $match: {
           paymentStatus: PaymentStatus.Paid,
           status: { $ne: OrderStatus.Cancelled },
-          createdAt: { $gte: startCurrentMonth },
         },
       },
       { $group: { _id: null, total: { $sum: "$totalAmount" } } },
@@ -46,7 +44,6 @@ export const GET = async () => {
         $match: {
           paymentStatus: PaymentStatus.Paid,
           status: { $ne: OrderStatus.Cancelled },
-          createdAt: { $gte: startPrevMonth, $lt: endPrevMonth },
         },
       },
       { $group: { _id: null, total: { $sum: "$totalAmount" } } },
