@@ -1,6 +1,6 @@
 "use client";
 
-import { compactFormat } from "@/lib/format-number";
+import { compactFormat, setCurrencyValue } from "@/lib/format-number";
 
 import { OverviewCard } from "./Card";
 import { useGetStatsQuery } from "@/store/services/stats";
@@ -35,7 +35,7 @@ export default function OverviewCardsGroup() {
           label="Total Profit"
           data={{
             ...totalProfit,
-            value: "$" + compactFormat(totalProfit.value),
+            value: setCurrencyValue(totalProfit.value),
           }}
           Icon={icons.Profit}
         />

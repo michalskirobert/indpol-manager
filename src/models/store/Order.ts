@@ -141,7 +141,7 @@ export const OrderSchema: Schema = new Schema<OrderProps>({
     required: false,
   },
   purchaseDate: {
-    type: String,
+    type: Date,
     required: false,
   },
   trackNumber: {

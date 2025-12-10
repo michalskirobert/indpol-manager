@@ -1,5 +1,5 @@
 export function compactFormat(value: number) {
-  const formatter = new Intl.NumberFormat("en", {
+  const formatter = new Intl.NumberFormat("pl", {
     notation: "compact",
     compactDisplay: "short",
   });
@@ -8,8 +8,14 @@ export function compactFormat(value: number) {
 }
 
 export function standardFormat(value: number) {
-  return value.toLocaleString("en-US", {
+  return value.toLocaleString("pl", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 }
+
+export const setCurrencyValue = (val: number) =>
+  Intl.NumberFormat("pl", {
+    style: "currency",
+    currency: "PLN",
+  }).format(val);

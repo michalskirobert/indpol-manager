@@ -90,7 +90,7 @@ export type OrderProps = StoreUser & {
   orderId?: string;
   totalAmount?: number;
   trackNumber?: string;
-  purchaseDate?: string;
+  purchaseDate?: Date | null;
   transactionId?: string;
   paymentMethod?: PaymentMethod;
   totalDiscount?: number;

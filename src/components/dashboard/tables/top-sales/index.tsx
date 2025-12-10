@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/shared/CustomTable";
-import { compactFormat, standardFormat } from "@/lib/format-number";
+import { compactFormat, setCurrencyValue } from "@/lib/format-number";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { getTopSales } from "./service";
@@ -57,10 +57,10 @@ export async function TopSales({ className }: { className?: string }) {
                 </TableCell>
                 <TableCell>{compactFormat(product.sold)}</TableCell>
                 <TableCell className="!text-right text-green-light-1">
-                  ${standardFormat(product.revenues || 0)}
+                  {setCurrencyValue(product.revenues || 0)}
                 </TableCell>
                 <TableCell className="!text-right">
-                  ${standardFormat(aov)}
+                  {setCurrencyValue(aov)}
                 </TableCell>
                 <TableCell
                   className={cn(
