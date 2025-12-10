@@ -18,7 +18,7 @@ export const connectDB = async (
       .createConnection(uri, {
         tls: true,
         serverSelectionTimeoutMS: 5000,
-        maxPoolSize: 10,
+        maxPoolSize: 50,
       })
       .asPromise();
 

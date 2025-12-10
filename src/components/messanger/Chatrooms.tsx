@@ -30,7 +30,7 @@ export default function MessagesList({ chatrooms }: MessagesListProps) {
 
   const { data, isSuccess } = useGetChatroomsQuery(undefined, {
     refetchOnMountOrArgChange: true,
-    pollingInterval: 3000,
+    pollingInterval: 10000,
   });
 
   const router = useRouter();

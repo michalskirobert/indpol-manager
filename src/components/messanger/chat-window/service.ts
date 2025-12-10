@@ -33,7 +33,7 @@ export const useChatWindowService = () => {
     { id: selectedUser?.id!, params: pagination },
     {
       skip: !selectedUser?.id,
-      pollingInterval: 5000,
+      pollingInterval: 10000,
     },
   );
 
@@ -101,11 +101,25 @@ export const useChatWindowService = () => {
     if (!isSuccess || !messages) return;
 
     setChatMessages((prev) => {
-      const newItems = messages.filter(
-        (msg) => !prev?.find((m) => m._id === msg._id),
-      );
+      const prevMap = new Map(prev.map((m) => [m._id, m]));
+      const merged = messages.map((msg) => {
+        const existing = prevMap.get(msg._id);
+        if (!existing) {
+          return msg;
+        }
+        // Simple shallow comparison to detect changes
+        const keys = Object.keys(msg) as (keyof MessageParams)[];
+        const isDifferent = keys.some((key) => {
+          const val1 = msg[key];
+          const val2 = existing[key];
+          if (val1 instanceof Date && val2 instanceof Date) {
+            return val1.getTime() !== val2.getTime();
+          }
+          return val1 !== val2;
+        });
+        return isDifferent ? msg : existing;
+      });
 
-      const merged = [...newItems, ...prev];
       if (isScrolledDownRef.current) {
         setTimeout(() => scrollToBottom(), 0);
       }
