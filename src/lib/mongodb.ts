@@ -1,34 +1,24 @@
-import { DataBaseValue } from "@/types/database";
-import mongoose from "mongoose";
+import mongoose, { Connection } from "mongoose";
 
 const { MONGODB_URI_FO, MONGODB_URI_BO } = process.env;
+if (!MONGODB_URI_FO || !MONGODB_URI_BO)
+  throw new Error("Mongo URIs must be defined");
 
-if (!MONGODB_URI_FO || !MONGODB_URI_BO) {
-  throw new Error("MONGODB_URI_FO and MONGODB_URI_BO must be defined");
-}
+const connections: Record<string, Connection> = {};
 
-const connections: Record<string, mongoose.Connection> = {};
+export const connectDB = async (
+  dbName: "store" | "BackOffice",
+): Promise<Connection> => {
+  const uri = dbName === "store" ? MONGODB_URI_FO : MONGODB_URI_BO;
 
-export const connectDB = async (dbName: DataBaseValue) => {
-  let uri: string;
-
-  if (dbName === "BackOffice") {
-    uri = MONGODB_URI_BO;
-  } else if (dbName === "store") {
-    uri = MONGODB_URI_FO;
-  } else {
-    throw new Error(`Invalid dbName provided to connectDB(): ${dbName}`);
-  }
-
-  if (connections[uri]) {
-    return connections[uri];
-  }
+  if (connections[uri]) return connections[uri];
 
   try {
     const conn = await mongoose
       .createConnection(uri, {
-        serverSelectionTimeoutMS: 5000,
         tls: true,
+        serverSelectionTimeoutMS: 5000,
+        maxPoolSize: 10,
       })
       .asPromise();
 

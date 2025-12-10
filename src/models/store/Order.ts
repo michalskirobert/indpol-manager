@@ -4,7 +4,7 @@ import {
   OrderProps,
 } from "@/types/orders";
 import { StoreUserAddressParams } from "@/types/user";
-import { Schema, model, models } from "mongoose";
+import { Schema } from "mongoose";
 
 const ItemSchema: Schema = new Schema<CartItemProps>({
   price: {
@@ -181,5 +181,3 @@ export const OrderSchema: Schema = new Schema<OrderProps>({
     required: false,
   },
 });
-
-export const Order = models.Order || model("Order", OrderSchema);

@@ -5,12 +5,15 @@ import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
-import { SettingsFormProps, SettingsProfileFormArgs } from "./types";
+import { SettingsFormProps } from "./types";
 import { buildFields } from "./helpers";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "./schema";
 import { useEffect } from "react";
 import { defaultValues } from "./utils";
+import z from "zod";
+
+export type FormArgs = z.infer<typeof schema>;
 
 export const SettingsForm = ({
   id,
@@ -23,16 +26,16 @@ export const SettingsForm = ({
     formState: { isDirty },
     reset,
     handleSubmit,
-  } = useForm<SettingsProfileFormArgs>({
+  } = useForm<FormArgs>({
     defaultValues,
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
   });
 
   const { status, update } = useSession();
 
   const fields = buildFields(control);
 
-  const onSave = async (data: SettingsProfileFormArgs) => {
+  const onSave = async (data: FormArgs) => {
     try {
       const resp = await updateUser({ id, body: data }).unwrap();
       await update(resp);

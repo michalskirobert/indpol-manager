@@ -1,4 +1,4 @@
-import { Schema, model, models } from "mongoose";
+import { Schema } from "mongoose";
 import type { NotificationParams } from "@/types/notifications";
 
 export const NotificationSchema = new Schema<NotificationParams>(
@@ -15,9 +15,3 @@ export const NotificationSchema = new Schema<NotificationParams>(
     timestamps: true,
   },
 );
-
-const Notification =
-  models.Notification ||
-  model<NotificationParams>("Notification", NotificationSchema);
-
-export default Notification;

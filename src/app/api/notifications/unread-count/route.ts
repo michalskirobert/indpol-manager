@@ -8,6 +8,12 @@ export const GET = async () => {
 
     const session = await getSession();
 
+    if (!session?.user.id) {
+      return new Response(JSON.stringify({ message: "Not authorized" }), {
+        status: 401,
+      });
+    }
+
     const userId = session?.user.id;
 
     const count = await Notification.countDocuments({

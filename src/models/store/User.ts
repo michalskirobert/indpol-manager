@@ -1,5 +1,5 @@
 import { StoreUser, StoreUserAddressParams } from "@/types/user";
-import { Schema, model, models } from "mongoose";
+import { Schema } from "mongoose";
 
 const AddressSchema = new Schema<StoreUserAddressParams>(
   {
@@ -60,5 +60,3 @@ export const StoreUserSchema = new Schema<StoreUser>(
     timestamps: true,
   },
 );
-
-export const User = models.User || model<StoreUser>("User", StoreUserSchema);

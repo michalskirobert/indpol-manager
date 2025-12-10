@@ -1,12 +1,12 @@
 import { FieldProps } from "@/components/shared/form/types";
 import { Control } from "react-hook-form";
-import { SettingsProfileFormArgs } from "./types";
 import { PersonStanding } from "lucide-react";
 import { EmailIcon, PasswordIcon } from "@/assets/icons";
+import { FormArgs } from ".";
 
 export const buildFields = (
-  control: Control<SettingsProfileFormArgs>,
-): FieldProps<SettingsProfileFormArgs>[][] => [
+  control: Control<FormArgs>,
+): FieldProps<FormArgs>[][] => [
   [
     {
       type: "input",

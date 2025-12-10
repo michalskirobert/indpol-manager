@@ -1,5 +1,5 @@
 import { ProductProps, VariantsDocument } from "@/types/products";
-import mongoose, { model, Schema } from "mongoose";
+import { Schema } from "mongoose";
 
 const VariantsSchema = new Schema<VariantsDocument>({
   imageUrl: {
@@ -65,6 +65,3 @@ export const ProductSchema: Schema = new Schema<ProductProps>({
     required: true,
   },
 });
-
-export const Product =
-  mongoose.models.Product || model("Product", ProductSchema);

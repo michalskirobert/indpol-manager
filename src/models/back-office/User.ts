@@ -1,5 +1,5 @@
 import { DatabaseUser } from "@/types/user";
-import { Schema, model, models } from "mongoose";
+import { Schema } from "mongoose";
 
 export const UserSchema = new Schema<DatabaseUser>(
   {
@@ -50,7 +50,3 @@ export const UserSchema = new Schema<DatabaseUser>(
     timestamps: true,
   },
 );
-
-const User = models.User || model<DatabaseUser>("User", UserSchema);
-
-export default User;

@@ -1,5 +1,4 @@
-import User from "@/models/back-office/User";
-import { connectDB } from "@/lib/mongodb";
+import { getBOModels } from "@/models/dbModels";
 import bcrypt from "bcryptjs";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -12,6 +11,8 @@ export const GET = async (_req: NextRequest, context: RouteParams) => {
   const { id } = context.params;
 
   try {
+    const { User } = await getBOModels();
+
     const foundUser = await User.findOne({ _id: id });
 
     if (!foundUser) {
@@ -31,6 +32,8 @@ export const PATCH = async (req: NextRequest, context: RouteParams) => {
   const { id } = context.params;
 
   try {
+    const { User } = await getBOModels();
+
     const body = await req.json();
 
     const user = await User.findById(id);

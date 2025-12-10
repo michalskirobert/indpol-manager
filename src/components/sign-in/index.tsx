@@ -4,7 +4,7 @@ import React, { useCallback, useState, useTransition } from "react";
 
 import { useForm } from "react-hook-form";
 import { SignInArgs } from "@/types/user";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema } from "./schema";
 import { Alert } from "../shared/alert";
 import { signIn } from "next-auth/react";
@@ -20,7 +20,7 @@ export default function SigninWithPassword() {
 
   const { control, handleSubmit } = useForm<SignInArgs>({
     defaultValues: { email: "", password: "", rememberMe: false },
-    resolver: yupResolver(signInSchema),
+    resolver: zodResolver(signInSchema),
   });
 
   const router = useRouter();

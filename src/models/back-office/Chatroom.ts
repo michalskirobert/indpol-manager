@@ -1,5 +1,5 @@
-import { ChatroomParams, MessageParams } from "@/types/message";
-import { Schema, model, models } from "mongoose";
+import { ChatroomParams } from "@/types/message";
+import { Schema } from "mongoose";
 
 export const ChatroomSchema = new Schema<ChatroomParams>(
   {
@@ -23,8 +23,3 @@ export const ChatroomSchema = new Schema<ChatroomParams>(
     timestamps: true,
   },
 );
-
-const Chatroom =
-  models.Chatroom || model<ChatroomParams>("Chatroom", ChatroomSchema);
-
-export default Chatroom;

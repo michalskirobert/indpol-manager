@@ -1,10 +1,11 @@
 import { getSession } from "@/lib/auth";
-import User from "@/models/back-office/User";
-import { connectDB } from "@/lib/mongodb";
+import { getBOModels } from "@/models/dbModels";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
   const session = await getSession();
+
+  const { User } = await getBOModels();
 
   if (!session?.user.id) {
     return NextResponse.json({ message: "Not authorized" }, { status: 401 });

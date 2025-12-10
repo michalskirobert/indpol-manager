@@ -1,5 +1,5 @@
 import { MessageParams } from "@/types/message";
-import { Schema, model, models } from "mongoose";
+import { Schema } from "mongoose";
 
 export const MessageSchema = new Schema<MessageParams>(
   {
@@ -14,8 +14,3 @@ export const MessageSchema = new Schema<MessageParams>(
     timestamps: true,
   },
 );
-
-const Message =
-  models.Message || model<MessageParams>("Message", MessageSchema);
-
-export default Message;

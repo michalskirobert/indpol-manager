@@ -1,27 +1,33 @@
-import * as yup from "yup";
+import z from "zod";
 
-export const schema = yup
+export const schema = z
   .object({
-    fullname: yup.string().required().label("Full name"),
-    email: yup.string().email().required().label("E-mail"),
-    oldPassword: yup.string().default(""),
-    newPassword: yup.string().default(""),
+    fullname: z.string().min(1, "Full name is required"),
+    email: z.string().email("Invalid e-mail address"),
+    oldPassword: z.string().optional(),
+    newPassword: z.string().optional(),
   })
-  .test(
-    "passwords-required",
-    "Both old and new password are required when changing password",
-    function (values) {
-      const { oldPassword, newPassword } = values as {
-        oldPassword: string;
-        newPassword: string;
-      };
-      if ((oldPassword && !newPassword) || (!oldPassword && newPassword)) {
-        return this.createError({
-          path: oldPassword ? "newPassword" : "oldPassword",
+  .superRefine((values, ctx) => {
+    const { oldPassword, newPassword } = values;
+
+    const oldFilled = oldPassword && oldPassword.length > 0;
+    const newFilled = newPassword && newPassword.length > 0;
+
+    if ((oldFilled && !newFilled) || (!oldFilled && newFilled)) {
+      if (oldFilled) {
+        ctx.addIssue({
+          path: ["newPassword"],
+          code: z.ZodIssueCode.custom,
+          message:
+            "Both old and new password are required when changing password",
+        });
+      } else {
+        ctx.addIssue({
+          path: ["oldPassword"],
+          code: z.ZodIssueCode.custom,
           message:
             "Both old and new password are required when changing password",
         });
       }
-      return true;
-    },
-  );
+    }
+  });
