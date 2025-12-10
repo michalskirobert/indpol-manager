@@ -1,5 +1,5 @@
 import { getStoreModels } from "@/models/dbModels";
-import { OrderProps } from "@/types/orders";
+import { OrderProps, OrderStatus } from "@/types/orders";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -13,24 +13,26 @@ export async function getWeeksProfitData(
   let start: Date;
   let end: Date;
 
-  const day = now.getDay(); // 0=Sun, 6=Sat
+  const day = now.getDay();
   if (timeFrame === "last week") {
     start = new Date(now);
     start.setDate(now.getDate() - day - 7);
     start.setHours(0, 0, 0, 0);
     end = new Date(start);
-    end.setDate(start.getDate() + 7);
+    end.setDate(start.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
   } else {
     start = new Date(now);
     start.setDate(now.getDate() - day);
     start.setHours(0, 0, 0, 0);
     end = new Date(start);
-    end.setDate(start.getDate() + 7);
+    end.setDate(start.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
   }
 
   const orders = await Order.find({
-    createdDate: { $gte: start, $lt: end },
-    status: { $ne: 50 },
+    createdDate: { $gte: start, $lte: end },
+    status: { $ne: OrderStatus.Cancelled },
   }).lean<OrderProps[]>();
 
   const salesMap = new Map<string, number>();
@@ -42,6 +44,7 @@ export async function getWeeksProfitData(
   });
 
   orders.forEach((order) => {
+    if (!order.createdAt) return;
     const date = new Date(order.createdAt);
     const dayName = daysOfWeek[date.getDay()];
     salesMap.set(

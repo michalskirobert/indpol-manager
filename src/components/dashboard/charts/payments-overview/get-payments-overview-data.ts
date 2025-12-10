@@ -1,7 +1,7 @@
 import { getStoreModels } from "@/models/dbModels";
-import { OrderProps, PaymentStatus } from "@/types/orders";
+import { OrderProps, OrderStatus, PaymentStatus } from "@/types/orders";
 
-export async function getPaymentsOverviewData(timeFrame: "monthly" | "yearly") {
+export async function getPaymentsOverviewData(timeFrame: string) {
   const { Order } = await getStoreModels();
 
   const now = new Date();
@@ -19,13 +19,15 @@ export async function getPaymentsOverviewData(timeFrame: "monthly" | "yearly") {
 
   const orders = await Order.find({
     purchaseDate: { $gte: start, $lt: end },
+    status: { $ne: OrderStatus.Cancelled },
   }).lean<OrderProps[]>();
 
   const receivedMap = new Map<string, number>();
   const dueMap = new Map<string, number>();
 
   orders.forEach((order) => {
-    const date = new Date(order.purchaseDate || new Date());
+    if (!order.purchaseDate) return;
+    const date = new Date(order.purchaseDate);
     const key =
       timeFrame === "monthly"
         ? date.toLocaleString("default", { month: "short" })

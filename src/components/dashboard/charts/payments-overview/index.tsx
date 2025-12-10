@@ -14,7 +14,7 @@ export async function PaymentsOverview({
   timeFrame = "monthly",
   className,
 }: PropsType) {
-  const data = await getPaymentsOverviewData(timeFrame as "monthly" | "yearly");
+  const data = await getPaymentsOverviewData(timeFrame);
 
   return (
     <div

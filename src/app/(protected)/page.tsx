@@ -1,5 +1,5 @@
-import { PaymentsOverview } from "@/components/shared/charts/payments-overview";
-import { WeeksProfit } from "@/components/shared/charts/weeks-profit";
+import { PaymentsOverview } from "@/components/dashboard/charts/payments-overview";
+import { WeeksProfit } from "@/components/dashboard/charts/weeks-profit";
 import { TopSales } from "@/components/dashboard/tables/top-sales";
 import { TopSalesSkeleton } from "@/components/dashboard/tables/top-sales/Skeleton";
 import { createTimeFrameExtractor } from "@/utils/timeframe-extractor";

@@ -7,28 +7,14 @@ export const getTopSales = async () => {
 
   const products = await Product.find().lean<ProductProps[]>();
 
-  const now = new Date();
-  const startCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const endPrevMonth = startCurrentMonth;
-
   const currentOrders = await Order.find({
     paymentStatus: PaymentStatus.Paid,
-    status: { $ne: OrderStatus.Cancelled },
-    $expr: {
-      $and: [{ $gte: [{ $toDate: "$createdDate" }, startCurrentMonth] }],
-    },
+    status: { $nin: [OrderStatus.Cancelled] },
   }).lean<OrderProps[]>();
 
   const previousOrders = await Order.find({
     paymentStatus: PaymentStatus.Paid,
-    status: { $ne: OrderStatus.Cancelled },
-    $expr: {
-      $and: [
-        { $gte: [{ $toDate: "$createdDate" }, startPrevMonth] },
-        { $lt: [{ $toDate: "$createdDate" }, endPrevMonth] },
-      ],
-    },
+    status: { $nin: [OrderStatus.Cancelled] },
   }).lean<OrderProps[]>();
 
   const soldCurrent = new Map<string, number>();
@@ -43,6 +29,7 @@ export const getTopSales = async () => {
         item.productId,
         (soldCurrent.get(item.productId) || 0) + item.quantity,
       );
+
       const revenue = (item.price || 0) * item.quantity - (item.discount || 0);
       revenueMap.set(
         item.productId,
@@ -78,7 +65,7 @@ export const getTopSales = async () => {
         sold: soldCur,
         revenues: revenueMap.get(p._id.toString()) || 0,
         growth,
-        logo: p.images?.[0] || "/default-product.png",
+        logo: p.images?.[0] || "/images/logo.png",
       };
     })
     .sort((a, b) => b.sold - a.sold)
