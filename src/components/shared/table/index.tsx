@@ -22,7 +22,7 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
     <div
       ref={table.containerRef}
       className={cn(
-        "dark:bg-dark-1 relative overflow-auto rounded-md border bg-white",
+        "dark:bg-dark-1 relative overflow-auto rounded-md border",
         className,
       )}
       style={{ height, width }}

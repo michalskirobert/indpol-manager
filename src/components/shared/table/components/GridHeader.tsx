@@ -26,10 +26,10 @@ export const GridHeader = <T extends Record<string, any>>({
   toggleSelectAll,
 }: Props<T>) => {
   return (
-    <thead className="bg-neutral-200 dark:bg-neutral-800 sticky top-0 z-10">
+    <thead className="bg-neutral-200 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100 sticky top-0 z-10">
       <tr>
         {selection?.mode === "multiple" && (
-          <th className="border px-3 py-2">
+          <th className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
             <input
               type="checkbox"
               checked={allSelected}
@@ -50,7 +50,7 @@ export const GridHeader = <T extends Record<string, any>>({
           return (
             <th
               key={col.field}
-              className="select-none border px-3 py-2"
+              className="border-neutral-300 dark:border-neutral-700 select-none border px-3 py-2"
               style={{ width: col.width }}
               onClick={() => col.allowSorting && toggleSort(col.field)}
             >

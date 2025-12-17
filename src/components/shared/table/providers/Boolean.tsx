@@ -12,7 +12,7 @@ export const BooleanProvider = ({
   updateFilter,
 }: BooleanProviderProps) => (
   <select
-    className="w-full rounded-sm border border-gray-300 bg-white px-1.5 py-1 text-xs shadow-inner focus:border-blue-500 focus:outline-none"
+    className="dark:border-neutral-600 w-full rounded-sm border border-gray-300 px-1.5 py-1 text-xs shadow-inner focus:border-blue-500 focus:outline-none dark:bg-dark-2 dark:text-white dark:focus:border-primary"
     onChange={(e) =>
       updateFilter({
         field,

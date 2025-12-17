@@ -30,11 +30,11 @@ export const GridBody = <T extends Record<string, any>>({
 
     if (type === "boolean") {
       return value ? (
-        <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+        <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900 dark:text-green-300">
           YES
         </span>
       ) : (
-        <span className="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+        <span className="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900 dark:text-red-300">
           NO
         </span>
       );
@@ -44,20 +44,18 @@ export const GridBody = <T extends Record<string, any>>({
   };
 
   return (
-    <tbody>
+    <tbody className="text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100">
       {rows.map((row, rowIndex) => {
         const key = getKey(row, rowIndex);
 
         return (
           <tr
             key={key}
-            className={`cursor-pointer border-b hover:bg-blue-50 ${
-              isSelected(key) ? "bg-blue-100" : ""
-            }`}
+            className={`border-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-800 cursor-pointer border-b hover:bg-blue-50 ${isSelected(key) ? "bg-blue-100 dark:bg-blue-900 dark:text-white" : ""}`}
             onClick={() => selection && toggleSelect(key)}
           >
             {selection?.mode === "multiple" && (
-              <td className="border px-3 py-2">
+              <td className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
                 <input
                   type="checkbox"
                   checked={isSelected(key)}
@@ -68,7 +66,10 @@ export const GridBody = <T extends Record<string, any>>({
             )}
 
             {columns.map((col) => (
-              <td key={col.field} className="border px-3 py-2">
+              <td
+                key={col.field}
+                className="border-neutral-300 dark:border-neutral-700 border px-3 py-2"
+              >
                 {col.cellRender
                   ? col.cellRender(
                       col.calculateValue

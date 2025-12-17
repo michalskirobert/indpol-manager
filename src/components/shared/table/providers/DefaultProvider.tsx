@@ -28,7 +28,7 @@ export const DefaultProvider = ({
     return (
       <div className="flex gap-1">
         <input
-          className="dx-input w-full rounded-sm border border-gray-300 bg-white px-1.5 py-1 text-xs shadow-inner focus:border-blue-500 focus:outline-none"
+          className="dx-input dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 w-full rounded-sm border border-gray-300 px-1.5 py-1 text-xs shadow-inner focus:border-blue-500 focus:outline-none dark:focus:border-blue-400"
           placeholder="From"
           type="number"
           value={range[0] ?? ""}
@@ -48,7 +48,7 @@ export const DefaultProvider = ({
           }}
         />
         <input
-          className="dx-input w-full rounded-sm border border-gray-300 bg-white px-1.5 py-1 text-xs shadow-inner focus:border-blue-500 focus:outline-none"
+          className="dx-input dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 w-full rounded-sm border border-gray-300 px-1.5 py-1 text-xs shadow-inner focus:border-blue-500 focus:outline-none dark:focus:border-blue-400"
           placeholder="To"
           type="number"
           value={range[1] ?? ""}
@@ -73,7 +73,7 @@ export const DefaultProvider = ({
 
   return (
     <input
-      className="dx-input w-full rounded-sm border border-gray-300 bg-white px-1.5 py-1 text-xs shadow-inner focus:border-blue-500 focus:outline-none"
+      className="dx-input dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 w-full rounded-sm border border-gray-300 px-1.5 py-1 text-xs shadow-inner focus:border-blue-500 focus:outline-none dark:focus:border-blue-400"
       placeholder="Value"
       type={type}
       onChange={(e) =>
