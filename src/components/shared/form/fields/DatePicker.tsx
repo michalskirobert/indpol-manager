@@ -4,7 +4,7 @@ import flatpickr from "flatpickr";
 import { Calendar } from "lucide-react";
 import { useEffect } from "react";
 import { DatePickerProps } from "../types";
-import { Controller, FieldValues } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { Feedback } from "../Feedback";
 
 export const DatePicker = ({
