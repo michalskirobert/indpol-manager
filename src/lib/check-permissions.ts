@@ -7,6 +7,8 @@ export function canAccessRoute(user: unknown, pathname: string): boolean {
 
   if (currentUser.role === "admin") return true;
 
+  if (currentUser.permissions === undefined) return false;
+
   const cleanPath = pathname.split("?")[0].replace(/\/$/, "");
 
   const permissionEntry = currentUser.permissions[cleanPath];

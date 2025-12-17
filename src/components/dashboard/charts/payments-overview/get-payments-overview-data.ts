@@ -1,8 +1,8 @@
-import { getStoreModels } from "@/models/dbModels";
+import { getCollection } from "@/lib/mongodb";
 import { OrderProps, OrderStatus, PaymentStatus } from "@/types/orders";
 
 export async function getPaymentsOverviewData(timeFrame: string) {
-  const { Order } = await getStoreModels();
+  const db = await getCollection<OrderProps>("store", "orders");
 
   const now = new Date();
 
@@ -17,10 +17,12 @@ export async function getPaymentsOverviewData(timeFrame: string) {
     end = new Date(now.getFullYear() + 1, 0, 1);
   }
 
-  const orders = await Order.find({
-    purchaseDate: { $gte: start, $lt: end },
-    status: { $ne: OrderStatus.Cancelled },
-  }).lean<OrderProps[]>();
+  const orders = await db
+    .find({
+      purchaseDate: { $gte: start, $lt: end },
+      status: { $ne: OrderStatus.Cancelled },
+    })
+    .toArray();
 
   const receivedMap = new Map<string, number>();
   const dueMap = new Map<string, number>();

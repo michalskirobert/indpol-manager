@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getBOModels } from "@/models/dbModels";
+import { getCollection } from "@/lib/mongodb";
 
 const getRoomId = (a: string, b: string) => [a, b].sort().join("_");
 
@@ -10,7 +10,8 @@ export const GET = async (
 ) => {
   const session = await getSession();
 
-  const { Message, Chatroom } = await getBOModels();
+  const messagesDb = await getCollection("BackOffice", "messages");
+  const chatroomsDb = await getCollection("BackOffice", "chatrooms");
 
   if (!session?.user.id) {
     return NextResponse.json({ message: "Not authorized" }, { status: 401 });
@@ -30,16 +31,19 @@ export const GET = async (
     ],
   };
 
-  const paginatedMessages = await Message.find(messageFilter)
+  const paginatedMessages = await messagesDb
+    .find(messageFilter)
     .sort({ createdAt: 1 })
+    .skip(skip)
     .limit(take)
-    .skip(skip);
+    .toArray();
 
-  const newMessages = await Message.find({ read: false }).sort({
-    createdAt: 1,
-  });
+  const newMessages = await messagesDb
+    .find({ read: false })
+    .sort({ createdAt: 1 })
+    .toArray();
 
-  await Message.updateMany(
+  await messagesDb.updateMany(
     {
       senderId: peerId,
       recipientId: session.user.id,
@@ -48,10 +52,10 @@ export const GET = async (
     { $set: { read: true } },
   );
 
-  await Chatroom.findOneAndUpdate(
+  await chatroomsDb.findOneAndUpdate(
     { roomId },
-    { "lastMessage.read": true },
-    { new: true },
+    { $set: { "lastMessage.read": true } },
+    { returnDocument: "after" },
   );
 
   const merged = [...paginatedMessages, ...newMessages];

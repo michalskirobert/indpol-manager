@@ -1,4 +1,4 @@
-import { getStoreModels } from "@/models/dbModels";
+import { getCollection } from "@/lib/mongodb";
 import { OrderProps, OrderStatus } from "@/types/orders";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -8,7 +8,7 @@ export async function getWeeksProfitData(
 ) {
   const now = new Date();
 
-  const { Order } = await getStoreModels();
+  const db = await getCollection("store", "orders");
 
   let start: Date;
   let end: Date;
@@ -30,10 +30,12 @@ export async function getWeeksProfitData(
     end.setHours(23, 59, 59, 999);
   }
 
-  const orders = await Order.find({
-    createdDate: { $gte: start, $lte: end },
-    status: { $ne: OrderStatus.Cancelled },
-  }).lean<OrderProps[]>();
+  const orders = await db
+    .find<OrderProps>({
+      createdDate: { $gte: start, $lte: end },
+      status: { $ne: OrderStatus.Cancelled },
+    })
+    .toArray();
 
   const salesMap = new Map<string, number>();
   const revenueMap = new Map<string, number>();

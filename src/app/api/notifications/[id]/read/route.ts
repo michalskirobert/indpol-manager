@@ -1,6 +1,8 @@
 import { getSession } from "@/lib/auth";
-import { getBOModels } from "@/models/dbModels";
+import { getCollection } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
+
+import { ObjectId } from "mongodb";
 
 export const PATCH = async (
   req: Request,
@@ -10,7 +12,7 @@ export const PATCH = async (
 
   const session = await getSession();
 
-  const { Notification } = await getBOModels();
+  const db = await getCollection("BackOffice", "notifications");
 
   const userId = session?.user.id;
 
@@ -21,11 +23,11 @@ export const PATCH = async (
     );
   }
 
-  await Notification.findByIdAndUpdate(
-    id,
+  await db.findOneAndUpdate(
+    { _id: new ObjectId(id) },
     { $addToSet: { readBy: userId } },
-    { new: true },
-  ).lean();
+    { returnDocument: "after" },
+  );
 
   return NextResponse.json({ success: true });
 };

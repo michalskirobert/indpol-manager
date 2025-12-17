@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getBOModels } from "@/models/dbModels";
+import { getCollection } from "@/lib/mongodb";
 
 export const GET = async (req: Request) => {
   try {
     const session = await getSession();
 
-    const { Message } = await getBOModels();
+    const db = await getCollection("BackOffice", "messages");
 
     if (!session?.user.id) {
       return new Response(JSON.stringify({ message: "Not authorized" }), {
@@ -14,7 +14,7 @@ export const GET = async (req: Request) => {
       });
     }
 
-    const count = await Message.countDocuments({
+    const count = await db.countDocuments({
       recipientId: session.user.id,
       read: false,
     });

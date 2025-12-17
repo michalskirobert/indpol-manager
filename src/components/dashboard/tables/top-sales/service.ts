@@ -1,21 +1,26 @@
+import { getCollection } from "@/lib/mongodb";
 import { OrderProps, PaymentStatus, OrderStatus } from "@/types/orders";
 import { ProductProps } from "@/types/products";
-import { getStoreModels } from "@/models/dbModels";
 
 export const getTopSales = async () => {
-  const { Product, Order } = await getStoreModels();
+  const productsDb = await getCollection<ProductProps>("store", "products");
+  const ordersDb = await getCollection<OrderProps>("store", "orders");
 
-  const products = await Product.find().lean<ProductProps[]>();
+  const products = await productsDb.find().toArray();
 
-  const currentOrders = await Order.find({
-    paymentStatus: PaymentStatus.Paid,
-    status: { $nin: [OrderStatus.Cancelled] },
-  }).lean<OrderProps[]>();
+  const currentOrders = await ordersDb
+    .find({
+      paymentStatus: PaymentStatus.Paid,
+      status: { $nin: [OrderStatus.Cancelled] },
+    })
+    .toArray();
 
-  const previousOrders = await Order.find({
-    paymentStatus: PaymentStatus.Paid,
-    status: { $nin: [OrderStatus.Cancelled] },
-  }).lean<OrderProps[]>();
+  const previousOrders = await ordersDb
+    .find({
+      paymentStatus: PaymentStatus.Paid,
+      status: { $nin: [OrderStatus.Cancelled] },
+    })
+    .toArray();
 
   const soldCurrent = new Map<string, number>();
   const soldPrevious = new Map<string, number>();

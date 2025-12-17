@@ -1,22 +1,26 @@
-import { getStoreModels } from "@/models/dbModels";
-import { OrderStatus, PaymentStatus } from "@/types/orders";
+import { getCollection } from "@/lib/mongodb";
+import { OrderProps, OrderStatus, PaymentStatus } from "@/types/orders";
+import { ProductProps } from "@/types/products";
+import { StoreUser } from "@/types/user";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
   try {
-    const { Order, Product, User } = await getStoreModels();
+    const orderDb = await getCollection<OrderProps>("store", "orders");
+    const productDb = await getCollection<ProductProps>("store", "products");
+    const userDb = await getCollection<StoreUser>("store", "users");
 
     const now = new Date();
     const startCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const startPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const endPrevMonth = startCurrentMonth;
 
-    const currentSales = await Order.countDocuments({
+    const currentSales = await orderDb.countDocuments({
       paymentStatus: PaymentStatus.Paid,
       status: { $ne: OrderStatus.Cancelled },
     });
 
-    const previousSales = await Order.countDocuments({
+    const previousSales = await orderDb.countDocuments({
       paymentStatus: PaymentStatus.Paid,
       status: { $ne: OrderStatus.Cancelled },
       createdAt: { $gte: startPrevMonth, $lt: endPrevMonth },
@@ -30,59 +34,64 @@ export const GET = async () => {
           : 0,
     };
 
-    const currentProfitAgg = await Order.aggregate([
-      {
-        $match: {
-          paymentStatus: PaymentStatus.Paid,
-          status: { $ne: OrderStatus.Cancelled },
+    const currentProfitAgg = await orderDb
+      .aggregate([
+        {
+          $match: {
+            paymentStatus: PaymentStatus.Paid,
+            status: { $ne: OrderStatus.Cancelled },
+          },
         },
-      },
-      { $group: { _id: null, total: { $sum: "$totalAmount" } } },
-    ]);
-    const previousProfitAgg = await Order.aggregate([
-      {
-        $match: {
-          paymentStatus: PaymentStatus.Paid,
-          status: { $ne: OrderStatus.Cancelled },
+        { $group: { _id: null, total: { $sum: "$totalAmount" } } },
+      ])
+      .toArray();
+    const previousProfitAgg = await orderDb
+      .aggregate([
+        {
+          $match: {
+            paymentStatus: PaymentStatus.Paid,
+            status: { $ne: OrderStatus.Cancelled },
+          },
         },
-      },
-      { $group: { _id: null, total: { $sum: "$totalAmount" } } },
-    ]);
+        { $group: { _id: null, total: { $sum: "$totalAmount" } } },
+      ])
+      .toArray();
+
+    const currentProfitTotal = currentProfitAgg[0]?.total || 0;
+    const previousProfitTotal = previousProfitAgg[0]?.total || 0;
 
     const totalProfit = {
-      value: currentProfitAgg[0]?.total || 0,
+      value: currentProfitTotal,
       growthRate:
-        (previousProfitAgg[0]?.total || 0) > 0
-          ? (((currentProfitAgg[0]?.total || 0) -
-              (previousProfitAgg[0]?.total || 0)) /
-              (previousProfitAgg[0]?.total || 0)) *
+        previousProfitTotal > 0
+          ? ((currentProfitTotal - previousProfitTotal) / previousProfitTotal) *
             100
           : 0,
     };
 
-    const currentProducts = await Product.countDocuments({
+    const currentProducts = await productDb.countDocuments({
       createdAt: { $gte: startCurrentMonth },
     });
-    const previousProducts = await Product.countDocuments({
+    const previousProducts = await productDb.countDocuments({
       createdAt: { $gte: startPrevMonth, $lt: endPrevMonth },
     });
     const totalProducts = {
-      value: await Product.countDocuments(),
+      value: await productDb.countDocuments(),
       growthRate:
         previousProducts > 0
           ? ((currentProducts - previousProducts) / previousProducts) * 100
           : 0,
     };
 
-    const currentUsers = await User.countDocuments({
+    const currentUsers = await userDb.countDocuments({
       createdAt: { $gte: startCurrentMonth },
     });
-    const previousUsers = await User.countDocuments({
+    const previousUsers = await userDb.countDocuments({
       createdAt: { $gte: startPrevMonth, $lt: endPrevMonth },
     });
 
     const totalUsers = {
-      value: await User.countDocuments(),
+      value: await userDb.countDocuments(),
       growthRate:
         previousUsers > 0
           ? ((currentUsers - previousUsers) / previousUsers) * 100

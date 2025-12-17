@@ -1,13 +1,20 @@
 import { getSession } from "@/lib/auth";
-import { MessageParams } from "@/types/message";
+import { ChatroomParams, MessageParams } from "@/types/message";
 import { NextResponse } from "next/server";
 import { updateLastSeen } from "../../auth/users/lastSeen/helpers";
 import { getRoomId } from "../utils";
-import { getBOModels } from "@/models/dbModels";
+import { getCollection } from "@/lib/mongodb";
 
 export const POST = async (req: Request) => {
   try {
-    const { Message, Chatroom } = await getBOModels();
+    const messagesDb = await getCollection<MessageParams>(
+      "BackOffice",
+      "messages",
+    );
+    const chatroomsDb = await getCollection<ChatroomParams>(
+      "BackOffice",
+      "chatrooms",
+    );
 
     const session = await getSession();
 
@@ -23,32 +30,48 @@ export const POST = async (req: Request) => {
 
     const roomId = getRoomId(recipientId, session.user.id);
 
-    const msg = await Message.create({
+    const now = new Date();
+
+    const insertResult = await messagesDb.insertOne({
       roomId,
       content,
       read: false,
       recipientId,
       senderId: session?.user.id,
+      createdAt: now,
+      updatedAt: now,
     });
 
-    if (!msg) {
+    if (!insertResult.insertedId) {
       return NextResponse.json(
         { message: "Message cannot be sent" },
         { status: 408 },
       );
     }
 
-    await Chatroom.findOneAndUpdate(
+    const msg = await messagesDb.findOne({ _id: insertResult.insertedId });
+
+    if (!msg) {
+      return NextResponse.json(
+        { message: "Message cannot be found after insertion" },
+        { status: 408 },
+      );
+    }
+
+    await chatroomsDb.findOneAndUpdate(
       { roomId },
       {
-        lastMessage: {
-          content: msg.content,
-          senderId: msg.senderId,
-          createdAt: msg.createdAt,
-          read: msg.read,
+        $set: {
+          lastMessage: {
+            content: msg.content,
+            senderId: msg.senderId,
+            createdAt: msg.createdAt,
+            read: msg.read,
+          },
+          updatedAt: now,
         },
       },
-      { new: true },
+      { returnDocument: "after" },
     );
 
     await updateLastSeen(session);

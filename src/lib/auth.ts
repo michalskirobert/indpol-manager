@@ -1,11 +1,8 @@
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { UserProps } from "@/types/user";
-import type { Document } from "mongoose";
-import { getBOModels } from "@/models/dbModels";
-
-type MongooseUser = Document & UserProps;
+import { DatabaseUser, UserProps } from "@/types/user";
+import { getCollection } from "./mongodb";
 
 const authOptions: NextAuthOptions = {
   providers: [
@@ -18,27 +15,29 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const { User } = await getBOModels();
+        const userDb = await getCollection("BackOffice", "users");
 
-        const userFound = await User.findOne({
+        const userFound = await userDb.findOne<DatabaseUser>({
           email: credentials?.email,
-        }).select("+password");
+        });
 
-        if (!userFound) throw new Error("Invalid Email");
+        if (!userFound) return null;
 
         const passwordMatch = await bcrypt.compare(
           credentials!.password,
           userFound.password,
         );
 
-        if (!passwordMatch) throw new Error("Invalid Password");
+        if (!passwordMatch) return null;
 
-        await User.updateOne(
+        await userDb.updateOne(
           { _id: userFound._id },
-          { lastSeenAt: new Date() },
+          { $set: { lastSeenAt: new Date() } },
         );
 
-        return userFound;
+        const { password, ...userWithoutPassword } = userFound;
+
+        return userWithoutPassword as UserProps;
       },
     }),
   ],
@@ -64,9 +63,8 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {
-        const u = user as MongooseUser;
-        const obj = u.toObject();
-        const { password, _id, ...rest } = obj;
+        const { password, _id, ...rest } = user as DatabaseUser;
+        console.log(user);
         token.id = _id.toString();
 
         Object.entries(rest).forEach(([key, value]) => {

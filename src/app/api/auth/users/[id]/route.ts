@@ -1,5 +1,8 @@
-import { getBOModels } from "@/models/dbModels";
+import { getCollection } from "@/lib/mongodb";
+import { DatabaseUser } from "@/types/user";
 import bcrypt from "bcryptjs";
+
+import { ObjectId } from "mongodb";
 
 import { NextRequest, NextResponse } from "next/server";
 
@@ -11,9 +14,10 @@ export const GET = async (_req: NextRequest, context: RouteParams) => {
   const { id } = context.params;
 
   try {
-    const { User } = await getBOModels();
+    const db = await getCollection("BackOffice", "users");
+    console.log(db);
 
-    const foundUser = await User.findOne({ _id: id });
+    const foundUser = await db.findOne<DatabaseUser>({ _id: new ObjectId(id) });
 
     if (!foundUser) {
       return NextResponse.json({ message: "User not found!" }, { status: 404 });
@@ -32,11 +36,11 @@ export const PATCH = async (req: NextRequest, context: RouteParams) => {
   const { id } = context.params;
 
   try {
-    const { User } = await getBOModels();
+    const db = await getCollection("BackOffice", "users");
 
     const body = await req.json();
 
-    const user = await User.findById(id);
+    const user = await db.findOne<DatabaseUser>({ _id: new ObjectId(id) });
 
     if (!user) {
       return NextResponse.json({ message: "User not found!" }, { status: 404 });
@@ -73,9 +77,10 @@ export const PATCH = async (req: NextRequest, context: RouteParams) => {
     }
 
     Object.assign(user, body);
-    await user.save();
 
-    return NextResponse.json(user, { status: 200 });
+    await db.updateOne({ _id: new ObjectId(id) }, { $set: body });
+
+    return NextResponse.json({ ...user, ...body }, { status: 200 });
   } catch (error) {
     console.error("PATCH error:", error);
     return NextResponse.json(

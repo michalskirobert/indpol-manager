@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getBOModels } from "@/models/dbModels";
+import { getCollection } from "@/lib/mongodb";
+import { MessageParams } from "@/types/message";
 
 export const GET = async (
   _: Request,
   { params }: { params: { id: string } },
 ) => {
-  const { Message } = await getBOModels();
+  const db = await getCollection("BackOffice", "messages");
 
   const session = await getSession();
 
@@ -27,9 +28,9 @@ export const GET = async (
   if (session.user.id !== userA && session.user.id !== userB)
     return NextResponse.json({ message: "Access denied" }, { status: 403 });
 
-  const messages = await Message.find({ roomId }).sort({ createdAt: 1 });
+  const messages = db.find<MessageParams[]>({ roomId }).sort({ createdAt: 1 });
 
-  await Message.updateMany(
+  await db.updateMany(
     {
       roomId,
       senderId: session.user.id === userA ? userB : userA,

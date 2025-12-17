@@ -1,31 +1,32 @@
-import mongoose, { Connection } from "mongoose";
+import mongoose, { Connection, Document } from "mongoose";
 
-const { MONGODB_URI_FO, MONGODB_URI_BO } = process.env;
-if (!MONGODB_URI_FO || !MONGODB_URI_BO)
-  throw new Error("Mongo URIs must be defined");
+const { MONGODB_URI } = process.env;
 
-const connections: Record<string, Connection> = {};
+if (!MONGODB_URI) throw new Error("Mongo URIs must be defined");
 
-export const connectDB = async (
-  dbName: "store" | "BackOffice",
-): Promise<Connection> => {
-  const uri = dbName === "store" ? MONGODB_URI_FO : MONGODB_URI_BO;
+let cachedConnection: Connection | null = null;
 
-  if (connections[uri]) return connections[uri];
-
-  try {
-    const conn = await mongoose
-      .createConnection(uri, {
-        tls: true,
-        serverSelectionTimeoutMS: 5000,
-        maxPoolSize: 50,
-      })
-      .asPromise();
-
-    connections[uri] = conn;
-    return conn;
-  } catch (error) {
-    console.error("MongoDB connection error:", error);
-    throw error;
+export const connectDB = async (): Promise<Connection> => {
+  if (cachedConnection) {
+    return cachedConnection;
   }
+
+  cachedConnection = await mongoose
+    .createConnection(MONGODB_URI, {
+      tls: true,
+      serverSelectionTimeoutMS: 5000,
+      maxPoolSize: 50,
+    })
+    .asPromise();
+
+  return cachedConnection;
+};
+
+export const getCollection = async <T extends object>(
+  database: "store" | "BackOffice" = "store",
+  collectionName: string,
+): Promise<mongoose.Collection<T>> => {
+  const connection = (await connectDB()).useDb(database);
+
+  return connection.collection(collectionName);
 };

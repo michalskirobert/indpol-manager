@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getBOModels } from "@/models/dbModels";
+import { getCollection } from "@/lib/mongodb";
 
 export const GET = async () => {
   try {
-    const { Notification } = await getBOModels();
+    const db = await getCollection("BackOffice", "notifications");
 
     const session = await getSession();
 
@@ -16,7 +16,7 @@ export const GET = async () => {
 
     const userId = session?.user.id;
 
-    const count = await Notification.countDocuments({
+    const count = await db.countDocuments({
       readBy: { $ne: userId },
     });
 

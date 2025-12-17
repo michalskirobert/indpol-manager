@@ -1,7 +1,8 @@
 import { getSession } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { getChatrooms } from "./get-chatrooms";
-import { getBOModels } from "@/models/dbModels";
+import { getCollection } from "@/lib/mongodb";
+import { ChatroomParams } from "@/types/message";
 
 export const GET = async () => {
   const session = await getSession();
@@ -15,7 +16,7 @@ export const GET = async () => {
 };
 
 export const POST = async (req: Request) => {
-  const { Chatroom } = await getBOModels();
+  const db = await getCollection<ChatroomParams>("BackOffice", "chatrooms");
 
   const session = await getSession();
 
@@ -31,10 +32,10 @@ export const POST = async (req: Request) => {
 
   const roomId = [session.user.id.toString(), recipientId].sort().join("_");
 
-  let chatroom = await Chatroom.findOne({ roomId });
+  let chatroom = await db.findOne({ roomId });
 
   if (!chatroom) {
-    chatroom = await Chatroom.create({
+    const insertResult = await db.insertOne({
       roomId,
       participants: [session.user.id, recipientId],
       lastMessage: {
@@ -44,6 +45,8 @@ export const POST = async (req: Request) => {
         createdAt: new Date(),
       },
     });
+
+    chatroom = await db.findOne({ _id: insertResult.insertedId });
   }
 
   return new Response(JSON.stringify(chatroom), { status: 200 });
