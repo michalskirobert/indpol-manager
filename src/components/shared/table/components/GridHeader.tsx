@@ -50,11 +50,12 @@ export const GridHeader = <T extends Record<string, any>>({
           return (
             <th
               key={col.field}
-              className="border-neutral-300 dark:border-neutral-700 select-none border px-3 py-2"
-              style={{ width: col.width }}
-              onClick={() => col.allowSorting && toggleSort(col.field)}
+              className={`width-[${col.width || 100}] border-neutral-300 dark:border-neutral-700 select-none border px-3 py-2`}
             >
-              <div className="flex items-center justify-between">
+              <div
+                className="flex items-center justify-between"
+                onClick={() => col.allowSorting && toggleSort(col.field)}
+              >
                 <span>{col.caption}</span>
                 {col.allowSorting && (
                   <>

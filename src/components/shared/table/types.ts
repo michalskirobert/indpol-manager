@@ -60,7 +60,6 @@ export type GridDataSource<T> = {
 
 export type GridProps<T extends Record<string, any>> = {
   columns: GridColumn[];
-  dataSource: GridDataSource<T>;
   height?: number;
   width?: number | string;
   className?: string;
@@ -70,10 +69,20 @@ export type GridProps<T extends Record<string, any>> = {
   };
   selectionKeys?: Array<string | number>;
   keyExpr?: string;
-  onLoadMore?: () => void;
+  data?: T[];
+  onDataLoad?: DataStore;
   onSort?: (sorting: GridSorting | null) => void;
   onFilter?: (filters: GridFilter[]) => void;
   onSelectionChange?: (selectedKeys: Array<string | number>) => void;
 };
 
 export type UpdateFilterFunction = (filter: GridFilter) => void;
+
+export type DataStore<T = any> = {
+  url: string;
+  onLoad: (response: any) => Promise<{ items: T[]; totalCount?: number }>;
+  onNextPage?: () => Promise<void>;
+  onInsert?: (values: Partial<T>) => Promise<void>;
+  onUpdate?: (key: string | number, values: Partial<T>) => Promise<void>;
+  onDelete?: (key: string | number) => Promise<void>;
+};

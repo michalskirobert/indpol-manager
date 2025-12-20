@@ -2,6 +2,7 @@
 
 import { ShowcaseSection } from "@/components/shared/Section";
 import { Grid } from "@/components/shared/table";
+import axios from "axios";
 
 export default function ProductsPage() {
   return (
@@ -9,37 +10,32 @@ export default function ProductsPage() {
       <Grid
         columns={[
           {
-            caption: "test",
-            field: "test",
+            caption: "name",
+            field: "name",
             allowFiltering: true,
             allowSorting: true,
-            type: "number",
+            type: "string",
           },
           {
-            caption: "test1",
-            field: "test1",
+            caption: "Brand",
+            field: "brandName",
             allowFiltering: true,
             allowSorting: true,
-            type: "date",
+            type: "string",
           },
           {
-            caption: "test2",
-            field: "test2",
+            caption: "Category",
+            field: "categoryName",
             allowFiltering: true,
             allowSorting: true,
-            type: "boolean",
+            type: "string",
           },
         ]}
         selection={{ mode: "single", deferred: true }}
         keyExpr="id"
-        dataSource={{
-          items: [
-            { id: 1, test: 1, test1: "2024-01-01", test2: false },
-            { id: 2, test: 2, test1: "2024-01-02", test2: true },
-            { id: 3, test: 3, test1: "2024-01-03", test2: false },
-            { id: 4, test: 4, test1: "2024-01-04", test2: true },
-          ],
-          total: 4,
+        onDataLoad={{
+          url: "api/products",
+          onLoad: async (response) => response.data,
         }}
       />
     </ShowcaseSection>

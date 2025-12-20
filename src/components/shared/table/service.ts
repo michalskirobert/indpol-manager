@@ -1,19 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import { GridFilter, GridProps, GridSorting } from "./types";
+import axios from "axios";
 
 export const useTableService = <T extends Record<string, any>>({
   keyExpr,
   selectionKeys,
-  dataSource,
   selection,
+  data,
   onSelectionChange,
-  onLoadMore,
+  onDataLoad,
   onSort,
   onFilter,
 }: GridProps<T>) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const isFetchingMoreRef = useRef(false);
+  const filterDebounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [dataSource, setDataSource] = useState<T[]>(data || []);
   const [sorting, setSorting] = useState<GridSorting | null>(null);
   const [filters, setFilters] = useState<GridFilter[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [internalSelectedKeys, setInternalSelectedKeys] = useState<
     Array<string | number>
   >(selectionKeys ?? []);
@@ -28,17 +35,23 @@ export const useTableService = <T extends Record<string, any>>({
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || !onLoadMore) return;
+    if (!el || !onDataLoad) return;
 
     const checkScroll = () => {
-      if (el.scrollTop + el.clientHeight >= el.scrollHeight - 10) {
-        onLoadMore();
+      if (isFetchingMoreRef.current || isLoading) return;
+
+      const reachedBottom =
+        el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
+
+      if (reachedBottom) {
+        isFetchingMoreRef.current = true;
+        onDataLoad.onNextPage?.();
       }
     };
 
     el.addEventListener("scroll", checkScroll);
     return () => el.removeEventListener("scroll", checkScroll);
-  }, [onLoadMore]);
+  }, [onDataLoad, isLoading]);
 
   const toggleSort = (field: string) => {
     let next: GridSorting | null = null;
@@ -55,12 +68,24 @@ export const useTableService = <T extends Record<string, any>>({
     onSort?.(next);
   };
 
-  const updateFilter = ({ field, operator, value, valueTo }: GridFilter) => {
-    const others = filters.filter((f) => f.field !== field);
-    const next: GridFilter = { field, operator, value, valueTo };
-    const newFilters = [...others, next];
-    setFilters(newFilters);
-    onFilter?.(newFilters);
+  const updateFilter = (filterUpdate: GridFilter) => {
+    if (filterDebounceRef.current) {
+      clearTimeout(filterDebounceRef.current);
+    }
+
+    setFilters((prevFilters) => {
+      const others = prevFilters.filter((f) => f.field !== filterUpdate.field);
+
+      if (
+        filterUpdate.value !== undefined &&
+        filterUpdate.value !== null &&
+        String(filterUpdate.value).trim() !== ""
+      ) {
+        others.push({ ...filterUpdate, value: filterUpdate.value });
+      }
+
+      return others;
+    });
   };
 
   const getKey = (row: T, index: number): string | number => {
@@ -97,7 +122,6 @@ export const useTableService = <T extends Record<string, any>>({
 
   const toggleSelectAll = () => {
     if (selection?.mode === "single") {
-      // For single selection mode, toggleSelectAll does nothing or clears selection
       if (selectionKeys === undefined) {
         setInternalSelectedKeys([]);
       }
@@ -107,7 +131,7 @@ export const useTableService = <T extends Record<string, any>>({
       return;
     }
 
-    if (selectedKeysState.length === dataSource.items.length) {
+    if (selectedKeysState.length === dataSource.length) {
       if (selectionKeys === undefined) {
         setInternalSelectedKeys([]);
       }
@@ -115,7 +139,7 @@ export const useTableService = <T extends Record<string, any>>({
         onSelectionChange?.([]);
       }
     } else {
-      const allKeys = dataSource.items.map((item, idx) => {
+      const allKeys = dataSource.map((item, idx) => {
         if (keyExpr && keyExpr in item) {
           return (item as any)[keyExpr];
         }
@@ -131,18 +155,89 @@ export const useTableService = <T extends Record<string, any>>({
   };
 
   const allSelected =
-    dataSource.items.length > 0 &&
-    selectedKeysState.length === dataSource.items.length;
+    dataSource.length > 0 && selectedKeysState.length === dataSource.length;
   const someSelected =
     selectedKeysState.length > 0 &&
-    selectedKeysState.length < dataSource.items.length;
+    selectedKeysState.length < dataSource.length;
+
+  const getData = async () => {
+    if (!onDataLoad) return;
+
+    try {
+      setIsLoading(true);
+
+      const { url, onLoad } = onDataLoad;
+      const response = await axios.get(url, {
+        params: {
+          sort: sorting,
+          filter: filters,
+        },
+      });
+
+      const result = await onLoad(response);
+      setDataSource(result.items);
+      isFetchingMoreRef.current = false;
+      setError(null);
+    } catch (err) {
+      console.error("Error loading data:", err);
+      isFetchingMoreRef.current = false;
+      setError("Failed to load data.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const insert = async (values: Partial<T>) => {
+    if (!onDataLoad?.onInsert) return;
+    await onDataLoad.onInsert(values);
+    await getData();
+  };
+
+  const update = async (key: string | number, values: Partial<T>) => {
+    if (!onDataLoad?.onUpdate) return;
+    await onDataLoad.onUpdate(key, values);
+    await getData();
+  };
+
+  const remove = async (key: string | number) => {
+    if (!onDataLoad?.onDelete) return;
+    await onDataLoad.onDelete(key);
+    await getData();
+  };
+
+  const firstLoadRef = useRef(true);
+
+  useEffect(() => {
+    if (firstLoadRef.current) {
+      firstLoadRef.current = false;
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      getData();
+      onFilter?.(filters);
+      onSort?.(sorting);
+    }, 600);
+
+    return () => clearTimeout(timeout);
+  }, [filters, sorting]);
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return {
-    containerRef,
     allSelected,
     someSelected,
-    sorting,
+    containerRef,
+    dataSource,
     filters,
+    sorting,
+    error,
+    isLoading,
+    insert,
+    update,
+    remove,
     toggleSelectAll,
     toggleSort,
     updateFilter,

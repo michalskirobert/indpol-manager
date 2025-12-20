@@ -8,19 +8,28 @@ import { GridHeader } from "./components/GridHeader";
 import { GridBody } from "./components/GridBody";
 
 export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
-  const {
-    columns,
-    dataSource,
-    height = 500,
-    width = "100%",
-    className,
-  } = props;
+  const { columns, height = 500, width = "100%", className } = props;
 
-  const table = useTableService<T>(props);
+  const {
+    allSelected,
+    someSelected,
+    containerRef,
+    dataSource,
+    filters,
+    sorting,
+    error,
+    isLoading,
+    toggleSelectAll,
+    toggleSort,
+    updateFilter,
+    getKey,
+    isSelected,
+    toggleSelect,
+  } = useTableService<T>(props);
 
   return (
     <div
-      ref={table.containerRef}
+      ref={containerRef}
       className={cn(
         "dark:bg-dark-1 relative overflow-auto rounded-md border",
         className,
@@ -30,25 +39,27 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
       <table className="w-full border-collapse text-sm">
         <GridHeader
           {...{
-            allSelected: table.allSelected,
-            someSelected: table.someSelected,
+            allSelected,
+            someSelected,
             columns,
             selection: props.selection,
-            filters: table.filters,
-            sorting: table.sorting,
-            toggleSort: table.toggleSort,
-            updateFilter: table.updateFilter,
-            toggleSelectAll: table.toggleSelectAll,
+            filters,
+            sorting,
+            toggleSort,
+            updateFilter,
+            toggleSelectAll,
           }}
         />
         <GridBody
           {...{
             columns,
-            rows: dataSource.items,
-            getKey: table.getKey,
-            isSelected: table.isSelected,
-            toggleSelect: table.toggleSelect,
+            rows: dataSource || [],
+            getKey,
+            isSelected,
+            toggleSelect,
             selection: props.selection,
+            error,
+            isLoading,
           }}
         />
       </table>

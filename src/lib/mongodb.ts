@@ -1,32 +1,24 @@
-import mongoose, { Connection, Document } from "mongoose";
+import clientPromise from "./mongo-client";
+import type { Db, Collection, Document } from "mongodb";
 
-const { MONGODB_URI } = process.env;
+const dbCache = new Map<string, Db>();
 
-if (!MONGODB_URI) throw new Error("Mongo URIs must be defined");
-
-let cachedConnection: Connection | null = null;
-
-export const connectDB = async (): Promise<Connection> => {
-  if (cachedConnection) {
-    return cachedConnection;
+export async function getDb(name: "store" | "BackOffice"): Promise<Db> {
+  if (dbCache.has(name)) {
+    return dbCache.get(name)!;
   }
 
-  cachedConnection = await mongoose
-    .createConnection(MONGODB_URI, {
-      tls: true,
-      serverSelectionTimeoutMS: 5000,
-      maxPoolSize: 50,
-    })
-    .asPromise();
+  const client = await clientPromise;
+  const db = client.db(name);
 
-  return cachedConnection;
-};
+  dbCache.set(name, db);
+  return db;
+}
 
-export const getCollection = async <T extends object>(
-  database: "store" | "BackOffice" = "store",
+export async function getCollection<T extends Document>(
+  dbName: "store" | "BackOffice",
   collectionName: string,
-): Promise<mongoose.Collection<T>> => {
-  const connection = (await connectDB()).useDb(database);
-
-  return connection.collection(collectionName);
-};
+): Promise<Collection<T>> {
+  const db = await getDb(dbName);
+  return db.collection<T>(collectionName);
+}
