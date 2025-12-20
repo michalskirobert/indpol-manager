@@ -33,6 +33,9 @@ export default function ProductsPage() {
         ]}
         selection={{ mode: "single", deferred: true }}
         keyExpr="id"
+        toolbar={{
+          items: [{ role: "refetch" }, { role: "clear" }],
+        }}
         onDataLoad={{
           url: "api/products",
           onLoad: async (response) => response.data,

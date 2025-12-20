@@ -13,7 +13,7 @@ export const GET = async (request: Request) => {
     const cursor = db.find(filters).skip(skip).limit(take);
 
     if (Object.keys(sort).length > 0) {
-      cursor.sort(sort as any);
+      cursor.sort(sort);
     }
 
     const totalCount = await db.countDocuments(filters);

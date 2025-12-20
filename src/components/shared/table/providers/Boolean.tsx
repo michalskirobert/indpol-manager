@@ -7,7 +7,6 @@ interface BooleanProviderProps extends GridColumn {
 
 export const BooleanProvider = ({
   field,
-  type,
   filterOperator,
   updateFilter,
 }: BooleanProviderProps) => (

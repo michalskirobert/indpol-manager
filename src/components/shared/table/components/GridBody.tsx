@@ -51,31 +51,24 @@ export const GridBody = <T extends Record<string, any>>({
 
   if (isLoading) {
     return (
-      <tbody className="h-96">
-        <tr>
-          <td
-            colSpan={columns.length + (selection?.mode === "multiple" ? 1 : 0)}
-          >
-            <div className="flex h-full w-full flex-col items-center justify-center">
-              {Array.from({ length: 5 }).map((_, rowIndex) => (
-                <div
-                  key={`skeleton-${rowIndex}`}
-                  className="mb-2 flex w-full space-x-2"
-                >
-                  {selection?.mode === "multiple" && (
-                    <div className="dark:bg-neutral-700 h-4 w-4 animate-pulse rounded bg-gray-200" />
-                  )}
-                  {columns.map((_, colIndex) => (
-                    <div
-                      key={`skeleton-${rowIndex}-${colIndex}`}
-                      className="dark:bg-neutral-700 h-4 flex-1 animate-pulse rounded bg-gray-300"
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-          </td>
-        </tr>
+      <tbody>
+        {Array.from({ length: 10 }).map((_, rowIndex) => (
+          <tr key={`skeleton-${rowIndex}`}>
+            {selection?.mode === "multiple" && (
+              <td className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
+                <div className="dark:bg-neutral-700 h-4 w-4 animate-pulse rounded bg-gray-200" />
+              </td>
+            )}
+            {columns.map((_, colIndex) => (
+              <td
+                key={`skeleton-${rowIndex}-${colIndex}`}
+                className="border-neutral-300 dark:border-neutral-700 border px-3 py-2"
+              >
+                <div className="dark:bg-neutral-700 h-4 w-full animate-pulse rounded bg-gray-300" />
+              </td>
+            ))}
+          </tr>
+        ))}
       </tbody>
     );
   }

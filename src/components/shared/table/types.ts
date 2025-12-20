@@ -1,3 +1,6 @@
+import { ButtonProps } from "@material-tailwind/react";
+import { PropsWithChildren, ReactNode } from "react";
+
 export type GridColumnType = "string" | "number" | "boolean" | "date" | "enum";
 
 export type GridFilterOperator =
@@ -9,6 +12,23 @@ export type GridFilterOperator =
   | "greaterThan"
   | "lessThan"
   | "between";
+
+export type BtnProps = Omit<ButtonProps, "children"> & {
+  icon: ReactNode;
+  label: string;
+};
+
+export type RenderComponentProps = {
+  filters: GridFilter[];
+  sorting: GridSorting | null;
+  refetch: () => Promise<void>;
+  clearFilters: () => Promise<void>;
+};
+
+export interface ItemProps {
+  role: "refetch" | "clear";
+  renderComponent?: (props: RenderComponentProps) => JSX.Element;
+}
 
 export type GridFilter = {
   field: string;
@@ -58,7 +78,14 @@ export type GridDataSource<T> = {
   total: number;
 };
 
-export type GridProps<T extends Record<string, any>> = {
+export type Toolbar = {
+  items:
+    | Omit<ItemProps, "RenderComponentProps">[]
+    | Omit<ItemProps, "RenderComponentProps">[][];
+  className?: string;
+};
+
+export type GridProps<T extends Record<string, any>> = PropsWithChildren & {
   columns: GridColumn[];
   height?: number;
   width?: number | string;
@@ -71,6 +98,7 @@ export type GridProps<T extends Record<string, any>> = {
   keyExpr?: string;
   data?: T[];
   onDataLoad?: DataStore;
+  toolbar?: Toolbar;
   onSort?: (sorting: GridSorting | null) => void;
   onFilter?: (filters: GridFilter[]) => void;
   onSelectionChange?: (selectedKeys: Array<string | number>) => void;

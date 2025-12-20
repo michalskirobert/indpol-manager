@@ -27,32 +27,6 @@ export const useTableService = <T extends Record<string, any>>({
 
   const selectedKeysState = selectionKeys ?? internalSelectedKeys;
 
-  useEffect(() => {
-    if (selectionKeys !== undefined) {
-      setInternalSelectedKeys(selectionKeys);
-    }
-  }, [selectionKeys]);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el || !onDataLoad) return;
-
-    const checkScroll = () => {
-      if (isFetchingMoreRef.current || isLoading) return;
-
-      const reachedBottom =
-        el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
-
-      if (reachedBottom) {
-        isFetchingMoreRef.current = true;
-        onDataLoad.onNextPage?.();
-      }
-    };
-
-    el.addEventListener("scroll", checkScroll);
-    return () => el.removeEventListener("scroll", checkScroll);
-  }, [onDataLoad, isLoading]);
-
   const toggleSort = (field: string) => {
     let next: GridSorting | null = null;
 
@@ -222,6 +196,41 @@ export const useTableService = <T extends Record<string, any>>({
     return () => clearTimeout(timeout);
   }, [filters, sorting]);
 
+  const clearFilters = () => {
+    setFilters([]);
+    setSorting(null);
+
+    onFilter?.([]);
+    onSort?.(null);
+    getData();
+  };
+
+  useEffect(() => {
+    if (selectionKeys !== undefined) {
+      setInternalSelectedKeys(selectionKeys);
+    }
+  }, [selectionKeys]);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || !onDataLoad) return;
+
+    const checkScroll = () => {
+      if (isFetchingMoreRef.current || isLoading) return;
+
+      const reachedBottom =
+        el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
+
+      if (reachedBottom) {
+        isFetchingMoreRef.current = true;
+        onDataLoad.onNextPage?.();
+      }
+    };
+
+    el.addEventListener("scroll", checkScroll);
+    return () => el.removeEventListener("scroll", checkScroll);
+  }, [onDataLoad, isLoading]);
+
   useEffect(() => {
     getData();
   }, []);
@@ -235,6 +244,8 @@ export const useTableService = <T extends Record<string, any>>({
     sorting,
     error,
     isLoading,
+    clearFilters,
+    getData,
     insert,
     update,
     remove,

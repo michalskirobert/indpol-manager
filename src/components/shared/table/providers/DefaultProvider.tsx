@@ -16,8 +16,8 @@ export const DefaultProvider = ({
   field,
   filterOperator,
   type,
-  updateFilter,
   currentFilter,
+  updateFilter,
 }: DefaultProviderProps) => {
   const [range, setRange] = useState<[number | undefined, number | undefined]>([
     currentFilter?.value as number | undefined,

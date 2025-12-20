@@ -56,7 +56,7 @@ export const GridHeader = <T extends Record<string, any>>({
                 className="flex items-center justify-between"
                 onClick={() => col.allowSorting && toggleSort(col.field)}
               >
-                <span>{col.caption}</span>
+                <span className="mb-1">{col.caption}</span>
                 {col.allowSorting && (
                   <>
                     {isSorted && sorting.direction === "asc" && (
