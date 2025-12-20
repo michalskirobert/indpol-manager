@@ -7,8 +7,8 @@ export const useTableService = <T extends Record<string, any>>({
   selectionKeys,
   selection,
   data,
-  onSelectionChange,
   onDataLoad,
+  onSelectionChange,
   onSort,
   onFilter,
 }: GridProps<T>) => {
@@ -202,7 +202,6 @@ export const useTableService = <T extends Record<string, any>>({
 
     onFilter?.([]);
     onSort?.(null);
-    getData();
   };
 
   useEffect(() => {

@@ -1,37 +1,29 @@
-import { BtnProps, ItemProps, RenderComponentProps } from "../../types";
+import { ItemProps, RenderComponentProps } from "../../types";
 import { CircleX, RefreshCcw } from "lucide-react";
 import { CustomButton } from "@/components/shared/button/CustomButton";
+import { CustomButtonProps } from "@shared/button/index";
 
 type Props = ItemProps & RenderComponentProps;
 
 export const Item = ({ role, renderComponent, ...props }: Props) => {
   if (renderComponent) return renderComponent(props);
 
-  const obj: Record<ItemProps["role"], BtnProps> = {
+  const obj: Record<ItemProps["role"], CustomButtonProps> = {
     clear: {
       color: "black",
       icon: <CircleX />,
-      label: "Clear filters",
+      content: "Clear filters",
       disabled: !props.filters.length,
-      onClick: props.refetch,
+      tooltip: !props.filters.length ? "No filters applied yet" : "",
+      onClick: props.clearFilters,
     },
     refetch: {
       color: "blue",
       icon: <RefreshCcw />,
-      label: "Refresh",
-      onClick: props.clearFilters,
+      content: "Refresh",
+      onClick: props.refetch,
     },
   };
 
-  const currentObj = obj[role];
-
-  return (
-    <CustomButton
-      content={currentObj.label}
-      color={currentObj.color}
-      icon={currentObj.icon}
-      onClick={currentObj.onClick}
-      className="h-10 rounded-md"
-    />
-  );
+  return <CustomButton {...obj[role]} className="h-10 rounded-md" />;
 };

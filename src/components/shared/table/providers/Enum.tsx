@@ -1,23 +1,29 @@
-import { GridColumn, GridFilterOperator, UpdateFilterFunction } from "../types";
+import {
+  GridColumn,
+  GridFilter,
+  GridFilterOperator,
+  UpdateFilterFunction,
+} from "../types";
 
 interface EnumProviderProps extends GridColumn {
-  filterOperator: GridFilterOperator;
+  filter: GridFilter | undefined;
   options: Array<{ label: string; value: string }>;
   updateFilter: UpdateFilterFunction;
 }
 
 export const EnumProvider = ({
   field,
-  filterOperator,
+  filter,
   options,
   updateFilter,
 }: EnumProviderProps) => (
   <select
     className="dx-input dark:border-neutral-600 rounded-sm border border-gray-300 px-1.5 py-1 text-xs shadow-inner focus:border-blue-500 focus:outline-none dark:bg-dark-2 dark:text-white dark:focus:border-primary"
+    value={String(filter?.value || "")}
     onChange={(e) =>
       updateFilter({
         field,
-        operator: filterOperator,
+        operator: filter?.operator || "equals",
         value: e.target.value === "" ? null : e.target.value === "true",
       })
     }

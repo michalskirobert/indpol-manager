@@ -83,8 +83,8 @@ export const GridHeader = <T extends Record<string, any>>({
 
                   <Providers
                     {...col}
+                    filter={filter}
                     type={col.type || "string"}
-                    filterOperator={filter?.operator || "equals"}
                     updateFilter={updateFilter}
                     options={col.filterDataSource || []}
                   />

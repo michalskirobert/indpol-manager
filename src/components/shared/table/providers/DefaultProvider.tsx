@@ -1,30 +1,23 @@
 import { useState } from "react";
-import {
-  GridColumn,
-  GridFilterOperator,
-  UpdateFilterFunction,
-  GridFilter,
-} from "../types";
+import { GridColumn, UpdateFilterFunction, GridFilter } from "../types";
 
 interface DefaultProviderProps extends GridColumn {
-  filterOperator: GridFilterOperator;
-  currentFilter?: GridFilter;
+  filter: GridFilter | undefined;
   updateFilter: UpdateFilterFunction;
 }
 
 export const DefaultProvider = ({
   field,
-  filterOperator,
+  filter,
   type,
-  currentFilter,
   updateFilter,
 }: DefaultProviderProps) => {
   const [range, setRange] = useState<[number | undefined, number | undefined]>([
-    currentFilter?.value as number | undefined,
-    currentFilter?.valueTo as number | undefined,
+    filter?.value as number | undefined,
+    filter?.valueTo as number | undefined,
   ]);
 
-  if (filterOperator === "between" && type === "number") {
+  if (filter?.operator === "between" && type === "number") {
     return (
       <div className="flex gap-1">
         <input
@@ -41,7 +34,7 @@ export const DefaultProvider = ({
             setRange(nextRange);
             updateFilter({
               field,
-              operator: filterOperator,
+              operator: filter.operator || "equals",
               value: nextRange[0],
               valueTo: nextRange[1],
             });
@@ -61,7 +54,7 @@ export const DefaultProvider = ({
             setRange(nextRange);
             updateFilter({
               field,
-              operator: filterOperator,
+              operator: filter.operator || "equals",
               value: nextRange[0],
               valueTo: nextRange[1],
             });
@@ -76,8 +69,13 @@ export const DefaultProvider = ({
       className="dx-input dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 w-full rounded-sm border border-gray-300 px-1.5 py-1 text-xs shadow-inner focus:border-blue-500 focus:outline-none dark:focus:border-blue-400"
       placeholder="Value"
       type={type}
+      value={String(filter?.value || "")}
       onChange={(e) =>
-        updateFilter({ field, operator: filterOperator, value: e.target.value })
+        updateFilter({
+          field,
+          operator: filter?.operator || "equals",
+          value: e.target.value,
+        })
       }
     />
   );
