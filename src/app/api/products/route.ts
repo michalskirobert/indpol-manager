@@ -1,5 +1,5 @@
 import { getCollection } from "@/lib/mongodb";
-import { applyFiltersAndSort } from "@/lib/table-filters";
+import { applyFiltersAndSort } from "@/lib/query/mongo-filters";
 import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
