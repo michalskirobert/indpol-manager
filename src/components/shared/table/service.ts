@@ -48,17 +48,40 @@ export const useTableService = <T extends Record<string, any>>({
     }
 
     setFilters((prevFilters) => {
-      const others = prevFilters.filter((f) => f.field !== filterUpdate.field);
+      const existing = prevFilters.find((f) => f.field === filterUpdate.field);
 
-      if (
-        filterUpdate.value !== undefined &&
-        filterUpdate.value !== null &&
-        String(filterUpdate.value).trim() !== ""
-      ) {
-        others.push({ ...filterUpdate, value: filterUpdate.value });
+      if (!existing) {
+        if (
+          filterUpdate.value === undefined ||
+          String(filterUpdate.value).trim() === ""
+        ) {
+          return prevFilters;
+        }
+
+        return [
+          ...prevFilters,
+          {
+            field: filterUpdate.field,
+            operator: filterUpdate.operator ?? "equals",
+            value: filterUpdate.value,
+          },
+        ];
       }
 
-      return others;
+      if (filterUpdate.value === "") {
+        return prevFilters.filter((f) => f.field !== filterUpdate.field);
+      }
+
+      return prevFilters.map((f) =>
+        f.field === filterUpdate.field
+          ? {
+              ...f,
+              operator: filterUpdate.operator ?? f.operator,
+              value:
+                filterUpdate.value !== undefined ? filterUpdate.value : f.value,
+            }
+          : f,
+      );
     });
   };
 
@@ -179,23 +202,6 @@ export const useTableService = <T extends Record<string, any>>({
     await getData();
   };
 
-  const firstLoadRef = useRef(true);
-
-  useEffect(() => {
-    if (firstLoadRef.current) {
-      firstLoadRef.current = false;
-      return;
-    }
-
-    const timeout = setTimeout(() => {
-      getData();
-      onFilter?.(filters);
-      onSort?.(sorting);
-    }, 600);
-
-    return () => clearTimeout(timeout);
-  }, [filters, sorting]);
-
   const clearFilters = () => {
     setFilters([]);
     setSorting(null);
@@ -205,6 +211,14 @@ export const useTableService = <T extends Record<string, any>>({
   };
 
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      getData();
+    }, 600);
+
+    return () => clearTimeout(timeout);
+  }, [filters, sorting]);
+
+  useEffect(() => {
     if (selectionKeys !== undefined) {
       setInternalSelectedKeys(selectionKeys);
     }
@@ -212,6 +226,7 @@ export const useTableService = <T extends Record<string, any>>({
 
   useEffect(() => {
     const el = containerRef.current;
+
     if (!el || !onDataLoad) return;
 
     const checkScroll = () => {
@@ -229,10 +244,6 @@ export const useTableService = <T extends Record<string, any>>({
     el.addEventListener("scroll", checkScroll);
     return () => el.removeEventListener("scroll", checkScroll);
   }, [onDataLoad, isLoading]);
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   return {
     allSelected,

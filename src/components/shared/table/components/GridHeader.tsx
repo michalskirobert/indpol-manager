@@ -77,7 +77,11 @@ export const GridHeader = <T extends Record<string, any>>({
                     filterOperators={col.filterOperators}
                     currentOperator={filter?.operator}
                     setOperator={(field, operator) =>
-                      updateFilter({ field, operator, value: null })
+                      updateFilter({
+                        field,
+                        operator,
+                        value: filter?.value || "",
+                      })
                     }
                   />
 
