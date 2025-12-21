@@ -54,9 +54,8 @@ export const useTableService = <T extends Record<string, any>>({
         if (
           filterUpdate.value === undefined ||
           String(filterUpdate.value).trim() === ""
-        ) {
+        )
           return prevFilters;
-        }
 
         return [
           ...prevFilters,
@@ -68,17 +67,16 @@ export const useTableService = <T extends Record<string, any>>({
         ];
       }
 
-      if (filterUpdate.value === "") {
-        return prevFilters.filter((f) => f.field !== filterUpdate.field);
-      }
-
       return prevFilters.map((f) =>
         f.field === filterUpdate.field
           ? {
               ...f,
-              operator: filterUpdate.operator ?? f.operator,
               value:
                 filterUpdate.value !== undefined ? filterUpdate.value : f.value,
+              operator:
+                filterUpdate.operator !== undefined
+                  ? filterUpdate.operator
+                  : f.operator,
             }
           : f,
       );
@@ -254,6 +252,7 @@ export const useTableService = <T extends Record<string, any>>({
     sorting,
     error,
     isLoading,
+    selectedKeysState,
     clearFilters,
     getData,
     insert,

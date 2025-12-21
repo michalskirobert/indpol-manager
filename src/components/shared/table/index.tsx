@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { GridProps } from "./types";
+import { GridProps, ItemProps } from "./types";
 import { useTableService } from "./service";
 
 import { GridHeader } from "./components/GridHeader";
@@ -28,6 +28,7 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
     sorting,
     error,
     isLoading,
+    selectedKeysState,
     getData,
     clearFilters,
     toggleSelectAll,
@@ -47,14 +48,15 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
           hasGroup={Array.isArray(toolbar.items[0])}
         >
           {toolbar.items.map((groupOrItem, groupIndex) => {
-            const renderToolbarItem = (itemProps: any, keyIndex: number) => (
+            const renderToolbarItem = (itemProps: ItemProps) => (
               <Item
-                key={itemProps.id ?? keyIndex}
+                key={crypto.randomUUID()}
                 {...itemProps}
                 filters={filters}
                 clearFilters={clearFilters}
                 refetch={getData}
                 sorting={sorting}
+                selectedKeysState={selectedKeysState}
               />
             );
 
@@ -63,7 +65,7 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
                 {groupOrItem.map(renderToolbarItem)}
               </Toolbar>
             ) : (
-              renderToolbarItem(groupOrItem, groupIndex)
+              renderToolbarItem(groupOrItem)
             );
           })}
         </Toolbar>
@@ -76,7 +78,7 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
         )}
         style={{ height, width }}
       >
-        <table className="w-full border-collapse text-sm">
+        <table className="w-full min-w-max border-collapse text-sm">
           <GridHeader
             {...{
               allSelected,

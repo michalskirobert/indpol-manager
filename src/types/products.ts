@@ -2,7 +2,6 @@ export type languageCode = "pl" | "id" | "en";
 export type languageLabel = "Polski" | "English" | "Bahasa";
 
 export enum ProductStatus {
-  Unknown = 0,
   Draft = 10,
   Published = 20,
   Withdraw = 30,

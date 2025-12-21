@@ -21,12 +21,13 @@ export type BtnProps = Omit<ButtonProps, "children"> & {
 export type RenderComponentProps = {
   filters: GridFilter[];
   sorting: GridSorting | null;
+  selectedKeysState: any[];
   refetch: () => Promise<void>;
-  clearFilters: () => Promise<void>;
+  clearFilters: () => void;
 };
 
 export interface ItemProps {
-  role: "refetch" | "clear";
+  role: "refetch" | "clear" | "custom";
   renderComponent?: (props: RenderComponentProps) => JSX.Element;
 }
 

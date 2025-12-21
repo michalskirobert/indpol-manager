@@ -2,39 +2,20 @@
 
 import { ShowcaseSection } from "@/components/shared/Section";
 import { Grid } from "@/components/shared/table";
-import axios from "axios";
+import { columns } from "./utils";
+import { useButtons } from "./use-buttons";
 
 export default function ProductsPage() {
+  const items = useButtons();
+
   return (
     <ShowcaseSection title="Products">
       <Grid
-        columns={[
-          {
-            caption: "name",
-            field: "name",
-            allowFiltering: true,
-            allowSorting: true,
-            type: "string",
-          },
-          {
-            caption: "Brand",
-            field: "brandName",
-            allowFiltering: true,
-            allowSorting: true,
-            type: "string",
-          },
-          {
-            caption: "Category",
-            field: "categoryName",
-            allowFiltering: true,
-            allowSorting: true,
-            type: "string",
-          },
-        ]}
+        columns={columns}
         selection={{ mode: "single", deferred: true }}
-        keyExpr="id"
+        keyExpr="_id"
         toolbar={{
-          items: [{ role: "refetch" }, { role: "clear" }],
+          items,
         }}
         onDataLoad={{
           url: "api/products",

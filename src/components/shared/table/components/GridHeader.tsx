@@ -50,50 +50,53 @@ export const GridHeader = <T extends Record<string, any>>({
           return (
             <th
               key={col.field}
-              className={`width-[${col.width || 100}] border-neutral-300 dark:border-neutral-700 select-none border px-3 py-2`}
+              className="border-neutral-300 dark:border-neutral-700 select-none border px-3 py-2"
+              style={{ width: col.width || 200, minWidth: 200 }}
             >
               <div
-                className="flex items-center justify-between"
+                className="flex min-w-[250px] flex-col gap-1"
                 onClick={() => col.allowSorting && toggleSort(col.field)}
               >
-                <span className="mb-1">{col.caption}</span>
-                {col.allowSorting && (
-                  <>
-                    {isSorted && sorting.direction === "asc" && (
-                      <ChevronUp size={14} />
-                    )}
-                    {isSorted && sorting.direction === "desc" && (
-                      <ChevronDown size={14} />
-                    )}
-                  </>
+                <div className="flex items-center justify-between">
+                  <span className="mb-1">{col.caption}</span>
+                  {col.allowSorting && (
+                    <>
+                      {isSorted && sorting.direction === "asc" && (
+                        <ChevronUp size={14} />
+                      )}
+                      {isSorted && sorting.direction === "desc" && (
+                        <ChevronDown size={14} />
+                      )}
+                    </>
+                  )}
+                </div>
+
+                {col.allowFiltering && (
+                  <div className="flex gap-1">
+                    <FilterOperators
+                      field={col.field}
+                      type={col.type}
+                      filterOperators={col.filterOperators}
+                      currentOperator={filter?.operator}
+                      setOperator={(field, operator) =>
+                        updateFilter({
+                          field,
+                          operator,
+                          value: filter?.value || "",
+                        })
+                      }
+                    />
+
+                    <Providers
+                      {...col}
+                      filter={filter}
+                      type={col.type || "string"}
+                      updateFilter={updateFilter}
+                      options={col.filterDataSource || []}
+                    />
+                  </div>
                 )}
               </div>
-
-              {col.allowFiltering && (
-                <div className="mt-1 flex gap-1">
-                  <FilterOperators
-                    field={col.field}
-                    type={col.type}
-                    filterOperators={col.filterOperators}
-                    currentOperator={filter?.operator}
-                    setOperator={(field, operator) =>
-                      updateFilter({
-                        field,
-                        operator,
-                        value: filter?.value || "",
-                      })
-                    }
-                  />
-
-                  <Providers
-                    {...col}
-                    filter={filter}
-                    type={col.type || "string"}
-                    updateFilter={updateFilter}
-                    options={col.filterDataSource || []}
-                  />
-                </div>
-              )}
             </th>
           );
         })}

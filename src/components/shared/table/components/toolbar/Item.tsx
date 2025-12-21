@@ -6,9 +6,11 @@ import { CustomButtonProps } from "@shared/button/index";
 type Props = ItemProps & RenderComponentProps;
 
 export const Item = ({ role, renderComponent, ...props }: Props) => {
+  console.log(props);
   if (renderComponent) return renderComponent(props);
 
   const obj: Record<ItemProps["role"], CustomButtonProps> = {
+    custom: {},
     clear: {
       color: "black",
       icon: <CircleX />,
