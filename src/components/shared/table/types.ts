@@ -22,12 +22,15 @@ export type RenderComponentProps = {
   filters: GridFilter[];
   sorting: GridSorting | null;
   selectedKeysState: any[];
+  isWarningModal: boolean;
   refetch: () => Promise<void>;
   clearFilters: () => void;
+  deleteRow: () => void;
+  toggleWarningModal: () => void;
 };
 
 export interface ItemProps {
-  role: "refetch" | "clear" | "custom";
+  role: "refetch" | "clear" | "delete" | "custom";
   renderComponent?: (props: RenderComponentProps) => JSX.Element;
 }
 

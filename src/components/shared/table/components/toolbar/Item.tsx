@@ -1,5 +1,5 @@
 import { ItemProps, RenderComponentProps } from "../../types";
-import { CircleX, RefreshCcw } from "lucide-react";
+import { CircleX, RefreshCcw, Trash } from "lucide-react";
 import { CustomButton } from "@/components/shared/button/CustomButton";
 import { CustomButtonProps } from "@shared/button/index";
 
@@ -10,6 +10,14 @@ export const Item = ({ role, renderComponent, ...props }: Props) => {
 
   const obj: Record<ItemProps["role"], CustomButtonProps> = {
     custom: {},
+    delete: {
+      color: "red",
+      icon: <Trash />,
+      content: "Delete",
+      disabled: !props.selectedKeysState.length,
+      tooltip: !props.selectedKeysState.length ? "Select row to remove" : "",
+      onClick: props.toggleWarningModal,
+    },
     clear: {
       color: "black",
       icon: <CircleX />,

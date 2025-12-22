@@ -8,6 +8,7 @@ import { GridHeader } from "./components/GridHeader";
 import { GridBody } from "./components/GridBody";
 import { Toolbar } from "./components/toolbar/Toolbar";
 import { Item } from "./components/toolbar/Item";
+import { WarningModal } from "./components/WarningModal";
 
 export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
   const {
@@ -30,6 +31,10 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
     isLoading,
     selectedKeysState,
     operators,
+    isWarningModal,
+    isRemoving,
+    remove,
+    toggleWarningModal,
     updateOperators,
     getData,
     clearFilters,
@@ -59,6 +64,9 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
                 refetch={getData}
                 sorting={sorting}
                 selectedKeysState={selectedKeysState}
+                deleteRow={() => remove(selectedKeysState[0])}
+                isWarningModal={isWarningModal}
+                toggleWarningModal={toggleWarningModal}
               />
             );
 
@@ -110,6 +118,14 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
           />
         </table>
       </div>
+      <WarningModal
+        {...{
+          isLoading: isRemoving,
+          isOpen: isWarningModal,
+          toggle: toggleWarningModal,
+          remove: () => remove(selectedKeysState[0]),
+        }}
+      />
     </>
   );
 };

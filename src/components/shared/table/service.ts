@@ -6,6 +6,7 @@ import {
   GridSorting,
 } from "./types";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const useTableService = <T extends Record<string, any>>({
   keyExpr,
@@ -20,6 +21,10 @@ export const useTableService = <T extends Record<string, any>>({
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetchingMoreRef = useRef(false);
   const filterDebounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [isWarningModal, setIsWarningModal] = useState(false);
+
+  const [isRemoving, setIsRemoving] = useState(false);
 
   const [dataSource, setDataSource] = useState<T[]>(data || []);
   const [sorting, setSorting] = useState<GridSorting | null>(null);
@@ -48,6 +53,8 @@ export const useTableService = <T extends Record<string, any>>({
     setSorting(next);
     onSort?.(next);
   };
+
+  const toggleWarningModal = () => setIsWarningModal((prev) => !prev);
 
   const updateFilter = (
     filterUpdate: Omit<GridFilter, "operator">,
@@ -209,9 +216,31 @@ export const useTableService = <T extends Record<string, any>>({
   };
 
   const remove = async (key: string | number) => {
-    if (!onDataLoad?.onDelete) return;
-    await onDataLoad.onDelete(key);
-    await getData();
+    if (!onDataLoad?.url) {
+      setDataSource((prev) => prev.filter((props) => props[keyExpr!] !== key));
+      toggleWarningModal();
+      toast.success("Record has been removed");
+      return;
+    }
+
+    if (onDataLoad.onDelete) {
+      await onDataLoad.onDelete(key);
+    }
+    try {
+      setIsRemoving(true);
+      await axios.delete(`${onDataLoad.url}/${key}`);
+      await getData();
+
+      toggleWarningModal();
+      toast.success("Record has been removed");
+    } catch (error) {
+      if (error instanceof Error)
+        toast.success(
+          `Record cannot be removed. Error details: ${error.message || "API not response"}`,
+        );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const clearFilters = () => {
@@ -269,6 +298,9 @@ export const useTableService = <T extends Record<string, any>>({
     isLoading,
     selectedKeysState,
     operators,
+    isWarningModal,
+    isRemoving,
+    toggleWarningModal,
     updateOperators,
     clearFilters,
     getData,
