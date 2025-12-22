@@ -1,9 +1,4 @@
-import {
-  GridColumn,
-  GridFilter,
-  GridFilterOperator,
-  UpdateFilterFunction,
-} from "../types";
+import { GridColumn, GridFilter, UpdateFilterFunction } from "../types";
 
 interface BooleanProviderProps extends GridColumn {
   filter: GridFilter | undefined;
@@ -21,7 +16,6 @@ export const BooleanProvider = ({
     onChange={(e) =>
       updateFilter({
         field,
-        operator: filter?.operator || "equals",
         value: e.target.value === "" ? null : e.target.value === "true",
       })
     }

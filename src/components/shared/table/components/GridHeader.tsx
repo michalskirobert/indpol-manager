@@ -1,6 +1,12 @@
 import { ChevronUp, ChevronDown } from "lucide-react";
 import { FilterOperators } from "./FilterOperators";
-import { GridFilter, GridProps, GridSorting } from "../types";
+import {
+  GridFilter,
+  GridFilterOperator,
+  GridProps,
+  GridSorting,
+  UpdateFilterFunction,
+} from "../types";
 import { Providers } from "../providers";
 
 interface Props<T extends Record<string, any>>
@@ -9,9 +15,11 @@ interface Props<T extends Record<string, any>>
   sorting: GridSorting | null;
   allSelected: boolean;
   someSelected: boolean;
+  operators: Record<string, GridFilterOperator> | undefined;
   toggleSort: (field: string) => void;
-  updateFilter: (props: GridFilter) => void;
+  updateFilter: UpdateFilterFunction;
   toggleSelectAll: () => void;
+  updateOperators: (fieldName: string, operator: GridFilterOperator) => void;
 }
 
 export const GridHeader = <T extends Record<string, any>>({
@@ -21,6 +29,8 @@ export const GridHeader = <T extends Record<string, any>>({
   allSelected,
   someSelected,
   selection,
+  operators,
+  updateOperators,
   toggleSort,
   updateFilter,
   toggleSelectAll,
@@ -53,11 +63,11 @@ export const GridHeader = <T extends Record<string, any>>({
               className="border-neutral-300 dark:border-neutral-700 select-none border px-3 py-2"
               style={{ width: col.width || 200, minWidth: 200 }}
             >
-              <div
-                className="flex min-w-[250px] flex-col gap-1"
-                onClick={() => col.allowSorting && toggleSort(col.field)}
-              >
-                <div className="flex items-center justify-between">
+              <div className="flex min-w-[250px] flex-col gap-1">
+                <div
+                  className="flex items-center justify-between"
+                  onClick={() => col.allowSorting && toggleSort(col.field)}
+                >
                   <span className="mb-1">{col.caption}</span>
                   {col.allowSorting && (
                     <>
@@ -77,13 +87,9 @@ export const GridHeader = <T extends Record<string, any>>({
                       field={col.field}
                       type={col.type}
                       filterOperators={col.filterOperators}
-                      currentOperator={filter?.operator}
+                      currentOperator={operators?.[col.field] || "equals"}
                       setOperator={(field, operator) =>
-                        updateFilter({
-                          field,
-                          operator,
-                          value: filter?.value || "",
-                        })
+                        updateOperators(field, operator)
                       }
                     />
 

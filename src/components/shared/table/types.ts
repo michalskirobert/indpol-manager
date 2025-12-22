@@ -105,7 +105,9 @@ export type GridProps<T extends Record<string, any>> = PropsWithChildren & {
   onSelectionChange?: (selectedKeys: Array<string | number>) => void;
 };
 
-export type UpdateFilterFunction = (filter: GridFilter) => void;
+export type UpdateFilterFunction = (
+  filter: Omit<GridFilter, "operator">,
+) => void;
 
 export type DataStore<T = any> = {
   url: string;

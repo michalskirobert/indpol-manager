@@ -38,7 +38,6 @@ export const DateProvider = ({
               .map((d) => new Date(d));
             updateFilter({
               field,
-              operator: filter.operator,
               value: dates[0],
               valueTo: dates[1],
             });
@@ -47,7 +46,6 @@ export const DateProvider = ({
 
           updateFilter({
             field,
-            operator: filter?.operator || "equals",
             value: e.currentTarget.valueAsDate,
           });
         }}

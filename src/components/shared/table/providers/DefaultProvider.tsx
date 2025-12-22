@@ -34,7 +34,6 @@ export const DefaultProvider = ({
             setRange(nextRange);
             updateFilter({
               field,
-              operator: filter.operator || "equals",
               value: nextRange[0],
               valueTo: nextRange[1],
             });
@@ -54,7 +53,6 @@ export const DefaultProvider = ({
             setRange(nextRange);
             updateFilter({
               field,
-              operator: filter.operator || "equals",
               value: nextRange[0],
               valueTo: nextRange[1],
             });
@@ -73,7 +71,6 @@ export const DefaultProvider = ({
       onChange={(e) =>
         updateFilter({
           field,
-          operator: filter?.operator || "equals",
           value: e.target.value,
         })
       }

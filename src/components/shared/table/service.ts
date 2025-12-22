@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { GridFilter, GridProps, GridSorting } from "./types";
+import {
+  GridFilter,
+  GridFilterOperator,
+  GridProps,
+  GridSorting,
+} from "./types";
 import axios from "axios";
 
 export const useTableService = <T extends Record<string, any>>({
@@ -19,6 +24,8 @@ export const useTableService = <T extends Record<string, any>>({
   const [dataSource, setDataSource] = useState<T[]>(data || []);
   const [sorting, setSorting] = useState<GridSorting | null>(null);
   const [filters, setFilters] = useState<GridFilter[]>([]);
+  const [operators, setOperators] =
+    useState<Record<string, GridFilterOperator>>();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [internalSelectedKeys, setInternalSelectedKeys] = useState<
@@ -42,7 +49,10 @@ export const useTableService = <T extends Record<string, any>>({
     onSort?.(next);
   };
 
-  const updateFilter = (filterUpdate: GridFilter) => {
+  const updateFilter = (
+    filterUpdate: Omit<GridFilter, "operator">,
+    operator?: GridFilterOperator,
+  ) => {
     if (filterDebounceRef.current) {
       clearTimeout(filterDebounceRef.current);
     }
@@ -61,7 +71,7 @@ export const useTableService = <T extends Record<string, any>>({
           ...prevFilters,
           {
             field: filterUpdate.field,
-            operator: filterUpdate.operator ?? "equals",
+            operator: operator ?? operators?.[filterUpdate.field] ?? "equals",
             value: filterUpdate.value,
           },
         ];
@@ -73,14 +83,18 @@ export const useTableService = <T extends Record<string, any>>({
               ...f,
               value:
                 filterUpdate.value !== undefined ? filterUpdate.value : f.value,
-              operator:
-                filterUpdate.operator !== undefined
-                  ? filterUpdate.operator
-                  : f.operator,
+              operator: operator ?? operators?.[filterUpdate.field] ?? "equals",
             }
           : f,
       );
     });
+  };
+
+  const updateOperators = (fieldName: string, operator: GridFilterOperator) => {
+    setOperators((prev) => ({ ...prev, [fieldName]: operator }));
+    const foundFilter = filters.find(({ field }) => field === fieldName);
+
+    if (foundFilter) updateFilter(foundFilter, operator);
   };
 
   const getKey = (row: T, index: number): string | number => {
@@ -206,6 +220,7 @@ export const useTableService = <T extends Record<string, any>>({
 
     onFilter?.([]);
     onSort?.(null);
+    setOperators(undefined);
   };
 
   useEffect(() => {
@@ -253,6 +268,8 @@ export const useTableService = <T extends Record<string, any>>({
     error,
     isLoading,
     selectedKeysState,
+    operators,
+    updateOperators,
     clearFilters,
     getData,
     insert,

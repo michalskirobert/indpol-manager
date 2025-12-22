@@ -23,7 +23,6 @@ export const EnumProvider = ({
     onChange={(e) =>
       updateFilter({
         field,
-        operator: filter?.operator || "equals",
         value: e.target.value === "" ? null : e.target.value === "true",
       })
     }

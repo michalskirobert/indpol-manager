@@ -29,6 +29,8 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
     error,
     isLoading,
     selectedKeysState,
+    operators,
+    updateOperators,
     getData,
     clearFilters,
     toggleSelectAll,
@@ -90,6 +92,8 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
               toggleSort,
               updateFilter,
               toggleSelectAll,
+              updateOperators,
+              operators,
             }}
           />
           <GridBody
