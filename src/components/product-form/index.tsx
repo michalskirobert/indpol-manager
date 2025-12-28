@@ -66,12 +66,14 @@ const ProductForm = ({ data }: Props) => {
         <h2>Details section</h2>
         {detailsSection}
       </section>
-      <ProductImages
-        isOpen={showProductImages}
-        control={control}
-        setValue={setValue}
-        toggle={toggle}
-      />
+      {showProductImages && (
+        <ProductImages
+          isOpen={showProductImages}
+          control={control}
+          setValue={setValue}
+          toggle={toggle}
+        />
+      )}
     </form>
   );
 };

@@ -37,19 +37,6 @@ export const Attachment = <T extends FieldValues>({
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImage, setModalImage] = useState<string | null>(null);
 
-  const setAsMain = (index: number) => {
-    if (!Array.isArray(field.value) || !field.value?.length) return;
-
-    const images = new Map(field.value);
-    const image = images.get(index);
-
-    images.delete(index);
-
-    images.set(0, image);
-
-    field.onChange(images.values());
-  };
-
   const scrollThumbnails = (direction: "left" | "right") => {
     const ref = thumbRef.current;
     if (!ref) return;
@@ -125,7 +112,7 @@ export const Attachment = <T extends FieldValues>({
           <div className="flex w-full max-w-[250px] flex-col gap-3 md:w-1/2 md:max-w-[1000px]">
             <div className="relative h-64 w-full overflow-hidden rounded-lg bg-gray-50 md:h-96">
               <Image
-                src={images[mainIdx]}
+                src={images[selectedThumbIdx]}
                 alt="Product image"
                 fill
                 className="object-cover"
@@ -142,7 +129,7 @@ export const Attachment = <T extends FieldValues>({
                     setSelectedThumbIdx(0);
                   }}
                 >
-                  Set as Main Product Picture
+                  Set as main
                 </button>
               )}
               <button
