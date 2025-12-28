@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { format } from "date-fns";
 import { getJobPosition } from "@/utils/process-user-data";
-import { setIsNotificationModalOpen } from "@/store/slices/layout";
+import { setIsNotificationModalOpen } from "@/store/reducers/layout";
 import { Link2 } from "lucide-react";
 import { useAppDispatch } from "@/store";
 

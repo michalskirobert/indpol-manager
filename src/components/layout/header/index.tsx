@@ -16,7 +16,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import {
   setIsNotificationModalOpen,
   toggleSidebar,
-} from "@/store/slices/layout";
+} from "@/store/reducers/layout";
 import { Modal } from "./notification-modal";
 
 export function Header() {

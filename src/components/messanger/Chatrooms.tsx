@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppDispatch, useAppSelector } from "@/store";
-import { setSelectedUser } from "@/store/slices/messages";
+import { setSelectedUser } from "@/store/reducers/messages";
 import {
   Avatar,
   Card,

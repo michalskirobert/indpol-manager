@@ -6,7 +6,7 @@ export const INSTANCES_URLS = {
   orders: "orders",
   dictionaries: "dictionaries",
   users: "auth/users",
-  upload: "upload",
+  images: "images",
   notifications: "notifications",
   messages: "messages",
   chatroom: "chat",

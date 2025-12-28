@@ -2,9 +2,9 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { apiSlice } from "./api";
 
-import layoutSlice from "./slices/layout";
-import notificationsSlice from "./slices/notifications";
-import messagesSlice from "./slices/messages";
+import layoutSlice from "./reducers/layout";
+import notificationsSlice from "./reducers/notifications";
+import messagesSlice from "./reducers/messages";
 
 const rootReducer = combineReducers({
   layout: layoutSlice,

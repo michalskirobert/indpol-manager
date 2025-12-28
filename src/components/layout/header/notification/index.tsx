@@ -13,9 +13,9 @@ import { useGetNotificationsCountQuery } from "@/store/services/notifications";
 import { Bell } from "lucide-react";
 import { Notifications } from "./Notifications";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { setNotificationsCount } from "@/store/slices/notifications";
+import { setNotificationsCount } from "@/store/reducers/notifications";
 import { useGetMessagesCountQuery } from "@/store/services/messages";
-import { setMessagesCount } from "@/store/slices/messages";
+import { setMessagesCount } from "@/store/reducers/messages";
 
 export function Notification() {
   const count = useAppSelector(({ notifications }) => notifications.count);

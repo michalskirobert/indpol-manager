@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppDispatch } from "@/store";
-import { setSelectedUser } from "@/store/slices/messages";
+import { setSelectedUser } from "@/store/reducers/messages";
 import { UserProps } from "@/types/user";
 import { useRouter } from "next/navigation";
 import { PropsWithChildren } from "react";

@@ -18,7 +18,8 @@ export type InputKind =
   | "single_checkbox"
   | "input_radio"
   | "input_switch"
-  | "textarea";
+  | "textarea"
+  | "attachment";
 
 type TColSizes = {
   xs?: number;
@@ -33,69 +34,89 @@ export type Item = {
   value: string;
 };
 
-export interface DatePickerProps
+export interface DatePickerProps<T extends FieldValues>
   extends React.TextareaHTMLAttributes<HTMLInputElement> {
   dateConfig?: Partial<BaseOptions>;
   name: string;
-  control: Control<any>;
+  control: Control<T>;
   placeholder?: string;
   label: string;
 }
 
-export interface MultipleCheckboxProps extends CheckboxProps {
+export interface MultipleCheckboxProps<T extends FieldValues>
+  extends CheckboxProps {
   name: string;
-  control: Control<any>;
+  control: Control<T>;
   options: Item[];
   axis?: "horizontal" | "vertical";
 }
 
-export interface SignleCheckboxProps extends CheckboxProps {
+export interface SignleCheckboxProps<T extends FieldValues>
+  extends CheckboxProps {
   name: string;
-  control: Control<any>;
+  control: Control<T>;
 }
 
-export interface InputTextareaProps extends TextareaProps {
+export interface InputTextareaProps<T extends FieldValues>
+  extends TextareaProps {
   name: string;
-  control: Control<any>;
+  control: Control<T>;
 }
 
-export interface CustomInputProps extends InputProps {
+export interface CustomInputProps<T extends FieldValues> extends InputProps {
   name: string;
-  control: Control<any>;
+  control: Control<T>;
 }
 
-export interface InputSelectProps
+export interface InputSelectProps<T extends FieldValues>
   extends Omit<SelectProps, "children" | "crossOrigin"> {
-  control: Control<any>;
+  control: Control<T>;
   name: string;
   options: Item[];
   multi?: boolean;
 }
 
-export interface InputRadioProps
+export interface InputRadioProps<T extends FieldValues>
   extends Omit<RadioProps, "children" | "crossOrigin"> {
   options: Item[];
-  control: Control<any>;
+  control: Control<T>;
   name: string;
   axis?: "horizontal" | "vertical";
 }
 
-export interface InputSwitchProps
+export interface InputSwitchProps<T extends FieldValues>
   extends Omit<SwitchProps, "children" | "crossOrigin"> {
-  control: Control<any>;
+  control: Control<T>;
   name: string;
+}
+
+export interface InputAttachmentProps<T extends FieldValues> {
+  control: Control<T>;
+  name: string;
+  size?: {
+    min?: number;
+    max?: number;
+  };
+  maxFilesLength?: number;
+  resolution?: {
+    min?: number;
+    max?: number;
+  };
+  multiple?: boolean;
+  disabled?: boolean;
 }
 
 export type FieldProps<T extends FieldValues> = {
   size?: TColSizes;
-  inputProps?: CustomInputProps;
-  dateProps?: DatePickerProps;
-  textareaProps?: InputTextareaProps;
-  switchProps?: InputSwitchProps;
-  multipleCheckboxProps?: MultipleCheckboxProps;
-  singleCheckboxProps?: SignleCheckboxProps;
-  inputSelectProps?: InputSelectProps;
-  radioProps?: InputRadioProps;
+  inputProps?: CustomInputProps<T>;
+  dateProps?: DatePickerProps<T>;
+  textareaProps?: InputTextareaProps<T>;
+  switchProps?: InputSwitchProps<T>;
+  multipleCheckboxProps?: MultipleCheckboxProps<T>;
+  singleCheckboxProps?: SignleCheckboxProps<T>;
+  inputSelectProps?: InputSelectProps<T>;
+  radioProps?: InputRadioProps<T>;
+  inputAttachmentProps?: InputAttachmentProps<T>;
   classnames?: {
     colClassName?: string;
   };

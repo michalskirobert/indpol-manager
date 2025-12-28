@@ -8,6 +8,7 @@ import InputSelect from "./fields/InputSelect";
 import { SingleCheckbox } from "./fields/SingleCheckbox";
 import { InputTextarea } from "./fields/Textarea";
 import CustomInput from "./fields/CustomInput";
+import { Attachment } from "./fields/attachment";
 
 interface Props<T extends FieldValues> {
   fields: FieldProps<T>[][];
@@ -53,6 +54,11 @@ export const CustomForm = <T extends FieldValues>({ fields }: Props<T>) => {
                   break;
                 case "select":
                   FieldComponent = <InputSelect {...field.inputSelectProps!} />;
+                  break;
+                case "attachment":
+                  FieldComponent = (
+                    <Attachment {...field.inputAttachmentProps!} />
+                  );
                   break;
                 default:
                   FieldComponent = <CustomInput {...field.inputProps!} />;

@@ -1,7 +1,7 @@
 import { CustomButton } from "@/components/shared/button/CustomButton";
 import { useAppDispatch } from "@/store";
 import { useCreateChatroomMutation } from "@/store/services/messages";
-import { setSelectedUser } from "@/store/slices/messages";
+import { setSelectedUser } from "@/store/reducers/messages";
 import { UserProps } from "@/types/user";
 import { getJobPosition } from "@/utils/process-user-data";
 

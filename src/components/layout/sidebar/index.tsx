@@ -12,7 +12,7 @@ import { ArrowLeft, ChevronUp } from "lucide-react";
 import { MenuItem } from "./menu-item";
 
 import { useIsMobile } from "@/hooks/use-mobile";
-import { setSidebarOpen, toggleSidebar } from "@/store/slices/layout";
+import { setSidebarOpen, toggleSidebar } from "@/store/reducers/layout";
 import { useAppDispatch, useAppSelector } from "@/store";
 
 export function Sidebar() {

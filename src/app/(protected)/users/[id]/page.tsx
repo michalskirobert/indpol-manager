@@ -10,7 +10,7 @@ import {
 import {
   useDeleteImageMutation,
   useUploadImageMutation,
-} from "@/store/services/upload";
+} from "@/store/services/images";
 import { toast } from "react-toastify";
 import { LoadingBlocker } from "@/components/shared/LoadingBlocker";
 import { UserNotFound } from "./NotFound";
