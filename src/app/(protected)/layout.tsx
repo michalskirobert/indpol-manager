@@ -8,11 +8,15 @@ import NextTopLoader from "nextjs-toploader";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { useUpdateLastSeenMutation } from "@/store/services/users/users";
+import { useAppDispatch } from "@/store";
+import { ThemeType, updateTheme } from "@/store/reducers/layout";
 
 export default function ProtectedLayout({ children }: PropsWithChildren) {
   const { data: session } = useSession();
 
   const [updateLastSeen] = useUpdateLastSeenMutation();
+
+  const dispatch = useAppDispatch();
 
   if (!session?.user) redirect("/sign-in");
 
@@ -22,6 +26,16 @@ export default function ProtectedLayout({ children }: PropsWithChildren) {
     }, 30_000);
 
     return () => clearInterval(updatingUserLastSeen);
+  }, []);
+
+  useEffect(() => {
+    if (localStorage) {
+      const theme = localStorage.getItem("layout.theme") as ThemeType;
+
+      if (!theme) return;
+
+      dispatch(updateTheme(theme));
+    }
   }, []);
 
   return (

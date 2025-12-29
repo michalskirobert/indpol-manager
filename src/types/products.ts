@@ -21,21 +21,18 @@ export interface DetailProps {
 }
 
 export interface ProductProps {
-  _id: string;
+  _id?: string;
   desc: { [key in languageCode]: string };
-  fullname: string;
   name: string;
-  categoryName: string;
-  categoryValue: string;
-  images?: string[];
+  category: string;
+  brand: string;
+  images: string[];
   price: number;
-  discount?: number;
-  brandName: string;
-  brandValue: string;
-  purchased?: boolean;
-  quantity: number;
-  productId?: string;
   details: DetailProps[];
+  discount?: number;
+  purchased?: boolean;
+  quantity?: number;
+  productId?: string;
   variants?: VariantsDocument[];
   stockLimit: number;
   status?: ProductStatus;

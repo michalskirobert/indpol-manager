@@ -1,4 +1,6 @@
 import logo from "@public/images/logo.png";
+import logoDark from "@public/images/logo_dark.png";
+
 import Image from "next/image";
 
 export function Logo() {
@@ -12,7 +14,7 @@ export function Logo() {
         quality={100}
       />
       <Image
-        src={logo}
+        src={logoDark}
         className="hidden dark:block"
         alt="NurByte"
         role="presentation"

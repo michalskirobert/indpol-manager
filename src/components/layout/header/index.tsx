@@ -20,6 +20,8 @@ import {
 import { Modal } from "./notification-modal";
 
 export function Header() {
+  const { theme } = useAppSelector(({ layout }) => layout);
+
   const isNotificationOpen = useAppSelector(
     (state) => state.layout.isNotificationModalOpen,
   );
@@ -40,7 +42,9 @@ export function Header() {
       {isMobile && (
         <Link href={"/"} className="max-[430px]:hidden min-[375px]:ml-4 ml-2">
           <Image
-            src={"/images/logo/logo-icon.svg"}
+            src={
+              theme === "dark" ? "/images/logo_dark.png" : "/images/logo.png"
+            }
             width={32}
             height={32}
             alt=""

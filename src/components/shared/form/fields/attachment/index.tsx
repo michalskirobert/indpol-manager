@@ -87,7 +87,7 @@ export const Attachment = <T extends FieldValues>({
 
   return (
     <>
-      <div className="flex w-full flex-col gap-3 rounded-lg bg-white px-5 pb-5 pt-3 shadow md:flex-row">
+      <div className="flex w-full flex-col gap-3 rounded-lg bg-white px-5 pb-5 pt-3 shadow dark:bg-dark-2 md:flex-row">
         <div
           {...getRootProps({
             className: images.length ? "w-full md:w-1/2" : "w-full",

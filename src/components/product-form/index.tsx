@@ -3,12 +3,13 @@
 import { useFieldArray, useForm } from "react-hook-form";
 import { useCreateForm } from "./use-create-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { schema } from "./schema";
+import { ProductFormInput, schema } from "./schema";
 import { CustomButton } from "../shared/button/CustomButton";
 import { ArrowLeft, Import, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ProductImages } from "./product-images-modal";
+import { ProductProps } from "@/types/products";
 
 interface Props {
   data?: string;
@@ -19,12 +20,16 @@ const ProductForm = ({ data }: Props) => {
 
   const toggle = () => setShowProductImages((prev) => !prev);
 
-  const { control, setValue, handleSubmit } = useForm({
+  const { control, setValue, handleSubmit } = useForm<ProductFormInput>({
     defaultValues: JSON.parse(data || "{}"),
+    mode: "all",
     resolver: zodResolver(schema),
   });
 
-  const { fields, append, remove } = useFieldArray({ control, name: "" });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "details",
+  });
 
   const { detailsSection, generalSection } = useCreateForm(control);
 
@@ -39,6 +44,7 @@ const ProductForm = ({ data }: Props) => {
           <CustomButton
             variant="text"
             content="Back to list"
+            className="dark:text-white dark:hover:bg-dark-2"
             icon={<ArrowLeft />}
             onClick={() => router.push("/products")}
           />
@@ -49,11 +55,13 @@ const ProductForm = ({ data }: Props) => {
             content="Save"
             icon={<Save />}
             type="submit"
+            color="green"
           />
           <CustomButton
             variant="text"
             content="Import images"
             icon={<Import />}
+            color="blue"
             onClick={toggle}
           />
         </div>
