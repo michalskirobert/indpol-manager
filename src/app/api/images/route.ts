@@ -1,6 +1,8 @@
 import { cloudinary } from "@/lib/cloudinary";
 import { NextResponse } from "next/server";
 
+const normalizePublicId = (id: string) => id.replace(/\.[^/.]+$/, "");
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const folder = searchParams.get("folder");
@@ -53,5 +55,39 @@ export async function GET(req: Request) {
         { error: error.message ?? "Cloudinary error" },
         { status: 500 },
       );
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const { public_id } = await req.json();
+
+    if (
+      !public_id ||
+      !Array.isArray(public_id) ||
+      !public_id.every((id) => typeof id === "string")
+    ) {
+      return NextResponse.json(
+        { error: "Invalid input: public_id must be an array of strings" },
+        { status: 400 },
+      );
+    }
+
+    const idsToDelete = public_id.map(normalizePublicId);
+
+    const result = await cloudinary.api.delete_resources(idsToDelete, {
+      type: "upload",
+    });
+
+    return NextResponse.json({
+      deleted: result.deleted,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { error: error.message ?? "Cloudinary delete error" },
+        { status: 500 },
+      );
+    }
   }
 }

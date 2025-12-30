@@ -31,7 +31,7 @@ export const uploadApi = apiSlice.injectEndpoints({
         url: `${INSTANCES_URLS.images}?folder=${folder}`,
       }),
     }),
-    deleteImage: build.mutation<void, { public_id: string }>({
+    deleteImage: build.mutation<void, { public_id: string[] }>({
       query: (body) => ({
         url: INSTANCES_URLS.images,
         data: body,

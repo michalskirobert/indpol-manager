@@ -32,3 +32,14 @@ export const displayErrorMessage = (
 
   toast.error(`An error occurred while uploading files:\n${formattedMessages}`);
 };
+
+export const extractPublicId = (imageUrl: string) => {
+  const marker = "/indpol/";
+  const index = imageUrl.indexOf(marker);
+
+  if (index === -1) {
+    throw new Error("Invalid image URL: cannot extract publicId");
+  }
+
+  return imageUrl.substring(index + 1);
+};
