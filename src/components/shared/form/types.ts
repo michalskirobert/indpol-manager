@@ -74,6 +74,7 @@ export interface InputSelectProps<T extends FieldValues>
   name: string;
   options: Item[];
   multi?: boolean;
+  required?: boolean;
 }
 
 export interface InputRadioProps<T extends FieldValues>

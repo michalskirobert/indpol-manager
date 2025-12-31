@@ -20,7 +20,6 @@ export const useCreateForm = (control: Control<any>) => {
           type: "input",
           inputProps: {
             control,
-            defaultValue: 0,
             min: 0,
             type: "number",
             label: "Price",
@@ -32,7 +31,6 @@ export const useCreateForm = (control: Control<any>) => {
           type: "input",
           inputProps: {
             label: "Stock limit",
-            defaultValue: 0,
             min: 0,
             type: "number",
             control,
@@ -57,9 +55,9 @@ export const useCreateForm = (control: Control<any>) => {
           type: "select",
           inputSelectProps: {
             label: "Category",
-            multi: true,
             control,
             name: "category",
+            required: true,
             options: [
               { label: "test", value: "test2" },
               { label: "test2", value: "test3" },
@@ -70,9 +68,9 @@ export const useCreateForm = (control: Control<any>) => {
           type: "select",
           inputSelectProps: {
             label: "Brand",
-            multi: true,
             control,
             name: "brand",
+            required: true,
             options: [
               { label: "test", value: "test2" },
               { label: "test2", value: "test3" },

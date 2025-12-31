@@ -129,7 +129,7 @@ export const Attachment = <T extends FieldValues>({
                     />
                     <button
                       type="button"
-                      className="absolute left-1 top-1 z-20 rounded p-1 text-xs text-red-500 shadow hover:bg-red-100"
+                      className="absolute left-1 top-1 z-20 rounded bg-white p-1 text-xs text-red-500 shadow hover:bg-red-100"
                       onClick={(e) => {
                         e.stopPropagation();
                         setImageToRemove(url);

@@ -3,13 +3,23 @@
 import { useFieldArray, useForm } from "react-hook-form";
 import { useCreateForm } from "./use-create-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProductFormInput, schema } from "./schema";
+import { schema } from "./schema";
 import { CustomButton } from "../shared/button/CustomButton";
-import { ArrowLeft, Import, Save } from "lucide-react";
+import {
+  ArrowLeft,
+  File,
+  FilePlus,
+  FilePlus2,
+  Files,
+  Import,
+  Save,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ProductImages } from "./product-images-modal";
 import { ProductProps } from "@/types/products";
+import { ProductFormInput } from "./types";
+import { defaultValues } from "./utils";
 
 interface Props {
   data?: string;
@@ -21,7 +31,7 @@ const ProductForm = ({ data }: Props) => {
   const toggle = () => setShowProductImages((prev) => !prev);
 
   const { control, setValue, handleSubmit } = useForm<ProductFormInput>({
-    defaultValues: JSON.parse(data || "{}"),
+    defaultValues: data ? JSON.parse(data) : defaultValues,
     mode: "all",
     resolver: zodResolver(schema),
   });
@@ -49,7 +59,7 @@ const ProductForm = ({ data }: Props) => {
             onClick={() => router.push("/products")}
           />
         </div>
-        <div>
+        <div className="flex flex-wrap items-center">
           <CustomButton
             variant="text"
             content="Save"
@@ -62,6 +72,20 @@ const ProductForm = ({ data }: Props) => {
             content="Import images"
             icon={<Import />}
             color="blue"
+            onClick={toggle}
+          />
+          <CustomButton
+            variant="text"
+            content="Apply variants"
+            icon={<FilePlus2 />}
+            color="deep-orange"
+            onClick={toggle}
+          />
+          <CustomButton
+            variant="text"
+            content="Create duplicate"
+            icon={<Files />}
+            color="green"
             onClick={toggle}
           />
         </div>

@@ -1,8 +1,5 @@
 import z from "zod";
 
-export type ProductFormInput = z.input<typeof schema>;
-export type ProductFormValues = z.output<typeof schema>;
-
 const numberFromInput = z
   .union([z.string(), z.number()])
   .transform((val) => {
