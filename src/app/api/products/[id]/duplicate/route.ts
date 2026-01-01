@@ -15,9 +15,10 @@ export const POST = async (_: Request, { params }: Params) => {
     const session = await getSession();
 
     if (!session?.user.id) {
-      return new Response(JSON.stringify({ message: "Not authorized" }), {
-        status: 401,
-      });
+      return NextResponse.json(
+        { message: "User is not authorized" },
+        { status: 401 },
+      );
     }
 
     const collection = await getCollection("store", "products");
@@ -26,11 +27,12 @@ export const POST = async (_: Request, { params }: Params) => {
       _id: new ObjectId(params.id),
     });
 
-    if (!foundProduct)
+    if (!foundProduct) {
       return NextResponse.json(
-        { message: "Product not found" },
+        { message: "The product does not exist" },
         { status: 404 },
       );
+    }
 
     const { _id, createdDate, updatedDate, ...product } = foundProduct;
 
@@ -46,7 +48,7 @@ export const POST = async (_: Request, { params }: Params) => {
       return NextResponse.json(
         {
           message:
-            "ID cannot be assigned. Back to list and find duplicated product",
+            "Failed to create duplicated product. Please return to the product list and check.",
         },
         { status: 417 },
       );
@@ -55,7 +57,7 @@ export const POST = async (_: Request, { params }: Params) => {
     return NextResponse.json({ id: res.insertedId }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Server not responed" },
+      { message: "Server did not respond" },
       { status: 500 },
     );
   }

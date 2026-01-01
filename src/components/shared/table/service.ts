@@ -226,10 +226,12 @@ export const useTableService = <T extends Record<string, any>>({
     if (onDataLoad.onDelete) {
       await onDataLoad.onDelete(key);
     }
+
     try {
       setIsRemoving(true);
       await axios.delete(`${onDataLoad.url}/${key}`);
       await getData();
+      setInternalSelectedKeys([]);
 
       toggleWarningModal();
       toast.success("Record has been removed");

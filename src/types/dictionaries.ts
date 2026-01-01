@@ -1,10 +1,9 @@
-import { ObjectId } from "mongodb";
-import { languageCode } from "./products";
+import { LanguageCode } from "./products";
 
 export type DictionaryParams = {
-  _id: ObjectId;
-  name: Record<languageCode, string>;
-  desc: Record<languageCode, string>;
+  _id: string;
+  name: Record<LanguageCode, string>;
+  desc: Record<LanguageCode, string>;
   value: string;
   dictionaryId: number;
 };

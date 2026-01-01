@@ -10,7 +10,7 @@ import { Toolbar } from "./components/toolbar/Toolbar";
 import { Item } from "./components/toolbar/Item";
 import { WarningModal } from "./components/WarningModal";
 
-export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
+const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
   const {
     columns,
     height = 500,
@@ -118,14 +118,18 @@ export const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
           />
         </table>
       </div>
-      <WarningModal
-        {...{
-          isLoading: isRemoving,
-          isOpen: isWarningModal,
-          toggle: toggleWarningModal,
-          remove: () => remove(selectedKeysState[0]),
-        }}
-      />
+      {isWarningModal && (
+        <WarningModal
+          {...{
+            isLoading: isRemoving,
+            isOpen: isWarningModal,
+            toggle: toggleWarningModal,
+            remove: () => remove(selectedKeysState[0]),
+          }}
+        />
+      )}
     </>
   );
 };
+
+export default Grid;
