@@ -72,6 +72,7 @@ const axiosBaseQuery =
         const errors = responseData.errors;
 
         if (Array.isArray(errors)) {
+          console.log(errors[0]);
           const details = errors?.[0]?.details || defaultErrorMessage;
           if (details) {
             toast.error(details);

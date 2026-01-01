@@ -59,10 +59,7 @@ export const POST = async (req: Request) => {
       });
     }
 
-    console.log("EXECUTED");
     const body = (await req.json()) as ProductFormValues;
-
-    console.log(body);
 
     if (!body) {
       return NextResponse.json(

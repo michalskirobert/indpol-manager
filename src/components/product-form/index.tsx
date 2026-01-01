@@ -12,26 +12,34 @@ import { ProductImages } from "./product-images-modal";
 import { ProductFormInput, ProductFormValues } from "./types";
 import { defaultValues } from "./utils";
 import Details from "./details-section";
-import { useInsertProductMutation } from "@/store/services/products";
+import {
+  useDuplicateProductMutation,
+  useInsertProductMutation,
+} from "@/store/services/products";
 import { toast } from "react-toastify";
 import { SavingModal } from "./SavingModal";
+import { ProductProps, ProductStatus } from "@/types/products";
+import { LoadingBlocker } from "../shared/LoadingBlocker";
 
 interface Props {
   data?: string;
 }
 
 const ProductForm = ({ data }: Props) => {
+  const processedData: ProductProps = data ? JSON.parse(data) : defaultValues;
+
   const [insert, { isLoading }] = useInsertProductMutation();
+  const [duplicate, { isLoading: isDuplicating }] =
+    useDuplicateProductMutation();
 
   const [showProductImages, setShowProductImages] = useState(false);
   const [savingModal, setSavingModal] = useState(false);
 
   const toggleShowProductImages = () => setShowProductImages((prev) => !prev);
-  const toggleSavingModal = () => setSavingModal((prev) => !prev);
 
   const { control, formState, getValues, setValue, handleSubmit } =
     useForm<ProductFormInput>({
-      defaultValues: data ? JSON.parse(data) : defaultValues,
+      defaultValues: processedData,
       mode: "all",
       resolver: zodResolver(schema),
     });
@@ -40,7 +48,7 @@ const ProductForm = ({ data }: Props) => {
 
   const router = useRouter();
 
-  const onConfirmSave = async () => {
+  const onConfirmSave = async (status: ProductStatus) => {
     try {
       const { discount, price, stockLimit, ...values } = getValues();
 
@@ -49,87 +57,112 @@ const ProductForm = ({ data }: Props) => {
         discount: Number(discount ?? 0),
         price: Number(price),
         stockLimit: Number(stockLimit),
+        status,
       };
 
       const res = await insert(bodyRequest).unwrap();
 
-      toast.success(res.message);
       router.push("/products");
+
+      toast.success(res.message);
     } catch (error) {
-      if (error instanceof Error) toast.error(error.message);
+      toast.error("Product cannot be added!");
     } finally {
       setSavingModal(false);
     }
   };
 
+  const duplicateProduct = async () => {
+    if (!processedData?._id) return;
+
+    const res = await duplicate(processedData._id).unwrap();
+
+    router.push(`/products/${res.id}`);
+
+    toast.success("Product has been duplicated");
+  };
+
   return (
-    <form onSubmit={handleSubmit(() => setSavingModal(true))}>
-      <div className="flex items-center justify-between gap-2">
-        <div>
-          <CustomButton
-            variant="text"
-            content="Back to list"
-            className="dark:text-white dark:hover:bg-dark-2"
-            icon={<ArrowLeft />}
-            onClick={() => router.push("/products")}
-            disabled={isLoading}
-          />
+    <LoadingBlocker isLoading={isDuplicating}>
+      <form onSubmit={handleSubmit(() => setSavingModal(true))}>
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <CustomButton
+              variant="text"
+              content="Back to product list"
+              className="dark:text-white dark:hover:bg-dark-2"
+              icon={<ArrowLeft />}
+              onClick={() => router.push("/products")}
+              disabled={isLoading}
+            />
+          </div>
+          <div className="flex flex-wrap items-center">
+            <CustomButton
+              variant="text"
+              content="Save"
+              icon={<Save />}
+              type="submit"
+              color="green"
+              disabled={!formState.isDirty}
+              tooltip={
+                !formState.isDirty ? "No changes to save" : "Save changes"
+              }
+            />
+            <CustomButton
+              variant="text"
+              content="Import images"
+              icon={<Import />}
+              color="blue"
+              onClick={toggleShowProductImages}
+              disabled={isLoading}
+            />
+            <CustomButton
+              variant="text"
+              content="Apply variants"
+              icon={<FilePlus2 />}
+              color="deep-orange"
+              disabled={isLoading}
+            />
+            <CustomButton
+              variant="text"
+              content="Create duplicate"
+              icon={<Files />}
+              color="green"
+              onClick={duplicateProduct}
+              isLoading={isDuplicating}
+              disabled={isLoading || !processedData?._id}
+              tooltip={
+                !processedData?._id
+                  ? "Cannot duplicate a product that does not exist"
+                  : "Create a copy of this product"
+              }
+            />
+          </div>
         </div>
-        <div className="flex flex-wrap items-center">
-          <CustomButton
-            variant="text"
-            content="Save"
-            icon={<Save />}
-            type="submit"
-            color="green"
+        <section className="border p-3">
+          <h2>General Data</h2>
+          {generalSection}
+        </section>
+        <section className="border p-3">
+          <h2>Details sections</h2>
+          <Details control={control as any} />
+        </section>
+        {showProductImages && (
+          <ProductImages
+            isOpen={showProductImages}
+            control={control}
+            setValue={setValue}
+            toggle={toggleShowProductImages}
           />
-          <CustomButton
-            variant="text"
-            content="Import images"
-            icon={<Import />}
-            color="blue"
-            onClick={toggleShowProductImages}
-            disabled={isLoading}
-          />
-          <CustomButton
-            variant="text"
-            content="Apply variants"
-            icon={<FilePlus2 />}
-            color="deep-orange"
-            disabled={isLoading}
-          />
-          <CustomButton
-            variant="text"
-            content="Create duplicate"
-            icon={<Files />}
-            color="green"
-            disabled={isLoading}
-          />
-        </div>
-      </div>
-      <section className="border p-3">
-        <h2>General Data</h2>
-        {generalSection}
-      </section>
-      <section className="border p-3">
-        <h2>Details sections</h2>
-        <Details control={control as any} />
-      </section>
-      {showProductImages && (
-        <ProductImages
-          isOpen={showProductImages}
-          control={control}
-          setValue={setValue}
-          toggle={toggleShowProductImages}
+        )}
+        <SavingModal
+          open={savingModal}
+          isLoading={isLoading}
+          handler={() => setSavingModal(false)}
+          onSave={onConfirmSave}
         />
-      )}
-      <SavingModal
-        open={savingModal}
-        isLoading={isLoading}
-        handler={() => setSavingModal(false)}
-        onSave={onConfirmSave}
-      />
-    </form>
+      </form>
+    </LoadingBlocker>
   );
 };
 

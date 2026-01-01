@@ -11,7 +11,15 @@ export const productsApi = apiSlice.injectEndpoints({
         data: body,
       }),
     }),
+    duplicateProduct: build.mutation<{ id: string }, string>({
+      query: (id) => ({
+        url: `${INSTANCES_URLS.products}/${id}/duplicate`,
+        method: "POST",
+        body: null,
+      }),
+    }),
   }),
 });
 
-export const { useInsertProductMutation } = productsApi;
+export const { useInsertProductMutation, useDuplicateProductMutation } =
+  productsApi;
