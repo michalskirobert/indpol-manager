@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Trash2 } from "lucide-react";
 import { ZoomImage } from "./Zoom";
 import { WarningModal } from "./WarningModal";
 import { useAttachmentService } from "./service";
+import { Feedback } from "../../Feedback";
 
 export const Attachment = <T extends FieldValues>({
   control,
@@ -26,6 +27,7 @@ export const Attachment = <T extends FieldValues>({
     modalOpen,
     modalImage,
     imageToRemove,
+    fieldState,
     getRootProps,
     getInputProps,
     onRemove,
@@ -54,7 +56,9 @@ export const Attachment = <T extends FieldValues>({
           })}
         >
           <LoadingBlocker isLoading={isLoading}>
-            <div className="transition-color cursor-pointer border-4 border-dashed p-7 text-center duration-500 hover:border-blue-500">
+            <div
+              className={`transition-color cursor-pointer border-4 border-dashed p-7 text-center duration-500 ${fieldState.invalid && !isLoading ? "border-red-500 hover:border-red-200" : "hover:border-blue-500"}`}
+            >
               <input
                 {...getInputProps()}
                 ref={inputRef}
@@ -65,6 +69,9 @@ export const Attachment = <T extends FieldValues>({
               <p>Drop image here...</p>
             </div>
           </LoadingBlocker>
+          {fieldState.invalid && !isLoading && (
+            <Feedback msg={fieldState.error?.message} />
+          )}
         </div>
 
         {images.length > 0 && (

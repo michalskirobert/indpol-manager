@@ -1,9 +1,21 @@
-import { getCollection } from "@/lib/mongodb";
+import { ProductFormValues } from "@/components/product-form/types";
+import { errorBadRequestHandler } from "@lib/api/error-bad-request";
+import { getSession } from "@lib/auth";
+import { getCollection } from "@lib/mongodb";
 import { applyFiltersAndSort } from "@/lib/query/mongo-filters";
+import { ProductProps } from "@/types/products";
 import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
   try {
+    const session = await getSession();
+
+    if (!session?.user.id) {
+      return new Response(JSON.stringify({ message: "Not authorized" }), {
+        status: 401,
+      });
+    }
+
     const db = await getCollection("store", "products");
 
     const url = new URL(request.url);
@@ -33,6 +45,53 @@ export const GET = async (request: Request) => {
       {
         status: 500,
       },
+    );
+  }
+};
+
+export const POST = async (req: Request) => {
+  try {
+    const session = await getSession();
+
+    if (!session?.user.id) {
+      return new Response(JSON.stringify({ message: "Not authorized" }), {
+        status: 401,
+      });
+    }
+
+    console.log("EXECUTED");
+    const body = (await req.json()) as ProductFormValues;
+
+    console.log(body);
+
+    if (!body) {
+      return NextResponse.json(
+        { message: "There is no payload in POST request" },
+        { status: 400 },
+      );
+    }
+
+    const errorMessage = errorBadRequestHandler<keyof ProductProps>(
+      ["name", "brand", "category", "desc", "images", "status"],
+      body,
+    );
+
+    if (errorMessage) {
+      return NextResponse.json({ message: errorMessage }, { status: 400 });
+    }
+
+    const collection = await getCollection("store", "products");
+
+    await collection.insertOne(body);
+
+    return NextResponse.json(
+      { message: "Product has been added" },
+      { status: 201 },
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Server not responed" },
+      { status: 500 },
     );
   }
 };

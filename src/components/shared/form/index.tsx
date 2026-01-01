@@ -9,6 +9,7 @@ import { SingleCheckbox } from "./fields/SingleCheckbox";
 import { InputTextarea } from "./fields/Textarea";
 import CustomInput from "./fields/CustomInput";
 import { Attachment } from "./fields/attachment";
+import { TextEditor } from "./fields/TextEditor";
 
 interface Props<T extends FieldValues> {
   fields: FieldProps<T>[][];
@@ -19,13 +20,14 @@ export const CustomForm = <T extends FieldValues>({ fields }: Props<T>) => {
     <div className="flex w-full flex-col">
       {fields.map((fieldGroup, i) => {
         return (
-          <div key={`field-group-${i}`} className={"row flex"}>
+          <div key={`field-group-${i}`} className={"row my-1 flex"}>
             {fieldGroup.map((field, j) => {
               if (field.isHidden) return null;
 
               const { type, classnames } = field;
 
-              const colClasses = classnames?.colClassName || `flex col flex-1`;
+              const colClasses =
+                classnames?.colClassName || `flex col flex-1 mx-1`;
 
               let FieldComponent: JSX.Element | null = null;
 
@@ -60,6 +62,8 @@ export const CustomForm = <T extends FieldValues>({ fields }: Props<T>) => {
                     <Attachment {...field.inputAttachmentProps!} />
                   );
                   break;
+                case "text_editor":
+                  FieldComponent = <TextEditor {...field.textEditorProps!} />;
                 default:
                   FieldComponent = <CustomInput {...field.inputProps!} />;
               }

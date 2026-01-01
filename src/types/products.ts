@@ -1,5 +1,5 @@
-export type languageCode = "pl" | "id" | "en";
-export type languageLabel = "Polski" | "English" | "Bahasa";
+export type LanguageCode = "pl" | "id" | "en";
+export type LanguageLabel = "Polski" | "English" | "Bahasa";
 
 export enum ProductStatus {
   Draft = 10,
@@ -16,13 +16,13 @@ export interface VariantsDocument {
 
 export interface DetailProps {
   id: string;
-  title: { [key in languageCode]: string };
-  detail: { [key in languageCode]: string };
+  title: { [key in LanguageCode]: string };
+  detail: { [key in LanguageCode]: string };
 }
 
 export interface ProductProps {
   _id?: string;
-  desc: { [key in languageCode]: string };
+  desc: { [key in LanguageCode]: string };
   name: string;
   category: string;
   brand: string;

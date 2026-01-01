@@ -6,6 +6,7 @@ import {
   SwitchProps,
   TextareaProps,
 } from "@material-tailwind/react";
+import { IAllProps } from "@tinymce/tinymce-react";
 import { BaseOptions } from "flatpickr/dist/types/options";
 import { ReactNode } from "react";
 import { Control, FieldValues, Path } from "react-hook-form";
@@ -19,7 +20,8 @@ export type InputKind =
   | "input_radio"
   | "input_switch"
   | "textarea"
-  | "attachment";
+  | "attachment"
+  | "text_editor";
 
 type TColSizes = {
   xs?: number;
@@ -91,6 +93,13 @@ export interface InputSwitchProps<T extends FieldValues>
   name: string;
 }
 
+export interface TextEditorProps<T extends FieldValues> extends IAllProps {
+  control: Control<T>;
+  name: string;
+  label?: string;
+  required?: boolean;
+}
+
 export interface InputAttachmentProps<T extends FieldValues> {
   control: Control<T>;
   name: string;
@@ -118,6 +127,7 @@ export type FieldProps<T extends FieldValues> = {
   inputSelectProps?: InputSelectProps<T>;
   radioProps?: InputRadioProps<T>;
   inputAttachmentProps?: InputAttachmentProps<T>;
+  textEditorProps?: TextEditorProps<T>;
   classnames?: {
     colClassName?: string;
   };

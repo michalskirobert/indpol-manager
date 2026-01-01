@@ -10,9 +10,10 @@ const numberFromInput = z
   .pipe(z.number());
 
 export const schema = z.object({
-  images: z.array(z.string()),
   name: z
-    .string({ error: "Please enter the product name." })
+    .string()
+    .trim()
+    .min(1, "Product name is required")
     .min(3, "Product name must be at least 3 characters long."),
   price: numberFromInput.refine((val) => val >= 1, {
     error: "Price must be at least 1.",
@@ -26,11 +27,12 @@ export const schema = z.object({
     .pipe(z.number().min(0, { error: "Stock cannot be negative." })),
   brand: z.string(),
   category: z.string(),
-  desc: z.object(
-    { id: z.string(), en: z.string(), pl: z.string() },
-    { error: "Please fill in all description fields." },
-  ),
-  details: z.array(z.any(), { error: "Please add at least one variant." }),
+  desc: z.object({
+    id: z.string().trim().min(1, "Indonesian description is required!"),
+    en: z.string().trim().min(1, "English description is required!"),
+    pl: z.string().trim().min(1, "Polish description is required!"),
+  }),
+  details: z.array(z.any()).min(1, "Please add at least one variant."),
   discount: z
     .union([z.string(), z.number()])
     .transform((val) => {
@@ -40,4 +42,8 @@ export const schema = z.object({
     })
     .pipe(z.number().min(0, { error: "Discount cannot be negative." }))
     .optional(),
+  images: z
+    .array(z.string())
+    .min(1, "Product needs to have at least one picture"),
+  status: z.number().optional(),
 });

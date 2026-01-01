@@ -1,54 +1,69 @@
 "use client";
 
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useCreateForm } from "./use-create-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "./schema";
 import { CustomButton } from "../shared/button/CustomButton";
-import {
-  ArrowLeft,
-  File,
-  FilePlus,
-  FilePlus2,
-  Files,
-  Import,
-  Save,
-} from "lucide-react";
+import { ArrowLeft, FilePlus2, Files, Import, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ProductImages } from "./product-images-modal";
-import { ProductProps } from "@/types/products";
-import { ProductFormInput } from "./types";
+import { ProductFormInput, ProductFormValues } from "./types";
 import { defaultValues } from "./utils";
+import Details from "./details-section";
+import { useInsertProductMutation } from "@/store/services/products";
+import { toast } from "react-toastify";
+import { SavingModal } from "./SavingModal";
 
 interface Props {
   data?: string;
 }
 
 const ProductForm = ({ data }: Props) => {
+  const [insert, { isLoading }] = useInsertProductMutation();
+
   const [showProductImages, setShowProductImages] = useState(false);
+  const [savingModal, setSavingModal] = useState(false);
 
-  const toggle = () => setShowProductImages((prev) => !prev);
+  const toggleShowProductImages = () => setShowProductImages((prev) => !prev);
+  const toggleSavingModal = () => setSavingModal((prev) => !prev);
 
-  const { control, setValue, handleSubmit } = useForm<ProductFormInput>({
-    defaultValues: data ? JSON.parse(data) : defaultValues,
-    mode: "all",
-    resolver: zodResolver(schema),
-  });
+  const { control, formState, getValues, setValue, handleSubmit } =
+    useForm<ProductFormInput>({
+      defaultValues: data ? JSON.parse(data) : defaultValues,
+      mode: "all",
+      resolver: zodResolver(schema),
+    });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "details",
-  });
-
-  const { detailsSection, generalSection } = useCreateForm(control);
+  const { generalSection } = useCreateForm(control);
 
   const router = useRouter();
 
-  const onSave = async () => {};
+  const onConfirmSave = async () => {
+    try {
+      const { discount, price, stockLimit, ...values } = getValues();
+
+      const bodyRequest: ProductFormValues = {
+        ...values,
+        discount: Number(discount ?? 0),
+        price: Number(price),
+        stockLimit: Number(stockLimit),
+      };
+
+      const res = await insert(bodyRequest).unwrap();
+
+      toast.success(res.message);
+      router.push("/products");
+    } catch (error) {
+      if (error instanceof Error) toast.error(error.message);
+    } finally {
+      setSavingModal(false);
+    }
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSave)}>
+    <form onSubmit={handleSubmit(() => setSavingModal(true))}>
       <div className="flex items-center justify-between gap-2">
         <div>
           <CustomButton
@@ -57,6 +72,7 @@ const ProductForm = ({ data }: Props) => {
             className="dark:text-white dark:hover:bg-dark-2"
             icon={<ArrowLeft />}
             onClick={() => router.push("/products")}
+            disabled={isLoading}
           />
         </div>
         <div className="flex flex-wrap items-center">
@@ -72,21 +88,22 @@ const ProductForm = ({ data }: Props) => {
             content="Import images"
             icon={<Import />}
             color="blue"
-            onClick={toggle}
+            onClick={toggleShowProductImages}
+            disabled={isLoading}
           />
           <CustomButton
             variant="text"
             content="Apply variants"
             icon={<FilePlus2 />}
             color="deep-orange"
-            onClick={toggle}
+            disabled={isLoading}
           />
           <CustomButton
             variant="text"
             content="Create duplicate"
             icon={<Files />}
             color="green"
-            onClick={toggle}
+            disabled={isLoading}
           />
         </div>
       </div>
@@ -95,17 +112,23 @@ const ProductForm = ({ data }: Props) => {
         {generalSection}
       </section>
       <section className="border p-3">
-        <h2>Details section</h2>
-        {detailsSection}
+        <h2>Details sections</h2>
+        <Details control={control as any} />
       </section>
       {showProductImages && (
         <ProductImages
           isOpen={showProductImages}
           control={control}
           setValue={setValue}
-          toggle={toggle}
+          toggle={toggleShowProductImages}
         />
       )}
+      <SavingModal
+        open={savingModal}
+        isLoading={isLoading}
+        handler={() => setSavingModal(false)}
+        onSave={onConfirmSave}
+      />
     </form>
   );
 };

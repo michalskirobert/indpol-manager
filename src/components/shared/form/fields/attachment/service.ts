@@ -16,7 +16,7 @@ export const useAttachmentService = <T extends FieldValues>({
 }: Omit<InputAttachmentProps<T>, "resolution">) => {
   const thumbRef = useRef<HTMLDivElement>(null);
 
-  const { field } = useController({
+  const { field, fieldState } = useController({
     name: name as Path<T>,
     control,
     defaultValue: [] as unknown as T[typeof name],
@@ -102,6 +102,7 @@ export const useAttachmentService = <T extends FieldValues>({
     modalOpen,
     modalImage,
     imageToRemove,
+    fieldState,
     getRootProps,
     getInputProps,
     onRemove,

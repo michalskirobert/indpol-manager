@@ -1,8 +1,19 @@
 import { Control } from "react-hook-form";
 import { CustomForm } from "../shared/form";
 import { Percent } from "lucide-react";
+import { useInit } from "@/app/InitProvider";
+import { DictionaryTypes } from "@/types/dictionaries";
 
 export const useCreateForm = (control: Control<any>) => {
+  const { dictionaries } = useInit();
+
+  const brands = dictionaries.filter(
+    ({ dictionaryId }) => dictionaryId === DictionaryTypes.Brands,
+  );
+  const categories = dictionaries.filter(
+    ({ dictionaryId }) => dictionaryId === DictionaryTypes.Categories,
+  );
+
   const generalSection = CustomForm({
     fields: [
       [
@@ -52,16 +63,55 @@ export const useCreateForm = (control: Control<any>) => {
       ],
       [
         {
+          type: "textarea",
+          textareaProps: {
+            required: true,
+            control,
+            label: "Description PL",
+            name: "desc.pl",
+            rows: 3,
+            resize: true,
+          },
+        },
+      ],
+      [
+        {
+          type: "textarea",
+          textareaProps: {
+            required: true,
+            control,
+            label: "Description EN",
+            name: "desc.en",
+            rows: 3,
+            resize: true,
+          },
+        },
+      ],
+      [
+        {
+          type: "textarea",
+          textareaProps: {
+            required: true,
+            control,
+            label: "Description ID",
+            name: "desc.id",
+            rows: 3,
+            resize: true,
+          },
+        },
+      ],
+      [
+        {
           type: "select",
           inputSelectProps: {
             label: "Category",
             control,
             name: "category",
             required: true,
-            options: [
-              { label: "test", value: "test2" },
-              { label: "test2", value: "test3" },
-            ],
+            options: categories.map(({ name, value }) => ({
+              label: name.en,
+              value,
+            })),
           },
         },
         {
@@ -71,47 +121,15 @@ export const useCreateForm = (control: Control<any>) => {
             control,
             name: "brand",
             required: true,
-            options: [
-              { label: "test", value: "test2" },
-              { label: "test2", value: "test3" },
-            ],
-          },
-        },
-        {
-          type: "select",
-          inputSelectProps: {
-            label: "Variant",
-            multi: true,
-            control,
-            name: "variant",
-            options: [
-              { label: "test", value: "test2" },
-              { label: "test2", value: "test3" },
-            ],
+            options: brands.map(({ name, value }) => ({
+              label: name.en,
+              value,
+            })),
           },
         },
       ],
     ],
   });
 
-  const detailsSection = CustomForm({
-    fields: [
-      [
-        {
-          type: "input",
-          inputProps: { control, name: "name", required: true },
-        },
-        {
-          type: "input",
-          inputProps: { control, name: "name", required: true },
-        },
-        {
-          type: "input",
-          inputProps: { control, name: "name", required: true },
-        },
-      ],
-    ],
-  });
-
-  return { generalSection, detailsSection };
+  return { generalSection };
 };

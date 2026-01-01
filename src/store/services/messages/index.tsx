@@ -11,7 +11,6 @@ import {
   CreateChatroomArgs,
   SendMessageArgs,
 } from "./types";
-import { TableData } from "@/types/table";
 
 import qs from "qs";
 

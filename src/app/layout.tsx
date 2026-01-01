@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
-import type { PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
 import { Providers } from "./providers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@lib/auth";
 import { ToastContainer } from "react-toastify";
 
 import { ThemeProvider } from "next-themes";
+import { getCollection } from "@/lib/mongodb";
+import { DictionaryParams } from "@/types/dictionaries";
+import { InitContextType } from "./InitProvider";
 
 import "./global.css";
+
+let cachedInit: InitContextType | null = null;
 
 export const metadata: Metadata = {
   title: {
@@ -21,8 +26,23 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
   const session = await getServerSession(authOptions);
 
+  if (!cachedInit) {
+    const dictionariesCollection = (
+      await getCollection<DictionaryParams>("store", "dictionaries")
+    ).find();
+
+    const dictionaries = (await dictionariesCollection.toArray()) || [];
+
+    const plainDictionaries = dictionaries.map((d) => ({
+      ...d,
+      _id: d._id.toString(),
+    }));
+
+    cachedInit = { dictionaries: plainDictionaries };
+  }
+
   return (
-    <Providers session={session}>
+    <Providers init={cachedInit} session={session}>
       <html lang="en" suppressHydrationWarning>
         <body>
           <ThemeProvider defaultTheme="light" attribute="class">
@@ -33,4 +53,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       </html>
     </Providers>
   );
+}
+
+export function getInit() {
+  if (!cachedInit) throw new Error("Init is still unavilable");
+  return cachedInit;
 }
