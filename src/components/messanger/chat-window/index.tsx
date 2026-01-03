@@ -2,7 +2,7 @@
 
 import { Typography, Avatar, Textarea, Chip } from "@material-tailwind/react";
 import { MessagesSkeleton } from "./MessagesSkeleton";
-import { CustomButton } from "../../shared/button/CustomButton";
+import { CustomButton } from "../@shared/button/CustomButton";
 import { MoreHorizontalIcon, Send } from "lucide-react";
 import { format } from "date-fns";
 import { checkIsUserOnline } from "@/utils/check-is-user-online";

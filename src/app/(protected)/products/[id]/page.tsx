@@ -1,15 +1,16 @@
 import { getInit } from "@/app/layout";
-import { ProductNotFound } from "@/components/product-form/NotFoundProduct";
-import { ShowcaseSection } from "@/components/shared/Section";
-import { getCollection } from "@/lib/mongodb";
+import { ProductNotFound } from "@components/products/product-form/NotFoundProduct";
+import { ShowcaseSection } from "@components/shared/Section";
+import { getCollection } from "@lib/mongodb";
 import { DictionaryTypes } from "@/types/dictionaries";
 import { ProductProps } from "@/types/products";
 import { ObjectId } from "mongodb";
 import dynamic from "next/dynamic";
 import { findDictionaryName } from "./utils";
+import { ProductFormSkeleton } from "@/components/products/product-form/Skeleton";
 
-const ProductForm = dynamic(() => import("@components/product-form"), {
-  loading: () => <div>Loading...</div>,
+const ProductForm = dynamic(() => import("@components/products/product-form"), {
+  loading: ProductFormSkeleton,
 });
 
 interface Props {

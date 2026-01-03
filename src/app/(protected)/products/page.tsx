@@ -1,28 +1,15 @@
-"use client";
-
+import { ProductsListSkeleton } from "@/components/products/Skeleton";
 import { ShowcaseSection } from "@/components/shared/Section";
-import { columns } from "./utils";
-import { useButtons } from "./use-buttons";
+import dynamic from "next/dynamic";
 
-import Grid from "@shared/table";
+const List = dynamic(() => import("@/components/products"), {
+  loading: () => <ProductsListSkeleton />,
+});
 
 export default function ProductsPage() {
-  const items = useButtons();
-
   return (
     <ShowcaseSection title="Products">
-      <Grid
-        columns={columns}
-        selection={{ mode: "single", deferred: true }}
-        keyExpr="_id"
-        toolbar={{
-          items,
-        }}
-        onDataLoad={{
-          url: "api/products",
-          onLoad: async (response) => response.data,
-        }}
-      />
+      <List />
     </ShowcaseSection>
   );
 }

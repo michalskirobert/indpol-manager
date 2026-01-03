@@ -1,8 +1,9 @@
+import { ProductFormSkeleton } from "@/components/products/product-form/Skeleton";
 import { ShowcaseSection } from "@/components/shared/Section";
 import dynamic from "next/dynamic";
 
-const ProductForm = dynamic(() => import("@components/product-form"), {
-  loading: () => <div>Loading...</div>,
+const ProductForm = dynamic(() => import("@components/products/product-form"), {
+  loading: ProductFormSkeleton,
 });
 
 export default function AddProductPage() {

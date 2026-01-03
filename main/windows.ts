@@ -26,8 +26,12 @@ export function createMainWindow(): BrowserWindow {
   }
 
   mainWindow = new BrowserWindow({
-    width: 1280,
+    width: 1300,
     height: 800,
+    simpleFullscreen: true,
+    minimizable: true,
+    fullscreenable: true,
+    icon: "/images/logo.png",
     show: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),

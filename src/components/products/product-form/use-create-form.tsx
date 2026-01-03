@@ -1,5 +1,5 @@
 import { Control } from "react-hook-form";
-import { CustomForm } from "../shared/form";
+import { CustomForm } from "@shared/form";
 import { Percent } from "lucide-react";
 import { useInit } from "@/app/InitProvider";
 import { DictionaryTypes } from "@/types/dictionaries";

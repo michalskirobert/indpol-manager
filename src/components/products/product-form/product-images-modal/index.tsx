@@ -12,7 +12,7 @@ import {
   DialogHeader,
 } from "@material-tailwind/react";
 import Image from "next/image";
-import { CustomButton } from "../../shared/button/CustomButton";
+import { CustomButton } from "@shared/button/CustomButton";
 import { Import, X, ZoomIn, Trash2 } from "lucide-react";
 import { ImagesSkeleton } from "./Loading";
 import { ZoomImage } from "./Zoom";

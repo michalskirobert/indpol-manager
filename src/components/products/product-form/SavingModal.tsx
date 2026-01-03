@@ -5,9 +5,9 @@ import {
   DialogFooter,
   DialogHeader,
 } from "@material-tailwind/react";
-import { CustomButton } from "../shared/button/CustomButton";
+import { CustomButton } from "@shared/button/CustomButton";
 import { ArrowLeft, Globe, PencilLine } from "lucide-react";
-import { LoadingBlocker } from "../shared/LoadingBlocker";
+import { LoadingBlocker } from "@shared/LoadingBlocker";
 
 interface Props {
   open: boolean;

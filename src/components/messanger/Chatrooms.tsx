@@ -10,7 +10,7 @@ import {
   Typography,
   List,
 } from "@material-tailwind/react";
-import { CustomButton } from "../shared/button/CustomButton";
+import { CustomButton } from "@shared/button/CustomButton";
 import { Dot, User, UserPlus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { UsersModal } from "./users-modal";

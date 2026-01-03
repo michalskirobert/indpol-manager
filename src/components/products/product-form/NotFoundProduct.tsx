@@ -1,4 +1,4 @@
-import { ShowcaseSection } from "../shared/Section";
+import { ShowcaseSection } from "@shared/Section";
 import Link from "next/link";
 
 export const ProductNotFound = () => {

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useCreateForm } from "./use-create-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "./schema";
-import { CustomButton } from "../shared/button/CustomButton";
+import { CustomButton } from "@shared/button/CustomButton";
 import { ArrowLeft, FilePlus2, Files, Import, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,7 +19,7 @@ import {
 import { toast } from "react-toastify";
 import { SavingModal } from "./SavingModal";
 import { ProductProps, ProductStatus } from "@/types/products";
-import { LoadingBlocker } from "../shared/LoadingBlocker";
+import { LoadingBlocker } from "@shared/LoadingBlocker";
 
 interface Props {
   data?: string;

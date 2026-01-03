@@ -6,13 +6,13 @@ import { useForm } from "react-hook-form";
 import { SignInArgs } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema } from "./schema";
-import { Alert } from "../shared/alert";
+import { Alert } from "@shared/alert";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import CustomInput from "@shared/form/fields/CustomInput";
-import { CustomButton } from "../shared/button/CustomButton";
+import { CustomButton } from "@shared/button/CustomButton";
 import { LogIn } from "lucide-react";
-import { LoadingBlocker } from "../shared/LoadingBlocker";
+import { LoadingBlocker } from "@shared/LoadingBlocker";
 
 export default function SigninWithPassword() {
   const [isLoading, startTransition] = useTransition();
