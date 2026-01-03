@@ -7,6 +7,7 @@ import {
 } from "./types";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { TableData } from "@/types/table";
 
 export const useTableService = <T extends Record<string, any>>({
   keyExpr,
@@ -20,6 +21,7 @@ export const useTableService = <T extends Record<string, any>>({
 }: GridProps<T>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const isFetchingMoreRef = useRef(false);
+
   const filterDebounceRef = useRef<NodeJS.Timeout | null>(null);
 
   const [isWarningModal, setIsWarningModal] = useState(false);
@@ -29,6 +31,10 @@ export const useTableService = <T extends Record<string, any>>({
   const [dataSource, setDataSource] = useState<T[]>(data || []);
   const [sorting, setSorting] = useState<GridSorting | null>(null);
   const [filters, setFilters] = useState<GridFilter[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [skip, setSkip] = useState(0);
+  const [take] = useState(20);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [operators, setOperators] =
     useState<Record<string, GridFilterOperator>>();
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +42,7 @@ export const useTableService = <T extends Record<string, any>>({
   const [internalSelectedKeys, setInternalSelectedKeys] = useState<
     Array<string | number>
   >(selectionKeys ?? []);
+  const skipRef = useRef(skip);
 
   const selectedKeysState = selectionKeys ?? internalSelectedKeys;
 
@@ -176,30 +183,53 @@ export const useTableService = <T extends Record<string, any>>({
     selectedKeysState.length > 0 &&
     selectedKeysState.length < dataSource.length;
 
-  const getData = async () => {
+  const getData = async (reset = false) => {
     if (!onDataLoad) return;
 
     try {
-      setIsLoading(true);
+      if (reset) setIsLoading(true);
+      else setIsLoadingMore(true);
 
       const { url, onLoad } = onDataLoad;
-      const response = await axios.get(url, {
+      const currentSkip = reset ? 0 : skipRef.current;
+      const response = await axios.get<TableData<T>>(url, {
         params: {
           sort: sorting,
           filter: filters,
+          skip: currentSkip,
+          take,
         },
       });
 
+      setTotalCount(response.data.totalCount);
+
       const result = await onLoad(response);
-      setDataSource(result.items);
+      setDataSource((prev) =>
+        reset ? result.items : [...prev, ...result.items],
+      );
       isFetchingMoreRef.current = false;
       setError(null);
+
+      const newSkip = reset
+        ? result.items.length
+        : skipRef.current + result.items.length;
+      skipRef.current = newSkip;
+      setSkip(newSkip);
+
+      if (
+        (reset
+          ? result.items.length
+          : dataSource.length + result.items.length) >= response.data.totalCount
+      ) {
+        isFetchingMoreRef.current = true;
+      }
     } catch (err) {
       console.error("Error loading data:", err);
       isFetchingMoreRef.current = false;
       setError("Failed to load data.");
     } finally {
-      setIsLoading(false);
+      if (reset) setIsLoading(false);
+      else setIsLoadingMore(false);
     }
   };
 
@@ -256,7 +286,7 @@ export const useTableService = <T extends Record<string, any>>({
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      getData();
+      getData(true);
     }, 600);
 
     return () => clearTimeout(timeout);
@@ -279,15 +309,18 @@ export const useTableService = <T extends Record<string, any>>({
       const reachedBottom =
         el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
 
-      if (reachedBottom) {
+      if (
+        reachedBottom &&
+        dataSource.length < (totalCount ?? Number.MAX_SAFE_INTEGER)
+      ) {
         isFetchingMoreRef.current = true;
-        onDataLoad.onNextPage?.();
+        getData(false);
       }
     };
 
     el.addEventListener("scroll", checkScroll);
     return () => el.removeEventListener("scroll", checkScroll);
-  }, [onDataLoad, isLoading]);
+  }, [onDataLoad, isLoading, dataSource.length]);
 
   return {
     allSelected,
@@ -298,6 +331,7 @@ export const useTableService = <T extends Record<string, any>>({
     sorting,
     error,
     isLoading,
+    isLoadingMore,
     selectedKeysState,
     operators,
     isWarningModal,

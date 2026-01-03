@@ -33,6 +33,7 @@ const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
     operators,
     isWarningModal,
     isRemoving,
+    isLoadingMore,
     remove,
     toggleWarningModal,
     updateOperators,
@@ -114,6 +115,7 @@ const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
               selection: props.selection,
               error,
               isLoading,
+              isLoadingMore,
             }}
           />
         </table>

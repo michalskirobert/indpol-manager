@@ -1,3 +1,5 @@
+"use client";
+
 import { Alert } from "@material-tailwind/react";
 import { GridProps } from "../types";
 
@@ -6,6 +8,7 @@ interface Props<T extends Record<string, any>>
   rows: T[];
   error: string | null;
   isLoading: boolean;
+  isLoadingMore: boolean;
   getKey: (row: T, index: number) => string | number;
   isSelected: (key: string | number) => boolean;
   toggleSelect: (key: string | number) => void;
@@ -17,6 +20,7 @@ export const GridBody = <T extends Record<string, any>>({
   selection,
   error,
   isLoading,
+  isLoadingMore,
   getKey,
   isSelected,
   toggleSelect,
@@ -48,30 +52,6 @@ export const GridBody = <T extends Record<string, any>>({
     return String(value);
   };
 
-  if (isLoading) {
-    return (
-      <tbody>
-        {Array.from({ length: 10 }).map((_, rowIndex) => (
-          <tr key={`skeleton-${rowIndex}`}>
-            {selection?.mode === "multiple" && (
-              <td className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
-                <div className="dark:bg-neutral-700 h-4 w-4 animate-pulse rounded bg-gray-200" />
-              </td>
-            )}
-            {columns.map((_, colIndex) => (
-              <td
-                key={`skeleton-${rowIndex}-${colIndex}`}
-                className="border-neutral-300 dark:border-neutral-700 border px-3 py-2"
-              >
-                <div className="dark:bg-neutral-700 h-4 w-full animate-pulse rounded bg-gray-300" />
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    );
-  }
-
   return (
     <tbody className="text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100 relative">
       {error ? (
@@ -89,54 +69,99 @@ export const GridBody = <T extends Record<string, any>>({
           </td>
         </tr>
       ) : (
-        rows.map((row, rowIndex) => {
-          const key = getKey(row, rowIndex);
+        <>
+          {rows.map((row, rowIndex) => {
+            const key = getKey(row, rowIndex);
 
-          return (
-            <tr
-              key={key}
-              className={`border-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-800 cursor-pointer border-b hover:bg-blue-50 ${isSelected(key) ? "bg-blue-100 dark:bg-blue-900 dark:text-white" : ""}`}
-              onClick={() => selection && toggleSelect(key)}
-            >
-              {selection?.mode === "multiple" && (
-                <td className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
-                  <input
-                    type="checkbox"
-                    checked={isSelected(key)}
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={() => toggleSelect(key)}
-                  />
-                </td>
-              )}
-
-              {columns.map((col) => {
-                const value = col.cellRender
-                  ? col.cellRender(
-                      col.calculateValue
-                        ? col.calculateValue(row)
-                        : row[col.field],
-                      row,
-                    )
-                  : formatValue(
-                      col.calculateValue
-                        ? col.calculateValue(row)
-                        : row[col.field],
-                      col.type,
-                    );
-
-                return (
-                  <td
-                    key={col.field}
-                    className={`border-neutral-300 dark:border-neutral-700 max-w-[${col.width || 100}px] truncate border px-3 py-2`}
-                    title={typeof value === "string" ? value : ""}
-                  >
-                    {value}
+            return (
+              <tr
+                key={key}
+                className={`border-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-800 cursor-pointer border-b hover:bg-blue-50 ${isSelected(key) ? "bg-blue-100 dark:bg-blue-900 dark:text-white" : ""}`}
+                onClick={() => selection && toggleSelect(key)}
+              >
+                {selection?.mode === "multiple" && (
+                  <td className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
+                    <input
+                      type="checkbox"
+                      checked={isSelected(key)}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={() => toggleSelect(key)}
+                    />
                   </td>
-                );
-              })}
-            </tr>
-          );
-        })
+                )}
+
+                {columns.map((col) => {
+                  const value = col.cellRender
+                    ? col.cellRender(
+                        col.calculateValue
+                          ? col.calculateValue(row)
+                          : row[col.field],
+                        row,
+                      )
+                    : formatValue(
+                        col.calculateValue
+                          ? col.calculateValue(row)
+                          : row[col.field],
+                        col.type,
+                      );
+
+                  return (
+                    <td
+                      key={col.field}
+                      className={`border-neutral-300 dark:border-neutral-700 max-w-[${col.width || 100}px] truncate border px-3 py-2`}
+                      title={typeof value === "string" ? value : ""}
+                    >
+                      {value}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+          {rows.length === 0 &&
+            isLoading &&
+            Array.from({ length: 10 }).map((_, rowIndex) => (
+              <tr
+                key={`initial-skeleton-${rowIndex}`}
+                className="dark:bg-neutral-900 z-10 animate-pulse bg-white"
+              >
+                {selection?.mode === "multiple" && (
+                  <td className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
+                    <div className="dark:bg-neutral-700 h-4 w-4 rounded bg-gray-200" />
+                  </td>
+                )}
+                {columns.map((_, colIndex) => (
+                  <td
+                    key={`initial-skeleton-${rowIndex}-${colIndex}`}
+                    className="border-neutral-300 dark:border-neutral-700 border px-3 py-2"
+                  >
+                    <div className="dark:bg-neutral-700 h-4 w-full rounded bg-gray-300" />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          {isLoadingMore &&
+            Array.from({ length: 4 }).map((_, rowIndex) => (
+              <tr
+                key={`skeleton-${rowIndex}`}
+                className="dark:bg-neutral-900 z-10 animate-pulse bg-white"
+              >
+                {selection?.mode === "multiple" && (
+                  <td className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
+                    <div className="dark:bg-neutral-700 h-4 w-4 rounded bg-gray-200" />
+                  </td>
+                )}
+                {columns.map((_, colIndex) => (
+                  <td
+                    key={`skeleton-${rowIndex}-${colIndex}`}
+                    className="border-neutral-300 dark:border-neutral-700 border px-3 py-2"
+                  >
+                    <div className="dark:bg-neutral-700 h-4 w-full rounded bg-gray-300" />
+                  </td>
+                ))}
+              </tr>
+            ))}
+        </>
       )}
     </tbody>
   );
