@@ -10,6 +10,8 @@ import { getCollection } from "@/lib/mongodb";
 import { DictionaryParams } from "@/types/dictionaries";
 import { InitContextType } from "./InitProvider";
 
+import { InitError } from "./InitError";
+
 import "./global.css";
 
 let cachedInit: InitContextType | null = null;
@@ -46,7 +48,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       <html lang="en" suppressHydrationWarning>
         <body>
           <ThemeProvider defaultTheme="light" attribute="class">
-            {children}
+            {cachedInit ? children : <InitError />}
             <ToastContainer theme="colored" autoClose={3000} draggable />
           </ThemeProvider>
         </body>
@@ -56,6 +58,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 }
 
 export function getInit() {
-  if (!cachedInit) throw new Error("Init is still unavilable");
+  if (!cachedInit) return { dictionaries: [] };
+
   return cachedInit;
 }

@@ -60,7 +60,7 @@ export const GridHeader = <T extends Record<string, any>>({
           return (
             <th
               key={col.field}
-              className="border-neutral-300 dark:border-neutral-700 select-none border px-3 py-2"
+              className="border-neutral-300 dark:border-neutral-700 select-none border bg-white px-3 py-2 dark:bg-dark"
               style={{ width: col.width || 200, minWidth: 200 }}
             >
               <div className="flex min-w-[250px] flex-col gap-1">

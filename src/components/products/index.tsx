@@ -13,7 +13,7 @@ const ProductsList = () => {
     <Grid
       columns={columns}
       selection={{ mode: "single", deferred: true }}
-      keyExpr="_id"
+      keyExpr="id"
       toolbar={{
         items,
       }}

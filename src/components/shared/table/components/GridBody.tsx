@@ -1,6 +1,5 @@
-import { Alert, Spinner } from "@material-tailwind/react";
+import { Alert } from "@material-tailwind/react";
 import { GridProps } from "../types";
-import { is } from "zod/v4/locales";
 
 interface Props<T extends Record<string, any>>
   extends Pick<GridProps<T>, "columns" | "selection"> {
@@ -110,26 +109,31 @@ export const GridBody = <T extends Record<string, any>>({
                 </td>
               )}
 
-              {columns.map((col) => (
-                <td
-                  key={col.field}
-                  className="border-neutral-300 dark:border-neutral-700 border px-3 py-2"
-                >
-                  {col.cellRender
-                    ? col.cellRender(
-                        col.calculateValue
-                          ? col.calculateValue(row)
-                          : row[col.field],
-                        row,
-                      )
-                    : formatValue(
-                        col.calculateValue
-                          ? col.calculateValue(row)
-                          : row[col.field],
-                        col.type,
-                      )}
-                </td>
-              ))}
+              {columns.map((col) => {
+                const value = col.cellRender
+                  ? col.cellRender(
+                      col.calculateValue
+                        ? col.calculateValue(row)
+                        : row[col.field],
+                      row,
+                    )
+                  : formatValue(
+                      col.calculateValue
+                        ? col.calculateValue(row)
+                        : row[col.field],
+                      col.type,
+                    );
+
+                return (
+                  <td
+                    key={col.field}
+                    className={`border-neutral-300 dark:border-neutral-700 max-w-[${col.width || 100}px] truncate border px-3 py-2`}
+                    title={typeof value === "string" ? value : ""}
+                  >
+                    {value}
+                  </td>
+                );
+              })}
             </tr>
           );
         })

@@ -5,6 +5,7 @@ import { applyFiltersAndSort } from "@/lib/query/mongo-filters";
 import { ProductProps } from "@/types/products";
 import { NextResponse } from "next/server";
 import { ProductFormValues } from "@/components/products/product-form/types";
+import { processProducts } from "./helpers";
 
 export const GET = async (request: Request) => {
   try {
@@ -22,7 +23,7 @@ export const GET = async (request: Request) => {
 
     const { filters, sort, skip, take } = applyFiltersAndSort(url.searchParams);
 
-    const cursor = db.find(filters).skip(skip).limit(take);
+    const cursor = db.find<ProductProps>(filters).skip(skip).limit(take);
 
     if (Object.keys(sort).length > 0) {
       cursor.sort(sort);
@@ -33,7 +34,7 @@ export const GET = async (request: Request) => {
 
     return NextResponse.json(
       {
-        items: products,
+        items: processProducts(products),
         totalCount,
       },
       { status: 200 },
