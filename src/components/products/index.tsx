@@ -2,11 +2,12 @@
 
 import Grid from "@shared/table";
 
-import { columns } from "./utils";
 import { useButtons } from "./use-buttons";
+import { useColumns } from "./use-columns";
 
 const ProductsList = () => {
   const items = useButtons();
+  const columns = useColumns();
 
   return (
     <Grid

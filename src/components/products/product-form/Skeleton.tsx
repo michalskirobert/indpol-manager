@@ -6,9 +6,9 @@ export const ProductFormSkeleton = () => {
           <div className="h-8 w-40 animate-pulse bg-gray-200"></div>
         </div>
         <div className="flex gap-1">
-          {Array.from({ length: 4 }).map((i) => (
+          {Array.from({ length: 4 }).map(() => (
             <div
-              key={`btn-${i}`}
+              key={crypto.randomUUID()}
               className="h-8 w-39 animate-pulse bg-gray-200"
             ></div>
           ))}
@@ -19,7 +19,7 @@ export const ProductFormSkeleton = () => {
         <div className="mt-1 flex w-full gap-1">
           {Array.from({ length: 4 }).map((i) => (
             <div
-              key={`row-1-${i}`}
+              key={crypto.randomUUID()}
               className="h-10 w-full animate-pulse bg-gray-200"
             ></div>
           ))}
@@ -27,7 +27,7 @@ export const ProductFormSkeleton = () => {
         <div className="mt-1 flex flex-col gap-1">
           {Array.from({ length: 3 }).map((i) => (
             <div
-              key={`row-2-${i}`}
+              key={crypto.randomUUID()}
               className="h-25 w-full animate-pulse bg-gray-200"
             ></div>
           ))}
@@ -35,7 +35,7 @@ export const ProductFormSkeleton = () => {
         <div className="mt-1 flex gap-1">
           {Array.from({ length: 2 }).map((i) => (
             <div
-              key={`row-2-${i}`}
+              key={crypto.randomUUID()}
               className="h-10 w-full animate-pulse bg-gray-200"
             ></div>
           ))}
@@ -44,7 +44,7 @@ export const ProductFormSkeleton = () => {
           <div className="mt-1 flex gap-1">
             {Array.from({ length: 3 }).map((i) => (
               <div
-                key={`row-3-${i}`}
+                key={crypto.randomUUID()}
                 className="h-10 w-full animate-pulse bg-gray-200"
               ></div>
             ))}

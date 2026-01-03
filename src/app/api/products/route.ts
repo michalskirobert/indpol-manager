@@ -1,10 +1,10 @@
-import { ProductFormValues } from "@/components/product-form/types";
 import { errorBadRequestHandler } from "@lib/api/error-bad-request";
 import { getSession } from "@lib/auth";
 import { getCollection } from "@lib/mongodb";
 import { applyFiltersAndSort } from "@/lib/query/mongo-filters";
 import { ProductProps } from "@/types/products";
 import { NextResponse } from "next/server";
+import { ProductFormValues } from "@/components/products/product-form/types";
 
 export const GET = async (request: Request) => {
   try {
@@ -79,7 +79,11 @@ export const POST = async (req: Request) => {
 
     const collection = await getCollection("store", "products");
 
-    await collection.insertOne(body);
+    await collection.insertOne({
+      ...body,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
 
     return NextResponse.json(
       { message: "Product has been added" },

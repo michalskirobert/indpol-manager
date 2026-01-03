@@ -3,17 +3,17 @@ export const ProductsListSkeleton = () => {
     <div>
       <div className="flex w-full justify-between">
         <div className="flex gap-2">
-          {Array.from({ length: 5 }).map((i) => (
+          {Array.from({ length: 5 }).map(() => (
             <div
-              key={`skeleton-left-btns-${i}`}
+              key={crypto.randomUUID()}
               className="animate-puls h-11 w-30 rounded-md bg-gray-200"
             ></div>
           ))}
         </div>
         <div className="flex gap-2">
-          {Array.from({ length: 2 }).map((i) => (
+          {Array.from({ length: 2 }).map(() => (
             <div
-              key={`skeleton-right-btns-${i}`}
+              key={crypto.randomUUID()}
               className="animate-puls h-11 w-30 rounded-md bg-gray-200"
             ></div>
           ))}
