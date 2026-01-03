@@ -17,6 +17,7 @@ interface ProviderProps extends GridColumn {
 }
 
 export const Providers = (props: ProviderProps): JSX.Element => {
+  console.log(props);
   const obj: Record<GridColumnType, JSX.Element> = {
     boolean: <BooleanProvider {...props} />,
     date: <DateProvider {...props} />,
