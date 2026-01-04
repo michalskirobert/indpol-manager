@@ -25,6 +25,17 @@ const OPERATOR_LABELS: Record<GridFilterOperator, string> = {
   between: "Between",
 };
 
+const OPERATOR_SYMBOLS: Record<GridFilterOperator, string> = {
+  equals: "=",
+  notEquals: "≠",
+  contains: "∋",
+  startsWith: "↦",
+  endsWith: "↤",
+  greaterThan: ">",
+  lessThan: "<",
+  between: "⇔",
+};
+
 interface FilterOperatorsProps
   extends Pick<GridColumn, "type" | "field" | "filterOperators"> {
   currentOperator?: GridFilterOperator;
@@ -52,11 +63,20 @@ export const FilterOperators = ({
     <select
       value={currentOperator}
       onChange={(e) => setOperator(field, e.target.value as GridFilterOperator)}
-      className="dx-input dark:border-neutral-600 rounded-sm border border-gray-300 px-1.5 py-1 text-xs shadow-inner focus:border-blue-500 focus:outline-none dark:bg-dark-2 dark:text-white dark:focus:border-primary"
+      className="dx-input dark:border-neutral-600 w-[42px] rounded-sm border border-gray-300 px-1.5 py-1 text-center text-xs shadow-inner focus:border-blue-500 focus:outline-none dark:bg-dark-2 dark:text-white dark:focus:border-primary"
+      aria-label={
+        currentOperator
+          ? (OPERATOR_LABELS[currentOperator] ?? currentOperator)
+          : undefined
+      }
     >
       {operators.map((operator) => (
-        <option key={operator} value={operator}>
-          {OPERATOR_LABELS[operator] ?? operator}
+        <option
+          key={operator}
+          value={operator}
+          aria-label={OPERATOR_LABELS[operator] ?? operator}
+        >
+          {`${OPERATOR_SYMBOLS[operator] ?? ""} ${OPERATOR_LABELS[operator] ?? operator}`}
         </option>
       ))}
     </select>

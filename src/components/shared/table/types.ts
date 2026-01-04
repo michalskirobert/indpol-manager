@@ -101,7 +101,7 @@ export type GridProps<T extends Record<string, any>> = PropsWithChildren & {
   selectionKeys?: Array<string | number>;
   keyExpr?: string;
   data?: T[];
-  onDataLoad?: DataStore;
+  onDataLoad?: DataStore<T>;
   toolbar?: Toolbar;
   onSort?: (sorting: GridSorting | null) => void;
   onFilter?: (filters: GridFilter[]) => void;

@@ -46,4 +46,5 @@ export const schema = z.object({
     .array(z.string())
     .min(1, "Product needs to have at least one picture"),
   status: z.number().optional(),
+  variants: z.array(z.string()).optional(),
 });

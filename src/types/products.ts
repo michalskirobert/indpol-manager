@@ -7,13 +7,6 @@ export enum ProductStatus {
   Withdraw = 30,
 }
 
-export interface VariantsDocument {
-  imageUrl: string;
-  productId: string;
-  productUrl: string;
-  name: string;
-}
-
 export interface DetailProps {
   id: string;
   title: { [key in LanguageCode]: string };
@@ -33,7 +26,7 @@ export interface ProductProps {
   purchased?: boolean;
   quantity?: number;
   productId?: string;
-  variants?: VariantsDocument[];
+  variants?: string[];
   stockLimit: number;
   status?: ProductStatus;
   createdDate?: string | null;

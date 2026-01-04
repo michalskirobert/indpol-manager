@@ -72,15 +72,19 @@ export const useTableService = <T extends Record<string, any>>({
     }
 
     setFilters((prevFilters) => {
+      const isEmpty =
+        filterUpdate.value === undefined ||
+        filterUpdate.value === null ||
+        (typeof filterUpdate.value === "string" &&
+          filterUpdate.value.trim() === "");
+
       const existing = prevFilters.find((f) => f.field === filterUpdate.field);
 
-      if (!existing) {
-        if (
-          filterUpdate.value === undefined ||
-          String(filterUpdate.value).trim() === ""
-        )
-          return prevFilters;
+      if (isEmpty) {
+        return prevFilters.filter((f) => f.field !== filterUpdate.field);
+      }
 
+      if (!existing) {
         return [
           ...prevFilters,
           {
@@ -95,9 +99,9 @@ export const useTableService = <T extends Record<string, any>>({
         f.field === filterUpdate.field
           ? {
               ...f,
-              value:
-                filterUpdate.value !== undefined ? filterUpdate.value : f.value,
-              operator: operator ?? operators?.[filterUpdate.field] ?? "equals",
+              value: filterUpdate.value,
+              operator:
+                operator ?? operators?.[filterUpdate.field] ?? f.operator,
             }
           : f,
       );
@@ -178,10 +182,10 @@ export const useTableService = <T extends Record<string, any>>({
   };
 
   const allSelected =
-    dataSource.length > 0 && selectedKeysState.length === dataSource.length;
+    dataSource?.length > 0 && selectedKeysState.length === dataSource.length;
   const someSelected =
     selectedKeysState.length > 0 &&
-    selectedKeysState.length < dataSource.length;
+    selectedKeysState.length < dataSource?.length;
 
   const getData = async (reset = false) => {
     if (!onDataLoad) return;
@@ -191,6 +195,7 @@ export const useTableService = <T extends Record<string, any>>({
       else setIsLoadingMore(true);
 
       const { url, onLoad } = onDataLoad;
+      console.log(url);
       const currentSkip = reset ? 0 : skipRef.current;
       const response = await axios.get<TableData<T>>(url, {
         params: {
@@ -210,16 +215,17 @@ export const useTableService = <T extends Record<string, any>>({
       isFetchingMoreRef.current = false;
       setError(null);
 
+      const resultItemsLength = result.items?.length || 0;
+
       const newSkip = reset
-        ? result.items.length
-        : skipRef.current + result.items.length;
+        ? resultItemsLength
+        : skipRef.current + resultItemsLength;
       skipRef.current = newSkip;
       setSkip(newSkip);
 
       if (
-        (reset
-          ? result.items.length
-          : dataSource.length + result.items.length) >= response.data.totalCount
+        (reset ? resultItemsLength : dataSource?.length + resultItemsLength) >=
+        response.data.totalCount
       ) {
         isFetchingMoreRef.current = true;
       }
@@ -320,7 +326,7 @@ export const useTableService = <T extends Record<string, any>>({
 
     el.addEventListener("scroll", checkScroll);
     return () => el.removeEventListener("scroll", checkScroll);
-  }, [onDataLoad, isLoading, dataSource.length]);
+  }, [onDataLoad, isLoading, dataSource?.length]);
 
   return {
     allSelected,

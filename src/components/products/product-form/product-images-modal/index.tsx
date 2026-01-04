@@ -19,11 +19,12 @@ import { ZoomImage } from "./Zoom";
 import { toast } from "react-toastify";
 import { Control, UseFormSetValue, useWatch } from "react-hook-form";
 import { WarningModal } from "./WarningModal";
+import { ProductFormInput } from "../types";
 
 interface Props {
   isOpen: boolean;
-  control: Control<any>;
-  setValue: UseFormSetValue<any>;
+  control: Control<ProductFormInput>;
+  setValue: UseFormSetValue<ProductFormInput>;
   toggle: () => void;
 }
 

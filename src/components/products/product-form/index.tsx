@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import { SavingModal } from "./SavingModal";
 import { ProductProps, ProductStatus } from "@/types/products";
 import { LoadingBlocker } from "@shared/LoadingBlocker";
+import { ApplyVariantsModal } from "./apply-variants";
 
 interface Props {
   data?: string;
@@ -34,8 +35,10 @@ const ProductForm = ({ data }: Props) => {
 
   const [showProductImages, setShowProductImages] = useState(false);
   const [savingModal, setSavingModal] = useState(false);
+  const [variantsModal, setVariantsModal] = useState(false);
 
   const toggleShowProductImages = () => setShowProductImages((prev) => !prev);
+  const toggleVariantsModal = () => setVariantsModal((prev) => !prev);
 
   const { control, formState, getValues, setValue, handleSubmit } =
     useForm<ProductFormInput>({
@@ -121,6 +124,7 @@ const ProductForm = ({ data }: Props) => {
               content="Apply variants"
               icon={<FilePlus2 />}
               color="deep-orange"
+              onClick={toggleVariantsModal}
               disabled={isLoading}
             />
             <CustomButton
@@ -160,6 +164,11 @@ const ProductForm = ({ data }: Props) => {
           isLoading={isLoading}
           handler={() => setSavingModal(false)}
           onSave={onConfirmSave}
+        />
+        <ApplyVariantsModal
+          open={variantsModal}
+          handler={toggleVariantsModal}
+          setValue={setValue}
         />
       </form>
     </LoadingBlocker>

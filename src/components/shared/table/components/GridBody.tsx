@@ -2,6 +2,7 @@
 
 import { Alert } from "@material-tailwind/react";
 import { GridProps } from "../types";
+import { useRef } from "react";
 
 interface Props<T extends Record<string, any>>
   extends Pick<GridProps<T>, "columns" | "selection"> {
@@ -105,11 +106,22 @@ export const GridBody = <T extends Record<string, any>>({
                         col.type,
                       );
 
+                  const cellRef = useRef<HTMLTableCellElement>(null);
+                  const isOverflow =
+                    typeof value === "string" &&
+                    cellRef.current &&
+                    cellRef.current.scrollWidth > cellRef.current.clientWidth;
+
                   return (
                     <td
                       key={col.field}
-                      className={`border-neutral-300 dark:border-neutral-700 max-w-[${col.width || 100}px] truncate border px-3 py-2`}
-                      title={typeof value === "string" ? value : ""}
+                      ref={cellRef}
+                      style={{
+                        width: col.width ?? 100,
+                        maxWidth: col.width ?? 100,
+                      }}
+                      className="border-neutral-300 dark:border-neutral-700 truncate border px-3 py-2"
+                      title={isOverflow ? value : undefined}
                     >
                       {value}
                     </td>

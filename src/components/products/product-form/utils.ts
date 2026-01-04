@@ -158,4 +158,5 @@ export const defaultValues: ProductFormInput = {
   price: 0,
   stockLimit: 0,
   discount: 0,
+  variants: [],
 };
