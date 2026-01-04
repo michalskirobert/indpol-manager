@@ -7,6 +7,8 @@ import { NextResponse } from "next/server";
 import { ProductFormValues } from "@/components/products/product-form/types";
 import { processProducts } from "./helpers";
 
+const collection = await getCollection("store", "products");
+
 export const GET = async (request: Request) => {
   try {
     const session = await getSession();
@@ -17,19 +19,20 @@ export const GET = async (request: Request) => {
       });
     }
 
-    const db = await getCollection("store", "products");
-
     const url = new URL(request.url);
 
     const { filters, sort, skip, take } = applyFiltersAndSort(url.searchParams);
 
-    const cursor = db.find<ProductProps>(filters).skip(skip).limit(take);
+    const cursor = collection
+      .find<ProductProps>(filters)
+      .skip(skip)
+      .limit(take);
 
     if (Object.keys(sort).length > 0) {
       cursor.sort(sort);
     }
 
-    const totalCount = await db.countDocuments(filters);
+    const totalCount = await collection.countDocuments(filters);
     const products = await cursor.toArray();
 
     return NextResponse.json(
@@ -77,8 +80,6 @@ export const POST = async (req: Request) => {
     if (errorMessage) {
       return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
-
-    const collection = await getCollection("store", "products");
 
     await collection.insertOne({
       ...body,

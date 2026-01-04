@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/shared/CustomTable";
+} from "@/components/dashboard/tables/CustomTable";
 
 export function TopSalesSkeleton() {
   return (

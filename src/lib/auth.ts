@@ -64,7 +64,7 @@ const authOptions: NextAuthOptions = {
     async jwt({ token, user, trigger, session }) {
       if (user) {
         const { password, _id, ...rest } = user as DatabaseUser;
-        console.log(user);
+
         token.id = _id.toString();
 
         Object.entries(rest).forEach(([key, value]) => {

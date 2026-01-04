@@ -29,8 +29,12 @@ export const useTableService = <T extends Record<string, any>>({
   const [isRemoving, setIsRemoving] = useState(false);
 
   const [dataSource, setDataSource] = useState<T[]>(data || []);
-  const [sorting, setSorting] = useState<GridSorting | null>(null);
-  const [filters, setFilters] = useState<GridFilter[]>([]);
+  const [sorting, setSorting] = useState<GridSorting | null>(
+    onDataLoad?.defaultSorting || null,
+  );
+  const [filters, setFilters] = useState<GridFilter[]>(
+    onDataLoad?.defaultFilters || [],
+  );
   const [totalCount, setTotalCount] = useState(0);
   const [skip, setSkip] = useState(0);
   const [take] = useState(20);
@@ -168,7 +172,7 @@ export const useTableService = <T extends Record<string, any>>({
     } else {
       const allKeys = dataSource.map((item, idx) => {
         if (keyExpr && keyExpr in item) {
-          return (item as any)[keyExpr];
+          return item[keyExpr];
         }
         return idx;
       });
@@ -195,16 +199,20 @@ export const useTableService = <T extends Record<string, any>>({
       else setIsLoadingMore(true);
 
       const { url, onLoad } = onDataLoad;
-      console.log(url);
+
       const currentSkip = reset ? 0 : skipRef.current;
-      const response = await axios.get<TableData<T>>(url, {
-        params: {
-          sort: sorting,
-          filter: filters,
-          skip: currentSkip,
-          take,
+
+      const response = await axios.get<TableData<T>>(
+        `${window.location.origin}/${url}`,
+        {
+          params: {
+            sort: sorting,
+            filter: filters,
+            skip: currentSkip,
+            take,
+          },
         },
-      });
+      );
 
       setTotalCount(response.data.totalCount);
 
@@ -230,6 +238,7 @@ export const useTableService = <T extends Record<string, any>>({
         isFetchingMoreRef.current = true;
       }
     } catch (err) {
+      console.log(err);
       console.error("Error loading data:", err);
       isFetchingMoreRef.current = false;
       setError("Failed to load data.");

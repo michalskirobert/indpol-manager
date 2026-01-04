@@ -81,7 +81,7 @@ export const GridBody = <T extends Record<string, any>>({
                 onClick={() => selection && toggleSelect(key)}
               >
                 {selection?.mode === "multiple" && (
-                  <td className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
+                  <td className="border-neutral-300 dark:border-neutral-700 w-2 min-w-2 max-w-2 border px-3 py-2 text-center align-middle">
                     <input
                       type="checkbox"
                       checked={isSelected(key)}
@@ -116,12 +116,12 @@ export const GridBody = <T extends Record<string, any>>({
                     <td
                       key={col.field}
                       ref={cellRef}
+                      className="border-neutral-300 dark:border-neutral-700 truncate border px-3 py-2"
+                      title={isOverflow ? value : undefined}
                       style={{
                         width: col.width ?? 100,
                         maxWidth: col.width ?? 100,
                       }}
-                      className="border-neutral-300 dark:border-neutral-700 truncate border px-3 py-2"
-                      title={isOverflow ? value : undefined}
                     >
                       {value}
                     </td>

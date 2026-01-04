@@ -29,6 +29,6 @@ export interface ProductProps {
   variants?: string[];
   stockLimit: number;
   status?: ProductStatus;
-  createdDate?: string | null;
-  updatedDate?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
 }

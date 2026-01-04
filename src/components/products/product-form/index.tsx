@@ -15,6 +15,7 @@ import Details from "./details-section";
 import {
   useDuplicateProductMutation,
   useInsertProductMutation,
+  useUpdateProductMutation,
 } from "@/store/services/products";
 import { toast } from "react-toastify";
 import { SavingModal } from "./SavingModal";
@@ -30,6 +31,7 @@ const ProductForm = ({ data }: Props) => {
   const processedData: ProductProps = data ? JSON.parse(data) : defaultValues;
 
   const [insert, { isLoading }] = useInsertProductMutation();
+  const [update, { isLoading: isUpdating }] = useUpdateProductMutation();
   const [duplicate, { isLoading: isDuplicating }] =
     useDuplicateProductMutation();
 
@@ -40,7 +42,7 @@ const ProductForm = ({ data }: Props) => {
   const toggleShowProductImages = () => setShowProductImages((prev) => !prev);
   const toggleVariantsModal = () => setVariantsModal((prev) => !prev);
 
-  const { control, formState, getValues, setValue, handleSubmit } =
+  const { control, formState, reset, getValues, setValue, handleSubmit } =
     useForm<ProductFormInput>({
       defaultValues: processedData,
       mode: "all",
@@ -63,13 +65,17 @@ const ProductForm = ({ data }: Props) => {
         status,
       };
 
-      const res = await insert(bodyRequest).unwrap();
+      const api = processedData._id?.toString()
+        ? update({ id: processedData._id, body: bodyRequest })
+        : insert(bodyRequest);
 
-      router.push("/products");
+      const res = await api.unwrap();
+
+      reset(bodyRequest);
 
       toast.success(res.message);
     } catch (error) {
-      toast.error("Product cannot be added!");
+      if (error instanceof Error) toast.error(error.message);
     } finally {
       setSavingModal(false);
     }
@@ -86,7 +92,7 @@ const ProductForm = ({ data }: Props) => {
   };
 
   return (
-    <LoadingBlocker isLoading={isDuplicating}>
+    <LoadingBlocker isLoading={isDuplicating || isUpdating}>
       <form onSubmit={handleSubmit(() => setSavingModal(true))}>
         <div className="flex items-center justify-between gap-2">
           <div>
@@ -107,6 +113,7 @@ const ProductForm = ({ data }: Props) => {
               type="submit"
               color="green"
               disabled={!formState.isDirty}
+              isLoading={isUpdating}
               tooltip={
                 !formState.isDirty ? "No changes to save" : "Save changes"
               }
@@ -125,7 +132,12 @@ const ProductForm = ({ data }: Props) => {
               icon={<FilePlus2 />}
               color="deep-orange"
               onClick={toggleVariantsModal}
-              disabled={isLoading}
+              disabled={isLoading || !processedData?._id}
+              tooltip={
+                !processedData?._id
+                  ? "To apply variants save product before!"
+                  : ""
+              }
             />
             <CustomButton
               variant="text"
@@ -165,11 +177,15 @@ const ProductForm = ({ data }: Props) => {
           handler={() => setSavingModal(false)}
           onSave={onConfirmSave}
         />
-        <ApplyVariantsModal
-          open={variantsModal}
-          handler={toggleVariantsModal}
-          setValue={setValue}
-        />
+        {processedData?._id && (
+          <ApplyVariantsModal
+            control={control}
+            id={processedData._id}
+            open={variantsModal}
+            handler={toggleVariantsModal}
+            setValue={setValue}
+          />
+        )}
       </form>
     </LoadingBlocker>
   );

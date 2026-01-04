@@ -1,6 +1,7 @@
-import { ProductFormValues } from "@/components/product-form/types";
+import { ProductFormValues } from "@/components/products/product-form/types";
 import { apiSlice } from "../../api";
 import { INSTANCES_URLS } from "../../utils";
+import { UpdateProductArgs } from "./types";
 
 export const productsApi = apiSlice.injectEndpoints({
   endpoints: (build) => ({
@@ -8,6 +9,13 @@ export const productsApi = apiSlice.injectEndpoints({
       query: (body) => ({
         url: INSTANCES_URLS.products,
         method: "POST",
+        data: body,
+      }),
+    }),
+    updateProduct: build.mutation<{ message: string }, UpdateProductArgs>({
+      query: ({ body, id }) => ({
+        url: `${INSTANCES_URLS.products}/${id}`,
+        method: "PUT",
         data: body,
       }),
     }),
@@ -21,5 +29,8 @@ export const productsApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useInsertProductMutation, useDuplicateProductMutation } =
-  productsApi;
+export const {
+  useInsertProductMutation,
+  useDuplicateProductMutation,
+  useUpdateProductMutation,
+} = productsApi;

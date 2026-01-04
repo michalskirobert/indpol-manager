@@ -39,7 +39,7 @@ export const GridHeader = <T extends Record<string, any>>({
     <thead className="bg-neutral-200 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100 sticky top-0 z-10">
       <tr>
         {selection?.mode === "multiple" && (
-          <th className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
+          <th className="border-neutral-300 dark:border-neutral-700 w-2 min-w-2 max-w-2 border px-3 py-2">
             <input
               type="checkbox"
               checked={allSelected}

@@ -114,6 +114,8 @@ export type UpdateFilterFunction = (
 
 export type DataStore<T = any> = {
   url: string;
+  defaultFilters?: GridFilter[];
+  defaultSorting?: GridSorting;
   onLoad: (response: any) => Promise<{ items: T[]; totalCount?: number }>;
   onNextPage?: () => Promise<void>;
   onInsert?: (values: Partial<T>) => Promise<void>;

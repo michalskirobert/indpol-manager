@@ -15,7 +15,6 @@ export const GET = async (_req: NextRequest, context: RouteParams) => {
 
   try {
     const db = await getCollection("BackOffice", "users");
-    console.log(db);
 
     const foundUser = await db.findOne<DatabaseUser>({ _id: new ObjectId(id) });
 

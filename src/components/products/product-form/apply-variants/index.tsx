@@ -6,20 +6,39 @@ import {
   DialogFooter,
   DialogHeader,
 } from "@material-tailwind/react";
-import { UseFormSetValue } from "react-hook-form";
+import { Control, UseFormSetValue, useWatch } from "react-hook-form";
 import { ProductFormInput } from "../types";
 import { columns } from "./utils";
 import { useState } from "react";
 import { ArrowLeft, Disc } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface Props {
   open: boolean;
+  id: string;
+  control: Control<ProductFormInput>;
   setValue: UseFormSetValue<ProductFormInput>;
   handler: () => void;
 }
 
-export const ApplyVariantsModal = ({ open, setValue, handler }: Props) => {
-  const [variants, setVariants] = useState<string[]>([]);
+export const ApplyVariantsModal = ({
+  open,
+  control,
+  id,
+  setValue,
+  handler,
+}: Props) => {
+  const selectedVariants = useWatch({ name: "variants", control });
+
+  const [variants, setVariants] = useState<string[]>(selectedVariants || []);
+
+  const onSave = () => {
+    setValue("variants", variants);
+
+    handler();
+
+    toast.success("Selected variants are assigned!");
+  };
 
   return (
     <Dialog {...{ open, handler }}>
@@ -27,14 +46,15 @@ export const ApplyVariantsModal = ({ open, setValue, handler }: Props) => {
       <DialogBody>
         <Grid
           {...{
-            selection: { mode: "multiple", deferred: true },
+            selection: { mode: "multiple", deferred: false },
             height: 500,
             keyExpr: "id",
             columns,
             onDataLoad: {
-              url: "api/products",
+              url: `api/products/${id}/variants`,
               onLoad: async (response) => response.data,
             },
+            selectionKeys: variants,
             onSelectionChange: (selectedRows) => {
               setVariants(selectedRows as string[]);
             },
@@ -47,7 +67,7 @@ export const ApplyVariantsModal = ({ open, setValue, handler }: Props) => {
           color="green"
           icon={<Disc />}
           content="Save variants"
-          onClick={() => setValue("variants", variants)}
+          onClick={onSave}
         />
       </DialogFooter>
     </Dialog>

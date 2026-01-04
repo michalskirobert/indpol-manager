@@ -18,8 +18,6 @@ const Details = ({ control }: DetailProps) => {
 
   const { fieldState } = useController({ name: "details", control });
 
-  console.log({ fieldState });
-
   const addNewDetail = () => {
     append({
       detail: { en: "", id: "", pl: "" },

@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/shared/CustomTable";
+} from "@/components/dashboard/tables/CustomTable";
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import { DownloadIcon, PreviewIcon } from "./Icons";

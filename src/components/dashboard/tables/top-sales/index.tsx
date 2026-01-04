@@ -5,7 +5,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/shared/CustomTable";
+} from "@/components/dashboard/tables/CustomTable";
 import { compactFormat, setCurrencyValue } from "@/lib/format-number";
 import { cn } from "@/lib/utils";
 import Image from "next/image";

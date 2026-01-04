@@ -40,6 +40,8 @@ export const POST = async (_: Request, { params }: Params) => {
       ...product,
       name: `${product.name} (duplicated at ${format(new Date(), DATE_FORMATS.dateTime)})`,
       status: ProductStatus.Draft,
+      createdDate: new Date(),
+      updatedDate: new Date(),
     };
 
     const res = await collection.insertOne(duplicatedProduct);
