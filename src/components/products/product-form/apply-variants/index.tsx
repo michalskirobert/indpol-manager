@@ -13,6 +13,8 @@ import { useState } from "react";
 import { ArrowLeft, Disc } from "lucide-react";
 import { toast } from "react-toastify";
 
+import _ from "lodash";
+
 interface Props {
   open: boolean;
   id: string;
@@ -33,12 +35,18 @@ export const ApplyVariantsModal = ({
   const [variants, setVariants] = useState<string[]>(selectedVariants || []);
 
   const onSave = () => {
-    setValue("variants", variants);
+    setValue("variants", variants, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
 
     handler();
 
     toast.success("Selected variants are assigned!");
   };
+
+  const isDirty = !_.isEqual(variants, selectedVariants);
 
   return (
     <Dialog {...{ open, handler }}>
@@ -55,6 +63,7 @@ export const ApplyVariantsModal = ({
               onLoad: async (response) => response.data,
             },
             selectionKeys: variants,
+            toolbar: { items: [{ role: "refetch" }, { role: "clear" }] },
             onSelectionChange: (selectedRows) => {
               setVariants(selectedRows as string[]);
             },
@@ -68,6 +77,8 @@ export const ApplyVariantsModal = ({
           icon={<Disc />}
           content="Save variants"
           onClick={onSave}
+          disabled={!isDirty}
+          tooltip={!isDirty ? "No changes to save" : ""}
         />
       </DialogFooter>
     </Dialog>

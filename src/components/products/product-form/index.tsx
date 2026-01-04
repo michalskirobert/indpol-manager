@@ -128,7 +128,7 @@ const ProductForm = ({ data }: Props) => {
             />
             <CustomButton
               variant="text"
-              content="Apply variants"
+              content="Variants"
               icon={<FilePlus2 />}
               color="deep-orange"
               onClick={toggleVariantsModal}
