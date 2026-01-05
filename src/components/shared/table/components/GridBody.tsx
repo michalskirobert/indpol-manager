@@ -81,7 +81,7 @@ export const GridBody = <T extends Record<string, any>>({
                 onClick={() => selection && toggleSelect(key)}
               >
                 {selection?.mode === "multiple" && (
-                  <td className="border-neutral-300 dark:border-neutral-700 w-2 min-w-2 max-w-2 border px-3 py-2 text-center align-middle">
+                  <td className="border-neutral-300 dark:border-neutral-700 w-[50px] min-w-[50px] max-w-[50px] border px-3 py-2 text-center align-middle">
                     <input
                       type="checkbox"
                       checked={isSelected(key)}
@@ -138,8 +138,8 @@ export const GridBody = <T extends Record<string, any>>({
                 className="dark:bg-neutral-900 z-10 animate-pulse bg-white"
               >
                 {selection?.mode === "multiple" && (
-                  <td className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
-                    <div className="dark:bg-neutral-700 h-4 w-4 rounded bg-gray-200" />
+                  <td className="border-neutral-300 dark:border-neutral-700 w-[50px] min-w-[50px] max-w-[50px] border px-3 py-2 text-center align-middle">
+                    <div className="dark:bg-neutral-700 mx-auto h-4 w-4 rounded bg-gray-200" />
                   </td>
                 )}
                 {columns.map((_, colIndex) => (
@@ -159,8 +159,8 @@ export const GridBody = <T extends Record<string, any>>({
                 className="dark:bg-neutral-900 z-10 animate-pulse bg-white"
               >
                 {selection?.mode === "multiple" && (
-                  <td className="border-neutral-300 dark:border-neutral-700 border px-3 py-2">
-                    <div className="dark:bg-neutral-700 h-4 w-4 rounded bg-gray-200" />
+                  <td className="border-neutral-300 dark:border-neutral-700 w-[50px] min-w-[50px] max-w-[50px] border px-3 py-2 text-center align-middle">
+                    <div className="dark:bg-neutral-700 mx-auto h-4 w-4 rounded bg-gray-200" />
                   </td>
                 )}
                 {columns.map((_, colIndex) => (

@@ -4,14 +4,11 @@ import { getSession } from "@lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 import { ObjectId } from "mongodb";
-
-interface Params {
-  params: { id: string };
-}
+import { Params } from "@/types/global";
 
 const collection = await getCollection("store", "products");
 
-export const PUT = async (req: Request, { params: { id } }: Params) => {
+export const PUT = async (req: Request, { params }: Params) => {
   const session = await getSession();
 
   if (!session?.user.id) {
@@ -21,7 +18,11 @@ export const PUT = async (req: Request, { params: { id } }: Params) => {
   }
 
   try {
-    const foundProduct = collection.findOne({ _id: new ObjectId(id) });
+    const { id } = await params;
+
+    const foundProduct = collection.findOne({
+      _id: new ObjectId(id),
+    });
 
     if (!foundProduct) {
       return NextResponse.json(
@@ -53,7 +54,8 @@ export const PUT = async (req: Request, { params: { id } }: Params) => {
 
 export const DELETE = async (_: NextRequest, { params }: Params) => {
   try {
-    const _id = new ObjectId(params.id);
+    const { id } = await params;
+    const _id = new ObjectId(id);
 
     const foundProduct = await collection.findOne({ _id });
 

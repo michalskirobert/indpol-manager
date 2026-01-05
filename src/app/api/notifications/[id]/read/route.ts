@@ -3,12 +3,10 @@ import { getCollection } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
 import { ObjectId } from "mongodb";
+import { Params } from "@/types/global";
 
-export const PATCH = async (
-  req: Request,
-  { params }: { params: { id: string } },
-) => {
-  const { id } = params;
+export const PATCH = async (_: Request, { params }: Params) => {
+  const { id } = await params;
 
   const session = await getSession();
 

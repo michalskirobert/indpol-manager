@@ -2,11 +2,9 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getCollection } from "@/lib/mongodb";
 import { MessageParams } from "@/types/message";
+import { Params } from "@/types/global";
 
-export const GET = async (
-  _: Request,
-  { params }: { params: { id: string } },
-) => {
+export const GET = async (_: Request, { params }: Params) => {
   const db = await getCollection("BackOffice", "messages");
 
   const session = await getSession();
@@ -14,7 +12,10 @@ export const GET = async (
   if (!session?.user.id)
     return NextResponse.json({ message: "Not authorized" }, { status: 401 });
 
-  const roomId = params.id;
+  const { id } = await params;
+
+  const roomId = id;
+
   const participants = roomId.split("_");
 
   if (participants.length !== 2)

@@ -23,7 +23,7 @@ export const GET = async () => {
     const previousSales = await orderDb.countDocuments({
       paymentStatus: PaymentStatus.Paid,
       status: { $ne: OrderStatus.Cancelled },
-      createdAt: { $gte: startPrevMonth, $lt: endPrevMonth },
+      createdAt: { $gte: startPrevMonth, $lt: endPrevMonth } as any,
     });
 
     const totalSales = {
@@ -70,10 +70,10 @@ export const GET = async () => {
     };
 
     const currentProducts = await productDb.countDocuments({
-      createdAt: { $gte: startCurrentMonth },
+      createdAt: { $gte: startCurrentMonth } as any,
     });
     const previousProducts = await productDb.countDocuments({
-      createdAt: { $gte: startPrevMonth, $lt: endPrevMonth },
+      createdAt: { $gte: startPrevMonth, $lt: endPrevMonth } as any,
     });
     const totalProducts = {
       value: await productDb.countDocuments(),
@@ -84,10 +84,10 @@ export const GET = async () => {
     };
 
     const currentUsers = await userDb.countDocuments({
-      createdAt: { $gte: startCurrentMonth },
+      createdAt: { $gte: startCurrentMonth } as any,
     });
     const previousUsers = await userDb.countDocuments({
-      createdAt: { $gte: startPrevMonth, $lt: endPrevMonth },
+      createdAt: { $gte: startPrevMonth, $lt: endPrevMonth } as any,
     });
 
     const totalUsers = {

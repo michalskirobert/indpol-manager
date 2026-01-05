@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getCollection } from "@/lib/mongodb";
+import { Params } from "@/types/global";
 
 const getRoomId = (a: string, b: string) => [a, b].sort().join("_");
 
-export const GET = async (
-  req: Request,
-  { params }: { params: Promise<{ id: string }> },
-) => {
+export const GET = async (req: Request, { params }: Params) => {
   const session = await getSession();
 
   const messagesDb = await getCollection("BackOffice", "messages");

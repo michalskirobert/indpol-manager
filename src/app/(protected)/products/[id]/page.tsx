@@ -8,22 +8,21 @@ import { ObjectId } from "mongodb";
 import dynamic from "next/dynamic";
 import { findDictionaryName } from "./utils";
 import { ProductFormSkeleton } from "@/components/products/product-form/Skeleton";
+import { Params } from "@/types/global";
 
 const ProductForm = dynamic(() => import("@components/products/product-form"), {
   loading: ProductFormSkeleton,
 });
 
-interface Props {
-  params: { id: string };
-}
-
-export default async function EditProductPage({ params }: Props) {
+export default async function EditProductPage({ params }: Params) {
   const init = getInit();
+
+  const { id } = await params;
 
   const collection = await getCollection("store", "products");
 
   const product = await collection.findOne<ProductProps>({
-    _id: new ObjectId(params.id),
+    _id: new ObjectId(id),
   });
 
   if (!product) {

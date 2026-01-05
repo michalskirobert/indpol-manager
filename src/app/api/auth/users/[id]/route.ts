@@ -1,4 +1,5 @@
 import { getCollection } from "@/lib/mongodb";
+import { Params } from "@/types/global";
 import { DatabaseUser } from "@/types/user";
 import bcrypt from "bcryptjs";
 
@@ -6,12 +7,8 @@ import { ObjectId } from "mongodb";
 
 import { NextRequest, NextResponse } from "next/server";
 
-interface RouteParams {
-  params: { id: string };
-}
-
-export const GET = async (_req: NextRequest, context: RouteParams) => {
-  const { id } = context.params;
+export const GET = async (_req: NextRequest, context: Params) => {
+  const { id } = await context.params;
 
   try {
     const db = await getCollection("BackOffice", "users");
@@ -31,8 +28,8 @@ export const GET = async (_req: NextRequest, context: RouteParams) => {
   }
 };
 
-export const PATCH = async (req: NextRequest, context: RouteParams) => {
-  const { id } = context.params;
+export const PATCH = async (req: NextRequest, context: Params) => {
+  const { id } = await context.params;
 
   try {
     const db = await getCollection("BackOffice", "users");

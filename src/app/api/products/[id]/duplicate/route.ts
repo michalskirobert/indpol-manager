@@ -1,14 +1,11 @@
 import { getSession } from "@/lib/auth";
 import { getCollection } from "@/lib/mongodb";
+import { Params } from "@/types/global";
 import { ProductProps, ProductStatus } from "@/types/products";
 import { DATE_FORMATS } from "@/utils";
 import { format } from "date-fns";
 import { ObjectId } from "mongodb";
 import { NextResponse } from "next/server";
-
-interface Params {
-  params: { id: string };
-}
 
 export const POST = async (_: Request, { params }: Params) => {
   try {
@@ -20,11 +17,11 @@ export const POST = async (_: Request, { params }: Params) => {
         { status: 401 },
       );
     }
-
+    const { id } = await params;
     const collection = await getCollection("store", "products");
 
     const foundProduct = await collection.findOne<ProductProps>({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
     });
 
     if (!foundProduct) {
@@ -34,7 +31,7 @@ export const POST = async (_: Request, { params }: Params) => {
       );
     }
 
-    const { _id, createdDate, updatedDate, ...product } = foundProduct;
+    const { _id, createdAt, updatedAt, ...product } = foundProduct;
 
     const duplicatedProduct = {
       ...product,

@@ -5,12 +5,9 @@ import { ProductProps, ProductStatus } from "@/types/products";
 import { getSession } from "@lib/auth";
 import { NextResponse } from "next/server";
 import { processVariants } from "../../helpers";
+import { Params } from "@/types/global";
 
-interface Params {
-  params: { id: string };
-}
-
-export const GET = async (req: Request, { params: { id } }: Params) => {
+export const GET = async (req: Request, { params }: Params) => {
   const session = await getSession();
 
   if (!session?.user.id) {
@@ -21,6 +18,7 @@ export const GET = async (req: Request, { params: { id } }: Params) => {
   }
 
   try {
+    const { id } = await params;
     const db = await getCollection("store", "products");
 
     const url = new URL(req.url);

@@ -56,7 +56,7 @@ export default function Page({ params }: { params: Usable<{ id: string }> }) {
     setRemovingLoading(fieldId, true);
 
     try {
-      await removePicture({ public_id: getPublicId(data[fieldId]) }).unwrap();
+      await removePicture({ public_id: [getPublicId(data[fieldId])] }).unwrap();
       await updateUser({ id, body: { [fieldId]: "" } }).unwrap();
       await update({ ...data, [fieldId]: "" });
       setData({ ...data, [fieldId]: "" });
