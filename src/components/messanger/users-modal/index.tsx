@@ -6,7 +6,7 @@ import {
   DialogHeader,
   Typography,
 } from "@material-tailwind/react";
-import { CustomButton } from "../@shared/button/CustomButton";
+import { CustomButton } from "@shared/button/CustomButton";
 import { ChevronsUpDownIcon, Send } from "lucide-react";
 import { useGetUsersQuery } from "@/store/services/users/users";
 import { MasterDetails } from "./MasterDetails";

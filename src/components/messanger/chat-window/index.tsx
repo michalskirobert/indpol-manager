@@ -2,7 +2,7 @@
 
 import { Typography, Avatar, Textarea, Chip } from "@material-tailwind/react";
 import { MessagesSkeleton } from "./MessagesSkeleton";
-import { CustomButton } from "../@shared/button/CustomButton";
+import { CustomButton } from "@shared/button/CustomButton";
 import { MoreHorizontalIcon, Send } from "lucide-react";
 import { format } from "date-fns";
 import { checkIsUserOnline } from "@/utils/check-is-user-online";
@@ -90,13 +90,13 @@ export default function ChatWindow() {
                   msg.senderId.toString() === sessionUserId?.toString();
                 return (
                   <div
-                    key={msg._id.toString()}
+                    key={msg._id?.toString()}
                     className={`flex max-w-[75%] flex-col ${
                       isFromMe ? "ml-auto self-end" : "mr-auto self-start"
                     }`}
                   >
                     <Typography variant="small" color="gray">
-                      {format(msg.createdAt, "dd.MM.yyyy, HH:mm")}
+                      {format(msg.createdAt || new Date(), "dd.MM.yyyy, HH:mm")}
                     </Typography>
                     <div
                       className={`whitespace-pre-wrap break-words rounded-lg px-4 py-2 shadow-sm ${
