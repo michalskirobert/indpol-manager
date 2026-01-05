@@ -1,6 +1,13 @@
 import { CustomButton } from "@/components/shared/button/CustomButton";
 import { ItemProps } from "@/components/shared/table/types";
-import { ArrowUpDown, Pencil, Plus, SquarePercent } from "lucide-react";
+import { Progress } from "@material-tailwind/react";
+import {
+  ArrowUpDown,
+  Pencil,
+  Plus,
+  Settings,
+  SquarePercent,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export const useButtons = () => {
@@ -45,7 +52,18 @@ export const useButtons = () => {
         role: "custom",
         renderComponent: () => (
           <CustomButton
-            content="Change stocks"
+            content="Status"
+            color="indigo"
+            icon={<Settings />}
+            className="roundend-md h-10"
+          />
+        ),
+      },
+      {
+        role: "custom",
+        renderComponent: () => (
+          <CustomButton
+            content="Stocks limit"
             color="purple"
             icon={<ArrowUpDown />}
             className="roundend-md h-10"

@@ -26,8 +26,9 @@ export function createMainWindow(): BrowserWindow {
   }
 
   mainWindow = new BrowserWindow({
-    width: 1300,
+    width: 1600,
     height: 800,
+    minWidth: 1280,
     simpleFullscreen: true,
     minimizable: true,
     fullscreenable: true,
