@@ -4,15 +4,17 @@ import { Alert } from "@material-tailwind/react";
 import { GridProps } from "../types";
 import { useRef } from "react";
 
-interface Props<T extends Record<string, any>>
-  extends Pick<GridProps<T>, "columns" | "selection"> {
+interface Props<T extends Record<string, any>> extends Pick<
+  GridProps<T>,
+  "columns" | "selection"
+> {
   rows: T[];
   error: string | null;
   isLoading: boolean;
   isLoadingMore: boolean;
   getKey: (row: T, index: number) => string | number;
   isSelected: (key: string | number) => boolean;
-  toggleSelect: (key: string | number) => void;
+  toggleSelect: (key: string | number, data: T) => void;
 }
 
 export const GridBody = <T extends Record<string, any>>({
@@ -78,7 +80,7 @@ export const GridBody = <T extends Record<string, any>>({
               <tr
                 key={key}
                 className={`border-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-800 cursor-pointer border-b hover:bg-blue-50 ${isSelected(key) ? "bg-blue-100 dark:bg-blue-900 dark:text-white" : ""}`}
-                onClick={() => selection && toggleSelect(key)}
+                onClick={() => selection && toggleSelect(key, row)}
               >
                 {selection?.mode === "multiple" && (
                   <td className="border-neutral-300 dark:border-neutral-700 w-[50px] min-w-[50px] max-w-[50px] border px-3 py-2 text-center align-middle">
@@ -86,7 +88,7 @@ export const GridBody = <T extends Record<string, any>>({
                       type="checkbox"
                       checked={isSelected(key)}
                       onClick={(e) => e.stopPropagation()}
-                      onChange={() => toggleSelect(key)}
+                      onChange={() => toggleSelect(key, row)}
                     />
                   </td>
                 )}

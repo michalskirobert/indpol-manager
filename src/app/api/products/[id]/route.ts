@@ -52,6 +52,54 @@ export const PUT = async (req: Request, { params }: Params) => {
   }
 };
 
+export const PATCH = async (req: Request, { params }: Params) => {
+  const session = await getSession();
+
+  if (!session?.user.id) {
+    return NextResponse.json({ message: "Not authorized" }, { status: 401 });
+  }
+
+  try {
+    const { id } = await params;
+    const _id = new ObjectId(id);
+
+    const foundProduct = await collection.findOne({ _id });
+
+    if (!foundProduct) {
+      return NextResponse.json(
+        { message: "Product not found" },
+        { status: 404 },
+      );
+    }
+
+    const body = (await req.json()) || {};
+
+    const { _id: _, ...fieldsToUpdate } = body;
+
+    if (Object.keys(fieldsToUpdate).length === 0) {
+      return NextResponse.json(
+        { message: "No fields to update" },
+        { status: 400 },
+      );
+    }
+
+    await collection.updateOne(
+      { _id },
+      { $set: { ...fieldsToUpdate, updatedAt: new Date() } },
+    );
+
+    return NextResponse.json(
+      { message: "Product has been patched" },
+      { status: 200 },
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Server not respond" },
+      { status: 500 },
+    );
+  }
+};
+
 export const DELETE = async (_: NextRequest, { params }: Params) => {
   try {
     const { id } = await params;

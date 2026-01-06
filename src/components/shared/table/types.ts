@@ -1,5 +1,5 @@
 import { ButtonProps } from "@material-tailwind/react";
-import { PropsWithChildren, ReactNode } from "react";
+import { Dispatch, PropsWithChildren, ReactNode, SetStateAction } from "react";
 
 export type GridColumnType = "string" | "number" | "boolean" | "date" | "enum";
 
@@ -18,20 +18,22 @@ export type BtnProps = Omit<ButtonProps, "children"> & {
   label: string;
 };
 
-export type RenderComponentProps = {
+export type RenderComponentProps<T extends Record<string, any>> = {
   filters: GridFilter[];
   sorting: GridSorting | null;
-  selectedKeysState: any[];
+  selectedKeysState: (string | number)[];
   isWarningModal: boolean;
+  selectedData: T[];
+  setSelectedData: Dispatch<SetStateAction<T[]>>;
   refetch: () => Promise<void>;
   clearFilters: () => void;
   deleteRow: () => void;
   toggleWarningModal: () => void;
 };
 
-export interface ItemProps {
+export interface ItemProps<T extends Record<string, any>> {
   role: "refetch" | "clear" | "delete" | "custom";
-  renderComponent?: (props: RenderComponentProps) => JSX.Element;
+  renderComponent?: (props: RenderComponentProps<T>) => JSX.Element;
 }
 
 export type GridFilter = {
@@ -82,10 +84,10 @@ export type GridDataSource<T> = {
   total: number;
 };
 
-export type Toolbar = {
+export type Toolbar<T extends Record<string, any>> = {
   items:
-    | Omit<ItemProps, "RenderComponentProps">[]
-    | Omit<ItemProps, "RenderComponentProps">[][];
+    | Omit<ItemProps<T>, "RenderComponentProps">[]
+    | Omit<ItemProps<T>, "RenderComponentProps">[][];
   className?: string;
 };
 
@@ -102,7 +104,7 @@ export type GridProps<T extends Record<string, any>> = PropsWithChildren & {
   keyExpr?: string;
   data?: T[];
   onDataLoad?: DataStore<T>;
-  toolbar?: Toolbar;
+  toolbar?: Toolbar<T>;
   onSort?: (sorting: GridSorting | null) => void;
   onFilter?: (filters: GridFilter[]) => void;
   onSelectionChange?: (selectedKeys: Array<string | number>) => void;

@@ -2,12 +2,15 @@
 
 import { createContext, useContext, PropsWithChildren } from "react";
 import { DictionaryParams } from "@/types/dictionaries";
+import { ProductStatus } from "@/types/products";
 
 export interface InitContextType {
   dictionaries: DictionaryParams[];
 }
 
-const InitContext = createContext<InitContextType>({ dictionaries: [] });
+const InitContext = createContext<InitContextType>({
+  dictionaries: [],
+});
 
 export function InitProvider({
   init,

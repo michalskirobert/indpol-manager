@@ -8,3 +8,8 @@ export type UpdateProductArgs = {
   id: string;
   body: ProductFormValues;
 };
+
+export type PatchProductArgs = {
+  id: string;
+  body: Partial<ProductFormValues>;
+};

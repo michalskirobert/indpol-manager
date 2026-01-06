@@ -3,12 +3,17 @@ import { CircleX, RefreshCcw, Trash } from "lucide-react";
 import { CustomButton } from "@/components/shared/button/CustomButton";
 import { CustomButtonProps } from "@shared/button/index";
 
-type Props = ItemProps & RenderComponentProps;
+type Props<T extends Record<string, any>> = ItemProps<T> &
+  RenderComponentProps<T>;
 
-export const Item = ({ role, renderComponent, ...props }: Props) => {
+export const Item = <T extends Record<string, any>>({
+  role,
+  renderComponent,
+  ...props
+}: Props<T>) => {
   if (renderComponent) return renderComponent(props);
 
-  const obj: Record<ItemProps["role"], CustomButtonProps> = {
+  const obj: Record<ItemProps<T>["role"], CustomButtonProps> = {
     custom: {},
     delete: {
       color: "red",

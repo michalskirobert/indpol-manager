@@ -46,6 +46,7 @@ export const useTableService = <T extends Record<string, any>>({
   const [internalSelectedKeys, setInternalSelectedKeys] = useState<
     Array<string | number>
   >(selectionKeys ?? []);
+  const [selectedData, setSelectedData] = useState<T[]>([]);
   const skipRef = useRef(skip);
 
   const selectedKeysState = selectionKeys ?? internalSelectedKeys;
@@ -128,8 +129,9 @@ export const useTableService = <T extends Record<string, any>>({
 
   const isSelected = (key: string | number) => selectedKeysState.includes(key);
 
-  const toggleSelect = (key: string | number) => {
+  const toggleSelect = (key: string | number, data: T) => {
     let newSelectedKeys: Array<string | number>;
+
     if (selection?.mode === "single") {
       if (isSelected(key)) {
         newSelectedKeys = [];
@@ -149,6 +151,12 @@ export const useTableService = <T extends Record<string, any>>({
     if (!selection?.deferred) {
       onSelectionChange?.(newSelectedKeys);
     }
+
+    setSelectedData(
+      dataSource.filter((data) =>
+        newSelectedKeys.includes(data[keyExpr || "id"]),
+      ),
+    );
   };
 
   const toggleSelectAll = () => {
@@ -169,6 +177,8 @@ export const useTableService = <T extends Record<string, any>>({
       if (!selection?.deferred) {
         onSelectionChange?.([]);
       }
+
+      setSelectedData([]);
     } else {
       const allKeys = dataSource.map((item, idx) => {
         if (keyExpr && keyExpr in item) {
@@ -176,12 +186,15 @@ export const useTableService = <T extends Record<string, any>>({
         }
         return idx;
       });
+
       if (selectionKeys === undefined) {
         setInternalSelectedKeys(allKeys);
       }
       if (!selection?.deferred) {
         onSelectionChange?.(allKeys);
       }
+
+      setSelectedData(dataSource);
     }
   };
 
@@ -351,6 +364,8 @@ export const useTableService = <T extends Record<string, any>>({
     operators,
     isWarningModal,
     isRemoving,
+    selectedData,
+    setSelectedData,
     toggleWarningModal,
     updateOperators,
     clearFilters,

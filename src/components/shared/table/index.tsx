@@ -34,6 +34,8 @@ const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
     isWarningModal,
     isRemoving,
     isLoadingMore,
+    selectedData,
+    setSelectedData,
     remove,
     toggleWarningModal,
     updateOperators,
@@ -56,7 +58,7 @@ const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
           hasGroup={Array.isArray(toolbar.items[0])}
         >
           {toolbar.items.map((groupOrItem, groupIndex) => {
-            const renderToolbarItem = (itemProps: ItemProps) => (
+            const renderToolbarItem = (itemProps: ItemProps<T>) => (
               <Item
                 key={crypto.randomUUID()}
                 {...itemProps}
@@ -68,6 +70,8 @@ const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
                 deleteRow={() => remove(selectedKeysState[0])}
                 isWarningModal={isWarningModal}
                 toggleWarningModal={toggleWarningModal}
+                selectedData={selectedData}
+                setSelectedData={setSelectedData}
               />
             );
 

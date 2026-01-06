@@ -6,7 +6,7 @@ import { useButtons } from "./use-buttons";
 import { useColumns } from "./use-columns";
 
 const ProductsList = () => {
-  const items = useButtons();
+  const { buttons } = useButtons();
   const columns = useColumns();
 
   return (
@@ -15,7 +15,7 @@ const ProductsList = () => {
       selection={{ mode: "single", deferred: true }}
       keyExpr="id"
       toolbar={{
-        items,
+        items: buttons,
       }}
       onDataLoad={{
         url: "api/products",
