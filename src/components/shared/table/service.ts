@@ -227,6 +227,8 @@ export const useTableService = <T extends Record<string, any>>({
         },
       );
 
+      console.log(response);
+
       setTotalCount(response.data.totalCount);
 
       const result = await onLoad(response);
@@ -288,7 +290,7 @@ export const useTableService = <T extends Record<string, any>>({
     try {
       setIsRemoving(true);
       await axios.delete(`${onDataLoad.url}/${key}`);
-      await getData();
+      await getData(true);
       setInternalSelectedKeys([]);
 
       toggleWarningModal();

@@ -64,7 +64,7 @@ const Grid = <T extends Record<string, any>>(props: GridProps<T>) => {
                 {...itemProps}
                 filters={filters}
                 clearFilters={clearFilters}
-                refetch={getData}
+                refetch={() => getData(true)}
                 sorting={sorting}
                 selectedKeysState={selectedKeysState}
                 deleteRow={() => remove(selectedKeysState[0])}
