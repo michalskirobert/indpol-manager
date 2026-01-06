@@ -15,6 +15,7 @@ import { StatusModal } from "./status-modal";
 import { ProductList } from "./types";
 import { StockModal } from "./stock-modal";
 import { DiscountModal } from "./discount-modal";
+import { ProductStatus } from "@/types/products";
 
 export const useButtons = () => {
   const router = useRouter();
@@ -37,19 +38,30 @@ export const useButtons = () => {
       },
       {
         role: "custom",
-        renderComponent: (props) => (
-          <CustomButton
-            content="Edit"
-            color="orange"
-            icon={<Pencil />}
-            className="roundend-md h-10"
-            disabled={!props.selectedKeysState[0]}
-            tooltip={!props.selectedKeysState[0] ? "Select row" : ""}
-            onClick={() =>
-              router.push(`/products/${props.selectedKeysState[0]}`)
-            }
-          />
-        ),
+        renderComponent: (props) => {
+          const isDraft = props.selectedData[0]?.status === ProductStatus.Draft;
+          const isSelected = !!props.selectedKeysState[0];
+
+          return (
+            <CustomButton
+              content="Edit"
+              color="orange"
+              icon={<Pencil />}
+              className="roundend-md h-10"
+              disabled={!isSelected || !isDraft}
+              tooltip={
+                !isSelected
+                  ? "Select row"
+                  : !isDraft
+                    ? "Product has to have a Draft status!"
+                    : ""
+              }
+              onClick={() =>
+                router.push(`/products/${props.selectedKeysState[0]}`)
+              }
+            />
+          );
+        },
       },
       { role: "delete" },
       { role: "refetch" },
